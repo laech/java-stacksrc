@@ -10,16 +10,10 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singleton;
 import static javax.tools.Diagnostic.Kind.NOTE;
 import static javax.tools.Diagnostic.Kind.WARNING;
@@ -48,14 +42,13 @@ public final class SourceTreeProcessor extends AbstractProcessor {
     @Override
     public boolean process(
             Set<? extends TypeElement> annotations,
-            RoundEnvironment roundEnv) {
-
+            RoundEnvironment roundEnv
+    ) {
         try {
             doProcess(roundEnv);
         } catch (Throwable e) {
             logWarning(e);
         }
-
         return false;
     }
 
@@ -64,40 +57,53 @@ public final class SourceTreeProcessor extends AbstractProcessor {
     private void doProcess(RoundEnvironment roundEnv) throws IOException {
 
         if (roundEnv.processingOver()) {
-            Iterator<CompilationUnitTree> iterator = compilationUnits.iterator();
-            while (iterator.hasNext()) {
-                CompilationUnitTree compilationUnit = iterator.next();
-                processingEnv.getMessager().printMessage(NOTE, compilationUnit.getSourceFile().getName());
-                FileObject src = compilationUnit.getSourceFile();
-                FileObject dst = processingEnv.getFiler().createResource(
-                        CLASS_OUTPUT,
-                        compilationUnit.getPackageName().toString(),
-                        new File(src.getName()).getName());
-                try (OutputStream out = dst.openOutputStream()) {
-                    out.write(src.getCharContent(true).toString().getBytes(UTF_8));
-                }
-                FileObject index = processingEnv.getFiler().createResource(
-                        CLASS_OUTPUT,
-                        compilationUnit.getPackageName().toString(),
-                        new File(src.getName()).getName() + ".index");
-                try (StatementRegionWriter writer = new StatementRegionWriter(index)) {
-                    writer.scan(compilationUnit, trees);
-                }
-                iterator.remove();
+            for (CompilationUnitTree unit : compilationUnits) {
+                write(unit);
             }
+            compilationUnits.clear();
             return;
         }
 
         for (Element element : roundEnv.getRootElements()) {
             compilationUnits.add(trees.getPath(element).getCompilationUnit());
         }
+    }
 
+    private void write(CompilationUnitTree unit) throws IOException {
+        processingEnv.getMessager().printMessage(NOTE, unit.getSourceFile().getName());
+        FileObject src = unit.getSourceFile();
+        FileObject dst = getTarget(unit);
+        copy(src, dst);
+        FileObject index = processingEnv.getFiler().createResource(
+                CLASS_OUTPUT,
+                unit.getPackageName().toString(),
+                new File(src.getName()).getName() + ".index");
+        try (StatementRegionWriter writer = new StatementRegionWriter(index)) {
+            writer.scan(unit, trees);
+        }
+    }
+
+    private FileObject getTarget(CompilationUnitTree unit) throws IOException {
+        return processingEnv.getFiler().createResource(
+                CLASS_OUTPUT,
+                unit.getPackageName().toString(),
+                new File(unit.getSourceFile().getName()).getName()
+        );
+    }
+
+    private void copy(FileObject src, FileObject dst) throws IOException {
+        try (InputStream in = src.openInputStream();
+             OutputStream out = dst.openOutputStream()) {
+            byte[] buffer = new byte[4096];
+            for (int count; (count = in.read(buffer)) != -1; ) {
+                out.write(buffer, 0, count);
+            }
+        }
     }
 
     private void logWarning(Throwable e) {
         try {
-            processingEnv.getMessager()
-                    .printMessage(WARNING, getStackTrace(e));
+            processingEnv.getMessager().printMessage(WARNING, getStackTrace(e));
         } catch (Throwable ignore) {
             ignore.printStackTrace();
         }
