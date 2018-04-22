@@ -161,7 +161,7 @@ public final class Throwables {
 
         long lineNumber = startLineNumber;
         for (String line : lines) {
-            out.append("\t\t");
+            out.append("\t");
             out.append(lineNumber == element.getLineNumber()
                     ? "-> "
                     : "   ");
