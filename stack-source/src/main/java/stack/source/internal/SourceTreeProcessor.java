@@ -21,6 +21,7 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
 public final class SourceTreeProcessor extends AbstractProcessor {
 
     // TODO add version, alway override index on different version
+    // TODO use original source file instead of copy?
 
     private final Set<CompilationUnitTree> units = new HashSet<>();
     private Trees trees;
