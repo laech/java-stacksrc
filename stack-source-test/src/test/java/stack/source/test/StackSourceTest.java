@@ -20,6 +20,16 @@ public final class StackSourceTest {
     public static Collection<Object[]> data() {
         return asList(new Object[][]{
 
+                {new MultilineThrow(), new String[]{
+                        "stack.source.test.TestException: hello world",
+                        "\tat stack.source.test.MultilineThrow.run(MultilineThrow.java:7)",
+                        "",
+                        "\t\t-> 7          throw new TestException(",
+                        "\t\t   8                  \"hello world\"",
+                        "\t\t   9          );",
+                        "",
+                }},
+
                 {new Chained(), new String[]{
                         "stack.source.test.TestException: what?",
                         "\tat stack.source.test.Chained.fail(Chained.java:15)",

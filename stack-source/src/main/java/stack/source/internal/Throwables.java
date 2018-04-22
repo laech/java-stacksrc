@@ -156,7 +156,7 @@ public final class Throwables {
             do {
                 lines.add(reader.readLine());
                 i++;
-            } while (i < endLineNumber);
+            } while (i <= endLineNumber);
         }
 
         int maxLineNumberDigits = String.valueOf(endLineNumber).length();
