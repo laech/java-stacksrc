@@ -1,27 +1,20 @@
 package stack.source.internal;
 
 import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.FileObject;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.singleton;
-import static javax.tools.Diagnostic.Kind.NOTE;
 import static javax.tools.Diagnostic.Kind.WARNING;
 import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
@@ -29,6 +22,7 @@ public final class SourceTreeProcessor extends AbstractProcessor {
 
     // TODO add version, alway override index on different version
 
+    private final Set<CompilationUnitTree> units = new HashSet<>();
     private Trees trees;
 
     @Override
@@ -42,66 +36,97 @@ public final class SourceTreeProcessor extends AbstractProcessor {
     }
 
     @Override
-    public synchronized void init(ProcessingEnvironment processingEnv) {
-        super.init(processingEnv);
-        trees = Trees.instance(processingEnv);
+    public synchronized void init(ProcessingEnvironment process) {
+        super.init(process);
+        trees = Trees.instance(process);
     }
 
     @Override
     public boolean process(
             Set<? extends TypeElement> annotations,
-            RoundEnvironment roundEnv) {
-
+            RoundEnvironment round
+    ) {
         try {
-            doProcess(roundEnv);
+            doProcess(round);
         } catch (Throwable e) {
             logWarning(e);
         }
-
         return false;
     }
 
-    private final Set<CompilationUnitTree> compilationUnits = new HashSet<>();
+    private void doProcess(RoundEnvironment round) throws IOException {
+        if (round.processingOver()) {
+            processCompilationUnits();
+        } else {
+            collectCompilationUnits(round);
+        }
+    }
 
-    private void doProcess(RoundEnvironment roundEnv) throws IOException {
+    private void collectCompilationUnits(RoundEnvironment roundEnv) {
+        roundEnv.getRootElements().stream()
+                .map(trees::getPath)
+                .map(TreePath::getCompilationUnit)
+                .forEach(units::add);
+    }
 
-        if (roundEnv.processingOver()) {
-            Iterator<CompilationUnitTree> iterator = compilationUnits.iterator();
-            while (iterator.hasNext()) {
-                CompilationUnitTree compilationUnit = iterator.next();
-                processingEnv.getMessager().printMessage(NOTE, compilationUnit.getSourceFile().getName());
-                FileObject src = compilationUnit.getSourceFile();
-                FileObject dst = processingEnv.getFiler().createResource(
-                        CLASS_OUTPUT,
-                        compilationUnit.getPackageName().toString(),
-                        new File(src.getName()).getName());
-                try (OutputStream out = dst.openOutputStream()) {
-                    out.write(src.getCharContent(true).toString().getBytes(UTF_8));
-                }
-                FileObject index = processingEnv.getFiler().createResource(
-                        CLASS_OUTPUT,
-                        compilationUnit.getPackageName().toString(),
-                        new File(src.getName()).getName() + ".index");
-                try (StatementRegionWriter writer = new StatementRegionWriter(index)) {
-                    writer.scan(compilationUnit, trees);
-                }
-                iterator.remove();
+    private void processCompilationUnits() throws IOException {
+        for (CompilationUnitTree unit : units) {
+            processCompilationUnit(unit);
+        }
+        units.clear();
+    }
+
+    private void processCompilationUnit(CompilationUnitTree unit) throws IOException {
+        FileObject src = unit.getSourceFile();
+        copy(src, createDestinationFile(unit, src));
+        index(unit, createIndexFile(unit, src));
+    }
+
+    private FileObject createDestinationFile(
+            CompilationUnitTree unit,
+            FileObject src
+    ) throws IOException {
+        return processingEnv.getFiler().createResource(
+                CLASS_OUTPUT,
+                unit.getPackageName().toString(),
+                new File(src.getName()).getName()
+        );
+    }
+
+    private FileObject createIndexFile(
+            CompilationUnitTree unit,
+            FileObject src
+    ) throws IOException {
+        return processingEnv.getFiler().createResource(
+                CLASS_OUTPUT,
+                unit.getPackageName().toString(),
+                new File(src.getName()).getName() + ".index"
+        );
+    }
+
+    private void copy(FileObject src, FileObject dst) throws IOException {
+        try (InputStream in = src.openInputStream();
+             OutputStream out = dst.openOutputStream()) {
+            byte[] buf = new byte[1024];
+            int count;
+            while ((count = in.read(buf)) != -1) {
+                out.write(buf, 0, count);
             }
-            return;
         }
+    }
 
-        for (Element element : roundEnv.getRootElements()) {
-            compilationUnits.add(trees.getPath(element).getCompilationUnit());
+    private void index(CompilationUnitTree unit, FileObject index) throws IOException {
+        try (StatementRegionWriter writer = new StatementRegionWriter(index)) {
+            writer.scan(unit, trees);
         }
-
     }
 
     private void logWarning(Throwable e) {
         try {
             processingEnv.getMessager()
                     .printMessage(WARNING, getStackTrace(e));
-        } catch (Throwable ignore) {
-            ignore.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
         }
     }
 

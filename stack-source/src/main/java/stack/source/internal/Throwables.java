@@ -1,12 +1,6 @@
 package stack.source.internal;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -15,7 +9,6 @@ import java.util.Set;
 import static java.lang.System.getProperty;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Collections.newSetFromMap;
-import static org.apache.commons.io.IOUtils.skipFully;
 
 public final class Throwables {
 
@@ -113,7 +106,8 @@ public final class Throwables {
 
     private static void printStackTraceWithSource(
             StackTraceElement element,
-            Appendable out) throws IOException {
+            Appendable out
+    ) throws IOException {
 
         out.append(element.toString());
 
@@ -151,7 +145,9 @@ public final class Throwables {
                 return;
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8));
-            skipFully(reader, startLinePosition);
+            if (reader.skip(startLinePosition) != startLinePosition) {
+                return;
+            }
             long i = startLineNumber;
             do {
                 lines.add(reader.readLine());
