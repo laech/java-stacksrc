@@ -1,5 +1,6 @@
 package stack.source.internal;
 
+import com.google.auto.service.AutoService;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
@@ -9,18 +10,19 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import javax.tools.FileObject;
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Collections.singleton;
 import static javax.tools.Diagnostic.Kind.WARNING;
-import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
-public final class SourceTreeProcessor extends AbstractProcessor {
+@AutoService(javax.annotation.processing.Processor.class)
+public final class Processor extends AbstractProcessor {
 
-    // TODO add version, alway override index on different version
+    // TODO add version, always override index on different version
     // TODO use original source file instead of copy?
 
     private final Set<CompilationUnitTree> units = new HashSet<>();
@@ -72,54 +74,11 @@ public final class SourceTreeProcessor extends AbstractProcessor {
 
     private void processCompilationUnits() throws IOException {
         for (CompilationUnitTree unit : units) {
-            processCompilationUnit(unit);
-        }
-        units.clear();
-    }
-
-    private void processCompilationUnit(CompilationUnitTree unit) throws IOException {
-        FileObject src = unit.getSourceFile();
-        copy(src, createDestinationFile(unit, src));
-        index(unit, createIndexFile(unit, src));
-    }
-
-    private FileObject createDestinationFile(
-            CompilationUnitTree unit,
-            FileObject src
-    ) throws IOException {
-        return processingEnv.getFiler().createResource(
-                CLASS_OUTPUT,
-                unit.getPackageName().toString(),
-                new File(src.getName()).getName()
-        );
-    }
-
-    private FileObject createIndexFile(
-            CompilationUnitTree unit,
-            FileObject src
-    ) throws IOException {
-        return processingEnv.getFiler().createResource(
-                CLASS_OUTPUT,
-                unit.getPackageName().toString(),
-                new File(src.getName()).getName() + ".index"
-        );
-    }
-
-    private void copy(FileObject src, FileObject dst) throws IOException {
-        try (InputStream in = src.openInputStream();
-             OutputStream out = dst.openOutputStream()) {
-            byte[] buf = new byte[1024];
-            int count;
-            while ((count = in.read(buf)) != -1) {
-                out.write(buf, 0, count);
+            try (Scanner writer = new Scanner(processingEnv, unit)) {
+                writer.scan(unit, trees);
             }
         }
-    }
-
-    private void index(CompilationUnitTree unit, FileObject index) throws IOException {
-        try (StatementRegionWriter writer = new StatementRegionWriter(index)) {
-            writer.scan(unit, trees);
-        }
+        units.clear();
     }
 
     private void logWarning(Throwable e) {

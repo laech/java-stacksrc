@@ -7,6 +7,7 @@ import org.junit.runners.model.Statement;
 import stack.source.internal.Throwables;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import static java.lang.System.getProperty;
 
@@ -52,7 +53,8 @@ public final class StackSource implements TestRule {
     public static String formatStackTrace(Throwable cause) {
         StringBuilder builder = new StringBuilder(LINE_SEPARATOR);
         try {
-            Throwables.printStackTraceWithSource(cause, builder);
+            Throwables.printStackTrace(cause, builder, true);
+            // TODO return original stacktrace on error
         } catch (IOException e) {
             e.printStackTrace();
         }

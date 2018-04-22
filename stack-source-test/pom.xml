@@ -14,7 +14,7 @@
     <dependencies>
         <dependency>
             <groupId>stack-source</groupId>
-            <artifactId>stack-source-junit</artifactId>
+            <artifactId>stack-source</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

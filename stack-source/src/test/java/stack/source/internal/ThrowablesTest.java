@@ -63,7 +63,7 @@ public final class ThrowablesTest {
     }
 
     @Test
-    public void formatsStackTraceSameAsJdk() throws Exception {
+    public void formatsStackTraceSameAsJdk() {
         assertEquals(getJdkStackTrace(), getOurStackTrace());
     }
 
@@ -78,7 +78,7 @@ public final class ThrowablesTest {
     private String getOurStackTrace() {
         StringBuilder builder = new StringBuilder();
         try {
-            Throwables.printStackTraceWithSource(e, builder);
+            Throwables.printStackTrace(e, builder, false);
         } catch (IOException ex) {
             throw new AssertionError(ex);
         }

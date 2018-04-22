@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import stack.source.internal.Throwables;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -11,7 +12,6 @@ import java.util.Collection;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static stack.source.internal.Throwables.printStackTraceWithSource;
 
 @RunWith(Parameterized.class)
 public final class StackSourceTest {
@@ -99,7 +99,7 @@ public final class StackSourceTest {
 
     private static String print(Throwable e) throws IOException {
         StringBuilder builder = new StringBuilder();
-        printStackTraceWithSource(e, builder);
+        Throwables.printStackTrace(e, builder, true);
         return builder.toString();
     }
 
