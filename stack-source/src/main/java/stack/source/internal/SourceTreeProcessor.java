@@ -27,6 +27,8 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
 public final class SourceTreeProcessor extends AbstractProcessor {
 
+    // TODO add version, alway override index on different version
+
     private Trees trees;
 
     @Override
