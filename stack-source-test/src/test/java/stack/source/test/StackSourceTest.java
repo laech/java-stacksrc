@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import stack.source.internal.Throwables;
+import stack.source.internal.ThrowableDecorator;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -98,9 +98,7 @@ public final class StackSourceTest {
     }
 
     private static String print(Throwable e) throws IOException {
-        StringBuilder builder = new StringBuilder();
-        Throwables.printStackTrace(e, builder, true);
-        return builder.toString();
+        return new ThrowableDecorator(e).print();
     }
 
 }

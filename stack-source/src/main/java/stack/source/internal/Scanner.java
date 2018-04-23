@@ -8,6 +8,7 @@ import com.sun.source.util.Trees;
 import javax.annotation.processing.ProcessingEnvironment;
 import java.io.Closeable;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.NavigableSet;
@@ -20,7 +21,7 @@ final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
 
     private final ProcessingEnvironment env;
     private final CompilationUnitTree src;
-    private final NavigableSet<IndexElement> elements;
+    private final NavigableSet<IndexRegion> regions;
 
     Scanner(
             ProcessingEnvironment env,
@@ -28,14 +29,16 @@ final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
     ) {
         this.env = requireNonNull(env);
         this.src = requireNonNull(src);
-        this.elements = new TreeSet<>();
+        this.regions = new TreeSet<>();
     }
 
     @Override
     public void close() throws IOException {
-        // TODO check file URI?
-        Path source = Paths.get(src.getSourceFile().toUri()).toAbsolutePath();
-        Index.create(source, elements).write(env, src);
+        URI uri = src.getSourceFile().toUri();
+        if ("file".equalsIgnoreCase(uri.getScheme())) {
+            Path source = Paths.get(uri).toAbsolutePath();
+            Index.create(source, regions).write(env, src);
+        }
     }
 
     @Override
@@ -84,13 +87,8 @@ final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
         long endLineNum = lineMap.getLineNumber(endPos);
         long startLineNum = lineMap.getLineNumber(startPos);
         long startLineStartPos = lineMap.getStartPosition(startLineNum);
-        IndexElement element = IndexElement.create(
+        regions.add(IndexRegion.create(
                 startLineNum, endLineNum, startLineStartPos
-        );
-        IndexElement floor = elements.floor(element);
-        if (floor == null || floor.endLineNum() < element.endLineNum()) {
-            elements.add(element);
-            // TODO test this
-        }
+        ));
     }
 }

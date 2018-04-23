@@ -18,19 +18,21 @@ import static javax.tools.StandardLocation.CLASS_OUTPUT;
 @AutoValue
 abstract class Index {
 
+    private static final byte VERSION = 1;
+
     Index() {
     }
 
-    static Index create(Path source, NavigableSet<IndexElement> elements) {
+    static Index create(Path source, NavigableSet<IndexRegion> regions) {
         return new AutoValue_Index(
                 source.toAbsolutePath(),
-                unmodifiableNavigableSet(elements)
+                unmodifiableNavigableSet(regions)
         );
     }
 
     abstract Path source();
 
-    abstract NavigableSet<IndexElement> elements();
+    abstract NavigableSet<IndexRegion> regions();
 
     private static String relativePath(String pkgName, String fileName) {
         return String.join("/", "stack-source", pkgName, fileName + ".index");
@@ -49,7 +51,7 @@ abstract class Index {
                 return Optional.empty();
             }
             DataInputStream data = new DataInputStream(new BufferedInputStream(in));
-            return Optional.of(read(data));
+            return read(data);
         }
     }
 
@@ -63,14 +65,17 @@ abstract class Index {
         }
     }
 
-    private static Index read(DataInput in) throws IOException {
-        Path source = Paths.get(in.readUTF());
-        int elementsCount = in.readInt();
-        NavigableSet<IndexElement> elements = new TreeSet<>();
-        for (int i = 0; i < elementsCount; i++) {
-            elements.add(IndexElement.read(in));
+    private static Optional<Index> read(DataInput in) throws IOException {
+        if (in.readByte() != VERSION) {
+            return Optional.empty();
         }
-        return Index.create(source, elements);
+        Path source = Paths.get(in.readUTF());
+        int count = in.readInt();
+        NavigableSet<IndexRegion> regions = new TreeSet<>();
+        for (int i = 0; i < count; i++) {
+            regions.add(IndexRegion.read(in));
+        }
+        return Optional.of(Index.create(source, regions));
     }
 
     void write(
@@ -86,9 +91,10 @@ abstract class Index {
     }
 
     private void write(DataOutput out) throws IOException {
+        out.writeByte(VERSION);
         out.writeUTF(source().toString());
-        out.writeInt(elements().size());
-        for (IndexElement element : elements()) {
+        out.writeInt(regions().size());
+        for (IndexRegion element : regions()) {
             element.write(out);
         }
     }

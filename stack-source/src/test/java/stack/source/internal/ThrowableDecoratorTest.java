@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public final class ThrowablesTest {
+public final class ThrowableDecoratorTest {
 
     @Parameters(name = "{0}")
     public static Collection<Throwable[]> data() {
@@ -58,12 +58,12 @@ public final class ThrowablesTest {
 
     private final Throwable e;
 
-    public ThrowablesTest(Throwable e) {
+    public ThrowableDecoratorTest(Throwable e) {
         this.e = e;
     }
 
     @Test
-    public void formatsStackTraceSameAsJdk() {
+    public void formatsStackTraceSameAsJdk() throws Exception {
         assertEquals(getJdkStackTrace(), getOurStackTrace());
     }
 
@@ -75,13 +75,7 @@ public final class ThrowablesTest {
         return stringWriter.toString();
     }
 
-    private String getOurStackTrace() {
-        StringBuilder builder = new StringBuilder();
-        try {
-            Throwables.printStackTrace(e, builder, false);
-        } catch (IOException ex) {
-            throw new AssertionError(ex);
-        }
-        return builder.toString();
+    private String getOurStackTrace() throws IOException {
+        return new ThrowableDecorator(e, false).print();
     }
 }

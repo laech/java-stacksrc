@@ -4,10 +4,9 @@ import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import stack.source.internal.Throwables;
+import stack.source.internal.ThrowableDecorator;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import static java.lang.System.getProperty;
 
@@ -53,7 +52,7 @@ public final class StackSource implements TestRule {
     public static String formatStackTrace(Throwable cause) {
         StringBuilder builder = new StringBuilder(LINE_SEPARATOR);
         try {
-            Throwables.printStackTrace(cause, builder, true);
+            new ThrowableDecorator(cause).print(builder);
             // TODO return original stacktrace on error
         } catch (IOException e) {
             e.printStackTrace();

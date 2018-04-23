@@ -22,9 +22,6 @@ import static javax.tools.Diagnostic.Kind.WARNING;
 @AutoService(javax.annotation.processing.Processor.class)
 public final class Processor extends AbstractProcessor {
 
-    // TODO add version, always override index on different version
-    // TODO use original source file instead of copy?
-
     private final Set<CompilationUnitTree> units = new HashSet<>();
     private Trees trees;
 
