@@ -3,7 +3,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>stack-source</groupId>
+        <groupId>com.gitlab.lae.stack.source</groupId>
         <artifactId>stack-source-parent</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
@@ -13,7 +13,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>stack-source</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>stack-source</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
