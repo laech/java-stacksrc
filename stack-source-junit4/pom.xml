@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>stack-source-junit</artifactId>
+    <artifactId>stack-source-junit4</artifactId>
 
     <dependencies>
         <dependency>

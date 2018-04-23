@@ -11,7 +11,7 @@
 
     <modules>
         <module>stack-source</module>
-        <module>stack-source-junit</module>
+        <module>stack-source-junit4</module>
         <module>stack-source-test</module>
     </modules>
 
