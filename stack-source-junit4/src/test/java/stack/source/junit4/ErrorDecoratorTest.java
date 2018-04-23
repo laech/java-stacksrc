@@ -1,5 +1,6 @@
 package stack.source.junit4;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -62,4 +63,7 @@ public final class ErrorDecoratorTest {
         assumeThat(false, is(true));
     }
 
+    @Ignore
+    public void ignoreApiPassThrough() {
+    }
 }
