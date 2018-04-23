@@ -1,6 +1,7 @@
 package stack.source.internal;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.*;
 
 import static java.lang.String.format;
@@ -8,7 +9,7 @@ import static java.lang.System.getProperty;
 import static java.util.Collections.newSetFromMap;
 import static java.util.Objects.requireNonNull;
 
-public final class ThrowableDecorator {
+public final class Decorator {
 
     private static final String CAUSE_BY = "Caused by: ";
     private static final String SUPPRESSED = "Suppressed: ";
@@ -20,22 +21,26 @@ public final class ThrowableDecorator {
     private final Set<String> negativeCache = new HashSet<>();
     private final Set<Throwable> seen = newSetFromMap(new IdentityHashMap<>());
 
-    public ThrowableDecorator(Throwable throwable) {
+    public Decorator(Throwable throwable) {
         this(throwable, true);
     }
 
-    ThrowableDecorator(Throwable throwable, boolean decorate) {
+    Decorator(Throwable throwable, boolean decorate) {
         this.throwable = requireNonNull(throwable);
         this.decorate = decorate;
     }
 
-    public String print() throws IOException {
+    public String print() {
         StringBuilder builder = new StringBuilder();
-        print(builder);
+        try {
+            print(builder);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
         return builder.toString();
     }
 
-    public void print(Appendable out) throws IOException {
+    private void print(Appendable out) throws IOException {
         seen.add(throwable);
         out.append(String.valueOf(throwable));
         out.append(LINE_SEPARATOR);

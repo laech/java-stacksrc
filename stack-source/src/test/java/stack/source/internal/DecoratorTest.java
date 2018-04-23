@@ -14,7 +14,7 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public final class ThrowableDecoratorTest {
+public final class DecoratorTest {
 
     @Parameters(name = "{0}")
     public static Collection<Throwable[]> data() {
@@ -58,7 +58,7 @@ public final class ThrowableDecoratorTest {
 
     private final Throwable e;
 
-    public ThrowableDecoratorTest(Throwable e) {
+    public DecoratorTest(Throwable e) {
         this.e = e;
     }
 
@@ -76,6 +76,6 @@ public final class ThrowableDecoratorTest {
     }
 
     private String getOurStackTrace() throws IOException {
-        return new ThrowableDecorator(e, false).print();
+        return new Decorator(e, false).print();
     }
 }

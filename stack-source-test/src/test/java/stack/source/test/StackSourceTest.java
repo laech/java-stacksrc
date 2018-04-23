@@ -4,9 +4,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import stack.source.internal.ThrowableDecorator;
+import stack.source.internal.Decorator;
 
-import java.io.IOException;
 import java.util.Collection;
 
 import static java.lang.System.lineSeparator;
@@ -88,7 +87,7 @@ public final class StackSourceTest {
     }
 
     @Test
-    public void test() throws Exception {
+    public void test() {
         try {
             test.run();
         } catch (TestException e) {
@@ -97,8 +96,8 @@ public final class StackSourceTest {
         }
     }
 
-    private static String print(Throwable e) throws IOException {
-        return new ThrowableDecorator(e).print();
+    private static String print(Throwable e) {
+        return new Decorator(e).print();
     }
 
 }
