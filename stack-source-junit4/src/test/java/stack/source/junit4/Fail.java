@@ -1,4 +1,4 @@
-package stack.source;
+package stack.source.junit4;
 
 import static org.junit.Assert.fail;
 

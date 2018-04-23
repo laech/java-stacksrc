@@ -1,4 +1,4 @@
-package stack.source;
+package stack.source.junit4;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,16 +19,6 @@ public final class ErrorDecoratorTest {
     public final RuleChain r = RuleChain
             .outerRule((base, description) -> new AssertStatement(base))
             .around(new ErrorDecorator());
-
-    @Test
-    public void decoratesError() {
-        new Fail().run();
-    }
-
-    @Test
-    public void assumeApiPassThrough() {
-        assumeThat(false, is(true));
-    }
 
     private static class AssertStatement extends Statement {
 
@@ -51,7 +41,7 @@ public final class ErrorDecoratorTest {
             String expected = String.join(getProperty("line.separator"),
                     "java.lang.AssertionError: testing failure",
                     "\tat org.junit.Assert.fail(Assert.java:88)",
-                    "\tat stack.source.Fail.run(Fail.java:8)",
+                    "\tat stack.source.junit4.Fail.run(Fail.java:8)",
                     "",
                     "\t-> 8          fail(\"testing failure\");",
                     ""
@@ -61,4 +51,15 @@ public final class ErrorDecoratorTest {
             assertEquals(expected, actual);
         }
     }
+
+    @Test
+    public void decoratesError() {
+        new Fail().run();
+    }
+
+    @Test
+    public void assumeApiPassThrough() {
+        assumeThat(false, is(true));
+    }
+
 }
