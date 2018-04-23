@@ -1,21 +1,12 @@
 package stack.source.internal;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.lang.System.getProperty;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.file.Files.newBufferedReader;
 import static java.util.Collections.newSetFromMap;
-import static org.apache.commons.io.IOUtils.skipFully;
 
 public final class Throwables {
 
@@ -26,12 +17,25 @@ public final class Throwables {
     private static final String SUPPRESSED = "Suppressed: ";
     private static final String LINE_SEPARATOR = getProperty("line.separator");
 
-    public static void printStackTraceWithSource(
+    public static void printStackTrace(
             Throwable e,
-            Appendable out) throws IOException {
+            Appendable out,
+            boolean withSource
+    ) throws IOException {
+        printStackTraceWithSource(
+                e, out, withSource, new HashMap<>(), new HashSet<>()
+        );
+    }
 
-        Set<Throwable> seen =
-                newSetFromMap(new IdentityHashMap<Throwable, Boolean>());
+    private static void printStackTraceWithSource(
+            Throwable e,
+            Appendable out,
+            boolean withSource,
+            Map<String, Index> positiveCache,
+            Set<String> negativeCache
+    ) throws IOException {
+
+        Set<Throwable> seen = newSetFromMap(new IdentityHashMap<>());
 
         seen.add(e);
         out.append(String.valueOf(e)).append(LINE_SEPARATOR);
@@ -39,19 +43,21 @@ public final class Throwables {
         StackTraceElement[] trace = e.getStackTrace();
         for (StackTraceElement element : trace) {
             out.append("\tat ");
-            printStackTraceWithSource(element, out);
+            printStackTraceWithSource(element, out, withSource, positiveCache, negativeCache);
             out.append(LINE_SEPARATOR);
         }
 
         for (Throwable sup : e.getSuppressed()) {
             printStackTraceWithSource(
-                    sup, out, trace, SUPPRESSED, "\t", seen);
+                    sup, out, trace, SUPPRESSED, "\t", seen, withSource, positiveCache, negativeCache
+            );
         }
 
         Throwable cause = e.getCause();
         if (cause != null) {
             printStackTraceWithSource(
-                    cause, out, trace, CAUSE_BY, "", seen);
+                    cause, out, trace, CAUSE_BY, "", seen, withSource, positiveCache, negativeCache
+            );
         }
     }
 
@@ -61,7 +67,11 @@ public final class Throwables {
             StackTraceElement[] enclosingTrace,
             String caption,
             String prefix,
-            Set<Throwable> seen) throws IOException {
+            Set<Throwable> seen,
+            boolean withSource,
+            Map<String, Index> positiveCache,
+            Set<String> negativeCache
+    ) throws IOException {
 
         if (!seen.add(e)) {
             out.append("\t[CIRCULAR REFERENCE:")
@@ -87,7 +97,7 @@ public final class Throwables {
 
         for (int i = 0; i <= m; i++) {
             out.append(prefix).append("\tat ");
-            printStackTraceWithSource(trace[i], out);
+            printStackTraceWithSource(trace[i], out, withSource, positiveCache, negativeCache);
             out.append(LINE_SEPARATOR);
         }
 
@@ -101,71 +111,79 @@ public final class Throwables {
 
         for (Throwable se : e.getSuppressed()) {
             printStackTraceWithSource(
-                    se, out, trace, SUPPRESSED, prefix + "\t", seen);
+                    se, out, trace, SUPPRESSED, prefix + "\t", seen, withSource, positiveCache, negativeCache
+            );
         }
 
         Throwable cause = e.getCause();
         if (cause != null) {
             printStackTraceWithSource(
-                    cause, out, trace, CAUSE_BY, prefix, seen);
+                    cause, out, trace, CAUSE_BY, prefix, seen, withSource, positiveCache, negativeCache
+            );
         }
     }
 
     private static void printStackTraceWithSource(
             StackTraceElement element,
-            Appendable out) throws IOException {
+            Appendable out,
+            boolean withSource,
+            Map<String, Index> positiveCache,
+            Set<String> negativeCache
+    ) throws IOException {
 
         out.append(element.toString());
 
-        String resource = getPackageName(element).replace('.', '/') + "/" + element.getFileName();
-        if (!resource.startsWith("/")) {
-            resource = "/" + resource;
+        if (!withSource) {
+            return;
         }
 
-        long startLineNumber;
-        long endLineNumber;
-        long startLinePosition;
-        try (InputStream in = element.getClass().getResourceAsStream(resource + ".index")) {
-            if (in == null) {
-                return;
-            }
-            DataInputStream data = new DataInputStream(new BufferedInputStream(in));
-            while (true) {
-                try {
-                    startLineNumber = data.readLong();
-                    endLineNumber = data.readLong();
-                    startLinePosition = data.readLong();
-                    if (startLineNumber <= element.getLineNumber() &&
-                            endLineNumber >= element.getLineNumber()) {
-                        break;
-                    }
-                } catch (EOFException e) {
-                    return;
-                }
-            }
+        String key = Index.relativePath(element);
+        if (negativeCache.contains(key)) {
+            return;
         }
 
-        List<String> lines = new ArrayList<>((int) (endLineNumber - startLineNumber + 1)); // TODO
-        try (InputStream in = element.getClass().getResourceAsStream(resource)) {
-            if (in == null) {
+        Index index = positiveCache.get(key);
+        if (index == null) {
+            Optional<Index> read = Index.read(element);
+            if (!read.isPresent()) {
+                negativeCache.add(key);
                 return;
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, UTF_8));
-            skipFully(reader, startLinePosition);
-            long i = startLineNumber;
+            index = read.get();
+            positiveCache.put(key, index);
+        }
+
+        Optional<IndexElement> indexElement = index.elements().stream()
+                .filter(e -> e.startLineNum() <= element.getLineNumber() &&
+                        e.endLineNum() >= element.getLineNumber())
+                .findFirst();
+        if (!indexElement.isPresent()) {
+            return;
+        }
+
+        long startLineNum = indexElement.get().startLineNum();
+        long endLineNum = indexElement.get().endLineNum();
+        long startLineStartPos = indexElement.get().startLineStartPos();
+
+        List<String> lines = new ArrayList<>((int) (endLineNum - startLineNum + 1)); // TODO
+        try (BufferedReader in = newBufferedReader(index.source())) {
+            if (in.skip(startLineStartPos) != startLineStartPos) {
+                return;
+            }
+            long i = startLineNum;
             do {
-                lines.add(reader.readLine());
+                lines.add(in.readLine());
                 i++;
-            } while (i < endLineNumber);
+            } while (i <= endLineNum);
         }
 
-        int maxLineNumberDigits = String.valueOf(endLineNumber).length();
+        int maxLineNumberDigits = String.valueOf(endLineNum).length();
         out.append(LINE_SEPARATOR);
         out.append(LINE_SEPARATOR);
 
-        long lineNumber = startLineNumber;
+        long lineNumber = startLineNum;
         for (String line : lines) {
-            out.append("\t\t");
+            out.append("\t");
             out.append(lineNumber == element.getLineNumber()
                     ? "-> "
                     : "   ");
@@ -181,16 +199,6 @@ public final class Throwables {
             out.append(LINE_SEPARATOR);
 
             lineNumber++;
-        }
-    }
-
-    private static String getPackageName(StackTraceElement element) {
-        String fullyQualifiedClassName = element.getClassName();
-        int packageNameEnd = fullyQualifiedClassName.lastIndexOf('.');
-        if (packageNameEnd > 0) {
-            return fullyQualifiedClassName.substring(0, packageNameEnd);
-        } else {
-            return "";
         }
     }
 }
