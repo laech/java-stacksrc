@@ -14,11 +14,12 @@
     <url>https://gitlab.com/lae/stack-source</url>
 
     <scm>
+        <url>https://gitlab.com/lae/stack-source</url>
         <developerConnection>
             scm:git:git@gitlab.com:lae/stack-source.git
         </developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
     <licenses>
         <license>
