@@ -74,7 +74,6 @@
                     <configuration>
                         <autoVersionSubmodules>true</autoVersionSubmodules>
                         <useReleaseProfile>false</useReleaseProfile>
-                        <releaseProfiles>release</releaseProfiles>
                         <tagNameFormat>@{version}</tagNameFormat>
                         <goals>deploy</goals>
                     </configuration>
