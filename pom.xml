@@ -10,11 +10,15 @@
     <version>0.1.1-SNAPSHOT</version>
 
     <name>stack-source</name>
-    <description>Decorates test failure stack trace with source code snippets.</description>
+    <description>
+        Decorates test failure stack trace with source code snippets.
+    </description>
     <url>https://gitlab.com/lae/stack-source</url>
 
     <scm>
-        <developerConnection>scm:git:git@gitlab.com:lae/stack-source.git</developerConnection>
+        <developerConnection>
+            scm:git:git@gitlab.com:lae/stack-source.git
+        </developerConnection>
     </scm>
 
     <licenses>
@@ -29,10 +33,6 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
     <developers>
@@ -70,6 +70,17 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>ossrh</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
