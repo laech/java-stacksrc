@@ -7,7 +7,7 @@
     <groupId>com.gitlab.lae.stack.source</groupId>
     <artifactId>stack-source-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1.1-SNAPSHOT</version>
 
     <name>stack-source</name>
     <description>Decorates test failure stack trace with source code snippets.</description>
