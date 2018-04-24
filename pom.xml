@@ -67,6 +67,18 @@
                         </excludes>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <tagNameFormat>@{version}</tagNameFormat>
+                        <goals>deploy</goals>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
         <plugins>
@@ -78,7 +90,7 @@
                 <configuration>
                     <serverId>ossrh</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
             <plugin>
@@ -120,6 +132,10 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <keyname>${gpg.keyname}</keyname>
+                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                </configuration>
             </plugin>
         </plugins>
     </build>
