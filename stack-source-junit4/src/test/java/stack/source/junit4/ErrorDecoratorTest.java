@@ -63,6 +63,7 @@ public final class ErrorDecoratorTest {
         assumeThat(false, is(true));
     }
 
+    @Test
     @Ignore
     public void ignoreApiPassThrough() {
     }
