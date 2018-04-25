@@ -1,8 +1,8 @@
 package stack.source.test;
 
-final class TestException extends RuntimeException {
+public final class TestException extends RuntimeException {
 
-    TestException(String message) {
+    public TestException(String message) {
         super(message);
     }
 

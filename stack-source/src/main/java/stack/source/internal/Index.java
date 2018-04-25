@@ -2,6 +2,7 @@ package stack.source.internal;
 
 import com.google.auto.value.AutoValue;
 import com.sun.source.tree.CompilationUnitTree;
+import com.sun.source.tree.ExpressionTree;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.FileObject;
@@ -11,8 +12,10 @@ import java.nio.file.Paths;
 import java.util.NavigableSet;
 import java.util.Optional;
 import java.util.TreeSet;
+import java.util.stream.Stream;
 
 import static java.util.Collections.unmodifiableNavigableSet;
+import static java.util.stream.Collectors.joining;
 import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
 @AutoValue
@@ -35,7 +38,9 @@ abstract class Index {
     abstract NavigableSet<IndexRegion> regions();
 
     private static String relativePath(String pkgName, String fileName) {
-        return String.join("/", "stack-source", pkgName, fileName + ".index");
+        return Stream.of("stack-source", pkgName, fileName)
+                .filter(s -> !s.isEmpty())
+                .collect(joining("/", "", ".index"));
     }
 
     static String relativePath(StackTraceElement element) {
@@ -107,7 +112,12 @@ abstract class Index {
         return env.getFiler().createResource(
                 CLASS_OUTPUT,
                 "",
-                Index.relativePath(unit.getPackageName().toString(), name)
+                Index.relativePath(getPackageName(unit), name)
         );
+    }
+
+    private static String getPackageName(CompilationUnitTree unit) {
+        ExpressionTree pkg = unit.getPackageName();
+        return pkg == null ? "" : pkg.toString();
     }
 }
