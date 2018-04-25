@@ -5,12 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-import stack.source.internal.DecoratedError;
 
 import static java.lang.Math.min;
 import static java.lang.System.getProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
+import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @ExtendWith({
         ErrorDecoratorTest.AssertDecoration.class,
@@ -24,8 +24,13 @@ class ErrorDecoratorTest {
     }
 
     @Test
+    void decoratesArrayFailure() {
+        new FailAssertArrayEquals().run();
+    }
+
+    @Test
     void assumeApiPassThrough() {
-        assumeTrue(false);
+        assumeTrue(() -> false);
     }
 
     @Test
@@ -38,15 +43,24 @@ class ErrorDecoratorTest {
         @Override
         public void handleTestExecutionException(
                 ExtensionContext context,
-                Throwable throwable
+                Throwable e
         ) throws Throwable {
 
-            if (!context.getRequiredTestMethod().getName().equals("decoratesFailure")) {
-                throw throwable;
+            switch (context.getRequiredTestMethod().getName()) {
+                case "decoratesFailure":
+                    assertEqualsFailure(e);
+                    break;
+                case "decoratesArrayFailure":
+                    assertArrayEqualsFailure(e);
+                    break;
+                default:
+                    throw e;
             }
+        }
 
+        private void assertEqualsFailure(Throwable e) {
             String expected = String.join(getProperty("line.separator"),
-                    "org.opentest4j.AssertionFailedError: testing failure",
+                    "stack.source.junit5.DecoratedAssertionFailedError: testing failure",
                     "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
                     "\tat org.junit.jupiter.api.Assertions.fail(Assertions.java:62)",
                     "\tat stack.source.junit5.Fail.run(Fail.java:8)",
@@ -54,9 +68,29 @@ class ErrorDecoratorTest {
                     "\t-> 8          fail(\"testing failure\");",
                     ""
             );
-            String actual = throwable.getMessage();
+            String actual = getStackTraceAsString(e);
             actual = actual.substring(0, min(expected.length(), actual.length()));
-            assertEquals(DecoratedError.class, throwable.getClass());
+            assertEquals(DecoratedAssertionFailedError.class, e.getClass());
+            assertEquals(expected, actual);
+        }
+
+        private void assertArrayEqualsFailure(Throwable e) {
+            String expected = String.join(getProperty("line.separator"),
+                    "stack.source.junit5.DecoratedAssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>",
+                    "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
+                    "\tat org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:434)",
+                    "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:246)",
+                    "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:92)",
+                    "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:88)",
+                    "\tat org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:622)",
+                    "\tat stack.source.junit5.FailAssertArrayEquals.run(FailAssertArrayEquals.java:8)",
+                    "",
+                    "\t-> 8          assertArrayEquals(new int[]{1}, new int[]{2});",
+                    ""
+            );
+            String actual = getStackTraceAsString(e);
+            actual = actual.substring(0, min(expected.length(), actual.length()));
+            assertEquals(DecoratedAssertionFailedError.class, e.getClass());
             assertEquals(expected, actual);
         }
     }

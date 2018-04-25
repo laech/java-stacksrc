@@ -1,7 +1,6 @@
 package stack.source.internal;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.*;
 
 import static java.lang.String.format;
@@ -30,17 +29,13 @@ public final class Decorator {
         this.decorate = decorate;
     }
 
-    public String print() {
+    public String print() throws IOException {
         StringBuilder builder = new StringBuilder();
-        try {
-            print(builder);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        print(builder);
         return builder.toString();
     }
 
-    private void print(Appendable out) throws IOException {
+    public void print(Appendable out) throws IOException {
         seen.add(throwable);
         out.append(String.valueOf(throwable));
         out.append(LINE_SEPARATOR);
@@ -177,6 +172,7 @@ public final class Decorator {
             out.append(LINE_SEPARATOR);
             lineNumber++;
         }
+        out.append(LINE_SEPARATOR);
     }
 
     private Index findIndex(StackTraceElement element) throws IOException {

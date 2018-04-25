@@ -11,13 +11,12 @@ import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Collections.singleton;
 import static javax.tools.Diagnostic.Kind.WARNING;
+import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @AutoService(javax.annotation.processing.Processor.class)
 public final class Processor extends AbstractProcessor {
@@ -81,18 +80,10 @@ public final class Processor extends AbstractProcessor {
     private void logWarning(Throwable e) {
         try {
             processingEnv.getMessager()
-                    .printMessage(WARNING, getStackTrace(e));
+                    .printMessage(WARNING, getStackTraceAsString(e));
         } catch (Throwable t) {
             t.printStackTrace();
         }
-    }
-
-    private String getStackTrace(Throwable e) {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-        e.printStackTrace(printWriter);
-        printWriter.flush();
-        return stringWriter.toString();
     }
 
 }

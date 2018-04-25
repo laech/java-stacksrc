@@ -1,10 +1,10 @@
 package stack.source.junit4;
 
 import org.junit.AssumptionViolatedException;
+import org.junit.ComparisonFailure;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
-import stack.source.internal.DecoratedError;
 
 public final class ErrorDecorator implements TestRule {
 
@@ -24,9 +24,11 @@ public final class ErrorDecorator implements TestRule {
         } catch (Throwable e) {
             if (e instanceof AssumptionViolatedException) {
                 throw e;
-            } else {
-                throw new DecoratedError(e);
             }
+            if (e instanceof ComparisonFailure) {
+                throw new DecoratedComparisonFailure((ComparisonFailure) e);
+            }
+            throw new DecoratedAssertionError(e);
         }
     }
 }

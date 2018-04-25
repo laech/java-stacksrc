@@ -5,7 +5,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runners.model.Statement;
-import stack.source.internal.DecoratedError;
 
 import static java.lang.Math.min;
 import static java.lang.System.getProperty;
@@ -13,6 +12,7 @@ import static java.util.Objects.requireNonNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assume.assumeThat;
+import static stack.source.internal.Throwables.getStackTraceAsString;
 
 public final class ErrorDecoratorTest {
 
@@ -33,21 +33,21 @@ public final class ErrorDecoratorTest {
         public void evaluate() throws Throwable {
             try {
                 base.evaluate();
-            } catch (DecoratedError e) {
+            } catch (DecoratedAssertionError e) {
                 assertMessage(e);
             }
         }
 
-        private void assertMessage(DecoratedError e) {
+        private void assertMessage(DecoratedAssertionError e) {
             String expected = String.join(getProperty("line.separator"),
-                    "java.lang.AssertionError: testing failure",
+                    "stack.source.junit4.DecoratedAssertionError: testing failure",
                     "\tat org.junit.Assert.fail(Assert.java:88)",
                     "\tat stack.source.junit4.Fail.run(Fail.java:8)",
                     "",
                     "\t-> 8          fail(\"testing failure\");",
                     ""
             );
-            String actual = e.getMessage();
+            String actual = getStackTraceAsString(e);
             actual = actual.substring(0, min(expected.length(), actual.length()));
             assertEquals(expected, actual);
         }

@@ -6,6 +6,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import stack.source.internal.Decorator;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import static java.lang.System.lineSeparator;
@@ -34,6 +35,7 @@ public final class StackSourceTest {
                         "\tat stack.source.test.Chained.fail(Chained.java:15)",
                         "",
                         "\t-> 15          throw new TestException(message);",
+                        "",
                         "",
                         "\tat stack.source.test.Chained.run(Chained.java:10)",
                         "",
@@ -66,9 +68,11 @@ public final class StackSourceTest {
                         "",
                         "\t-> 15          throw new TestException(\"testing\");",
                         "",
+                        "",
                         "\tat stack.source.test.ReturnFailure.hi(ReturnFailure.java:11)",
                         "",
                         "\t-> 11          return bye();",
+                        "",
                         "",
                         "\tat stack.source.test.ReturnFailure.run(ReturnFailure.java:7)",
                         "",
@@ -87,7 +91,7 @@ public final class StackSourceTest {
     }
 
     @Test
-    public void test() {
+    public void test() throws Exception {
         try {
             test.run();
         } catch (TestException e) {
@@ -96,7 +100,7 @@ public final class StackSourceTest {
         }
     }
 
-    private static String print(Throwable e) {
+    private static String print(Throwable e) throws IOException {
         return new Decorator(e).print();
     }
 

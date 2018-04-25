@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.opentest4j.IncompleteExecutionException;
-import stack.source.internal.DecoratedError;
 
 @AutoService(Extension.class)
 public final class ErrorDecorator implements TestExecutionExceptionHandler {
@@ -13,13 +12,13 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
     @Override
     public void handleTestExecutionException(
             ExtensionContext context,
-            Throwable throwable
+            Throwable e
     ) throws Throwable {
 
-        if (throwable instanceof IncompleteExecutionException) {
-            throw throwable;
+        if (e instanceof IncompleteExecutionException) {
+            throw e;
         }
-        throw new DecoratedError(throwable);
+        throw DecoratedAssertionFailedError.create(e);
     }
 
 }
