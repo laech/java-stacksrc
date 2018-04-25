@@ -2,6 +2,8 @@ package stack.source.internal;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.Map.Entry;
 
 import static java.lang.String.format;
 import static java.lang.System.getProperty;
@@ -19,6 +21,7 @@ public final class Decorator {
     private final Map<String, Index> positiveCache = new HashMap<>();
     private final Set<String> negativeCache = new HashSet<>();
     private final Set<Throwable> seen = newSetFromMap(new IdentityHashMap<>());
+    private final Set<Entry<Index, IndexRegion>> printedRegions = new HashSet<>();
 
     public Decorator(Throwable throwable) {
         this(throwable, true);
@@ -149,6 +152,10 @@ public final class Decorator {
             Index index,
             IndexRegion region
     ) throws IOException {
+
+        if (!printedRegions.add(new SimpleImmutableEntry<>(index, region))) {
+            return;
+        }
 
         List<String> lines = region.lines(index.source());
         if (lines.isEmpty()) {
