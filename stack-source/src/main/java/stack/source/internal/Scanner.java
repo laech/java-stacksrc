@@ -56,13 +56,6 @@ final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
     }
 
     @Override
-    public Void visitReturn(ReturnTree node, Trees trees) {
-        super.visitReturn(node, trees);
-        add(node, trees);
-        return null;
-    }
-
-    @Override
     public Void visitExpressionStatement(ExpressionStatementTree node, Trees trees) {
         super.visitExpressionStatement(node, trees);
         add(node, trees);
