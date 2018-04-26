@@ -5,7 +5,7 @@
     <groupId>com.gitlab.lae.stack.source</groupId>
     <artifactId>stack-source-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.2-beta4</version>
+    <version>0.2-beta5-SNAPSHOT</version>
 
     <name>stack-source</name>
     <description>
