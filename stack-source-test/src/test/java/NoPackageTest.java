@@ -17,7 +17,11 @@ public final class NoPackageTest {
                     "stack.source.test.TestException: no package",
                     "\tat NoPackage.run(NoPackage.java:7)",
                     "",
+                    "\t   5      @Override",
+                    "\t   6      public void run() {",
                     "\t-> 7          throw new TestException(\"no package\");",
+                    "\t   8      }",
+                    "",
                     ""
             );
             String actual = new Decorator(e).print();

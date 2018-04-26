@@ -7,7 +7,6 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.nio.file.Files.newBufferedReader;
@@ -15,12 +14,7 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @AutoValue
-abstract class IndexRegion implements Comparable<IndexRegion> {
-
-    private static final Comparator<IndexRegion> comparator = Comparator
-            .comparing(IndexRegion::startLineNum)
-            .thenComparing(IndexRegion::endLineNum)
-            .thenComparing(IndexRegion::startLineStartPos);
+abstract class IndexRegion {
 
     IndexRegion() {
     }
@@ -47,9 +41,8 @@ abstract class IndexRegion implements Comparable<IndexRegion> {
 
     abstract long startLineStartPos();
 
-    @Override
-    public int compareTo(IndexRegion o) {
-        return comparator.compare(this, o);
+    long lineCount() {
+        return endLineNum() - startLineNum() + 1;
     }
 
     List<String> lines(Path path) throws IOException {

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 import static java.lang.Math.min;
-import static java.lang.System.getProperty;
+import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static stack.source.internal.Throwables.getStackTraceAsString;
@@ -59,13 +59,17 @@ class ErrorDecoratorTest {
         }
 
         private void assertEqualsFailure(Throwable e) {
-            String expected = String.join(getProperty("line.separator"),
+            String expected = String.join(lineSeparator(),
                     "stack.source.junit5.DecoratedAssertionFailedError: testing failure",
                     "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
                     "\tat org.junit.jupiter.api.Assertions.fail(Assertions.java:62)",
                     "\tat stack.source.junit5.Fail.run(Fail.java:8)",
                     "",
+                    "\t   6      @Override",
+                    "\t   7      public void run() {",
                     "\t-> 8          fail(\"testing failure\");",
+                    "\t   9      }",
+                    "",
                     ""
             );
             String actual = getStackTraceAsString(e);
@@ -75,7 +79,7 @@ class ErrorDecoratorTest {
         }
 
         private void assertArrayEqualsFailure(Throwable e) {
-            String expected = String.join(getProperty("line.separator"),
+            String expected = String.join(lineSeparator(),
                     "stack.source.junit5.DecoratedAssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>",
                     "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
                     "\tat org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:434)",
@@ -85,7 +89,11 @@ class ErrorDecoratorTest {
                     "\tat org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:622)",
                     "\tat stack.source.junit5.FailAssertArrayEquals.run(FailAssertArrayEquals.java:8)",
                     "",
+                    "\t   6      @Override",
+                    "\t   7      public void run() {",
                     "\t-> 8          assertArrayEquals(new int[]{1}, new int[]{2});",
+                    "\t   9      }",
+                    "",
                     ""
             );
             String actual = getStackTraceAsString(e);

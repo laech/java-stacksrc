@@ -7,7 +7,7 @@ import org.junit.rules.RuleChain;
 import org.junit.runners.model.Statement;
 
 import static java.lang.Math.min;
-import static java.lang.System.getProperty;
+import static java.lang.System.lineSeparator;
 import static java.util.Objects.requireNonNull;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -39,12 +39,16 @@ public final class ErrorDecoratorTest {
         }
 
         private void assertMessage(DecoratedAssertionError e) {
-            String expected = String.join(getProperty("line.separator"),
+            String expected = String.join(lineSeparator(),
                     "stack.source.junit4.DecoratedAssertionError: testing failure",
                     "\tat org.junit.Assert.fail(Assert.java:88)",
                     "\tat stack.source.junit4.Fail.run(Fail.java:8)",
                     "",
+                    "\t   6      @Override",
+                    "\t   7      public void run() {",
                     "\t-> 8          fail(\"testing failure\");",
+                    "\t   9      }",
+                    "",
                     ""
             );
             String actual = getStackTraceAsString(e);

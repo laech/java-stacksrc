@@ -1,13 +1,14 @@
 package stack.source.internal;
 
 import java.io.IOException;
-import java.util.*;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.*;
 import java.util.Map.Entry;
 
 import static java.lang.String.format;
 import static java.lang.System.getProperty;
 import static java.util.Collections.newSetFromMap;
+import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 
 public final class Decorator {
@@ -138,9 +139,11 @@ public final class Decorator {
         }
 
         Optional<IndexRegion> region = index.regions().stream()
-                .filter(e -> e.startLineNum() <= element.getLineNumber() &&
-                        e.endLineNum() >= element.getLineNumber())
-                .findFirst();
+                .filter(e -> element.getLineNumber() >= e.startLineNum())
+                .filter(e -> element.getLineNumber() <= e.endLineNum())
+                .sorted(comparing(IndexRegion::lineCount))
+                .reduce((a, b) -> b.lineCount() <= 6 ? b : a);
+
         if (region.isPresent()) {
             print(element, out, index, region.get());
         }

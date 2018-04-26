@@ -9,12 +9,12 @@ import javax.tools.FileObject;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.NavigableSet;
+import java.util.HashSet;
 import java.util.Optional;
-import java.util.TreeSet;
+import java.util.Set;
 import java.util.stream.Stream;
 
-import static java.util.Collections.unmodifiableNavigableSet;
+import static java.util.Collections.unmodifiableSet;
 import static java.util.stream.Collectors.joining;
 import static javax.tools.StandardLocation.CLASS_OUTPUT;
 
@@ -26,16 +26,16 @@ abstract class Index {
     Index() {
     }
 
-    static Index create(Path source, NavigableSet<IndexRegion> regions) {
+    static Index create(Path source, Set<IndexRegion> regions) {
         return new AutoValue_Index(
                 source.toAbsolutePath(),
-                unmodifiableNavigableSet(regions)
+                unmodifiableSet(regions)
         );
     }
 
     abstract Path source();
 
-    abstract NavigableSet<IndexRegion> regions();
+    abstract Set<IndexRegion> regions();
 
     private static String relativePath(String pkgName, String fileName) {
         return Stream.of("stack-source", pkgName, fileName)
@@ -76,7 +76,7 @@ abstract class Index {
         }
         Path source = Paths.get(in.readUTF());
         int count = in.readInt();
-        NavigableSet<IndexRegion> regions = new TreeSet<>();
+        Set<IndexRegion> regions = new HashSet<>();
         for (int i = 0; i < count; i++) {
             regions.add(IndexRegion.read(in));
         }
