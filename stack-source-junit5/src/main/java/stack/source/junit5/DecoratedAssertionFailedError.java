@@ -37,14 +37,14 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
                 && ((AssertionFailedError) src).getActual() != null) {
 
             result = new DecoratedAssertionFailedError(
-                    src.getMessage(),
+                    src.toString(),
                     ((AssertionFailedError) src).getExpected().getValue(),
                     ((AssertionFailedError) src).getActual().getValue(),
                     src.getCause()
             );
         } else {
             result = new DecoratedAssertionFailedError(
-                    src.getMessage(),
+                    src.toString(),
                     src.getCause()
             );
         }

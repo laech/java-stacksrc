@@ -40,7 +40,7 @@ public final class ErrorDecoratorTest {
 
         private void assertMessage(DecoratedAssertionError e) {
             String expected = String.join(lineSeparator(),
-                    "stack.source.junit4.DecoratedAssertionError: testing failure",
+                    "stack.source.junit4.DecoratedAssertionError: java.lang.AssertionError: testing failure",
                     "\tat org.junit.Assert.fail(Assert.java:88)",
                     "\tat stack.source.junit4.Fail.run(Fail.java:8)",
                     "",

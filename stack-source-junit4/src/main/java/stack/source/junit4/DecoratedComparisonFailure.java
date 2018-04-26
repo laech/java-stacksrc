@@ -18,7 +18,7 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
      */
 
     DecoratedComparisonFailure(ComparisonFailure src) {
-        super(src.getMessage(), src.getExpected(), src.getActual());
+        super(src.toString(), src.getExpected(), src.getActual());
         initCause(src.getCause());
         setStackTrace(src.getStackTrace());
         for (Throwable sp : src.getSuppressed()) {

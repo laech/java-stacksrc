@@ -10,7 +10,7 @@ import java.io.UncheckedIOException;
 final class DecoratedAssertionError extends AssertionError {
 
     DecoratedAssertionError(Throwable src) {
-        super(src.getMessage(), src.getCause());
+        super(src.toString(), src.getCause());
         setStackTrace(src.getStackTrace());
         for (Throwable sp : src.getSuppressed()) {
             addSuppressed(sp);
