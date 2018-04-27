@@ -150,3 +150,7 @@ public final class MyTest extends BaseTest {
 
 * With Maven this works out of the box.
 * With Gradle you need to enable: Preferences | Build, Execution, Deployment | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
+
+### Eclise
+
+* Have not tried this.
