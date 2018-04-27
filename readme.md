@@ -107,8 +107,6 @@ dependencies {
 ### JUnit 5
 
 ```java
-import stack.source.junit5.ErrorDecorator;
-
 /* Alternatively, run your tests with
  * -Djunit.jupiter.extensions.autodetection.enabled=true
  * then you don't need to use @ExtendWith(ErrorDecorator.class)
@@ -128,8 +126,6 @@ class MyTest extends BaseTest {
 ### JUnit 4
 
 ```java
-import stack.source.junit4.ErrorDecorator;
-
 public class BaseTest {
   @Rule
   public final ErrorDecorator errorDecorator = new ErrorDecorator();
