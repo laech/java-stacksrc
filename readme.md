@@ -3,13 +3,13 @@
 Decorates test failure stacks trace with source code snippets to make them more helpful.
 
 ```
-decorated org.junit.ComparisonFailure: bob expected:<H[ello]!> but was:<H[i]!>
+decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 	at org.junit.Assert.assertEquals(Assert.java:115)
 	at example.HelloTest.hello(HelloTest.java:16)
 
 	   14      @Test
 	   15      public void hello() {
-	-> 16          assertEquals("bob", "Hello!", greet());
+	-> 16          assertEquals("Hello!", greet());
 	   17      }
 
 
