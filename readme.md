@@ -149,8 +149,10 @@ public final class MyTest extends BaseTest {
 ### IntelliJ IDEA
 
 * With Maven this works out of the box.
-* With Gradle you need to enable: Preferences | Build, Execution, Deployment | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
+* With Gradle you need to enable: Preferences | Build, Execution, Deployment
+  | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
 
 ### Eclise
 
-* Have not tried this.
+Eclipse is not supported as it uses its own compiler, which is not supported by
+the Java Compiler Tree API.
