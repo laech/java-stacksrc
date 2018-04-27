@@ -1,6 +1,6 @@
 # Stack Source
 
-Decorates test failure stacks trace with source code snippets to make them more helpful.
+Decorates test failure stack traces with source code snippets to make them more helpful:
 
 ```
 decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
