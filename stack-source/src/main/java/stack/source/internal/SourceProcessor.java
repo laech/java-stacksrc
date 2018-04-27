@@ -5,12 +5,9 @@ import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.TypeElement;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,11 +15,13 @@ import static java.util.Collections.singleton;
 import static javax.tools.Diagnostic.Kind.WARNING;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
-@AutoService(javax.annotation.processing.Processor.class)
-public final class Processor extends AbstractProcessor {
+@AutoService(Processor.class)
+public final class SourceProcessor extends AbstractProcessor {
 
     private final Set<CompilationUnitTree> units = new HashSet<>();
+    private SourceScanner scanner;
     private Trees trees;
+    private boolean enabled = true;
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
@@ -37,7 +36,21 @@ public final class Processor extends AbstractProcessor {
     @Override
     public synchronized void init(ProcessingEnvironment process) {
         super.init(process);
-        trees = Trees.instance(process);
+
+        scanner = new SourceScanner(process);
+        try {
+            trees = Trees.instance(process);
+        } catch (IllegalArgumentException e) {
+            enabled = false;
+
+            // Eclipse users will hit this
+            Messager messager = process.getMessager();
+            messager.printMessage(WARNING, getClass().getName() + ": " +
+                    "Current processing environment '" + process + "' " +
+                    "is not supported by the Java Compiler Tree API, " +
+                    "no stack trace will be decorated."
+            );
+        }
     }
 
     @Override
@@ -45,6 +58,9 @@ public final class Processor extends AbstractProcessor {
             Set<? extends TypeElement> annotations,
             RoundEnvironment round
     ) {
+        if (!enabled) {
+            return false;
+        }
         try {
             doProcess(round);
         } catch (Throwable e) {
@@ -53,11 +69,10 @@ public final class Processor extends AbstractProcessor {
         return false;
     }
 
-    private void doProcess(RoundEnvironment round) throws IOException {
+    private void doProcess(RoundEnvironment round) {
+        collectCompilationUnits(round);
         if (round.processingOver()) {
             processCompilationUnits();
-        } else {
-            collectCompilationUnits(round);
         }
     }
 
@@ -68,11 +83,9 @@ public final class Processor extends AbstractProcessor {
                 .forEach(units::add);
     }
 
-    private void processCompilationUnits() throws IOException {
+    private void processCompilationUnits() {
         for (CompilationUnitTree unit : units) {
-            try (Scanner writer = new Scanner(processingEnv, unit)) {
-                writer.scan(unit, trees);
-            }
+            scanner.scan(unit, trees);
         }
         units.clear();
     }

@@ -2,12 +2,12 @@ package stack.source.internal;
 
 import com.sun.source.tree.*;
 import com.sun.source.util.SourcePositions;
-import com.sun.source.util.TreePathScanner;
+import com.sun.source.util.TreeScanner;
 import com.sun.source.util.Trees;
 
 import javax.annotation.processing.ProcessingEnvironment;
-import java.io.Closeable;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,28 +17,35 @@ import java.util.Set;
 import static java.util.Objects.requireNonNull;
 import static javax.tools.Diagnostic.NOPOS;
 
-final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
+final class SourceScanner extends TreeScanner<Void, Trees> {
 
     private final ProcessingEnvironment env;
-    private final CompilationUnitTree src;
     private final Set<IndexRegion> regions;
+    private CompilationUnitTree unit;
 
-    Scanner(
-            ProcessingEnvironment env,
-            CompilationUnitTree src
-    ) {
+    SourceScanner(ProcessingEnvironment env) {
         this.env = requireNonNull(env);
-        this.src = requireNonNull(src);
         this.regions = new HashSet<>();
     }
 
     @Override
-    public void close() throws IOException {
-        URI uri = src.getSourceFile().toUri();
-        if ("file".equalsIgnoreCase(uri.getScheme())) {
-            Path source = Paths.get(uri).toAbsolutePath();
-            Index.create(source, regions).write(env, src);
+    public Void visitCompilationUnit(CompilationUnitTree node, Trees trees) {
+        URI uri = node.getSourceFile().toUri();
+        if (!"file".equalsIgnoreCase(uri.getScheme())) {
+            return null;
         }
+        unit = node;
+        regions.clear();
+        super.visitCompilationUnit(node, trees);
+        Path source = Paths.get(uri).toAbsolutePath();
+        try {
+            Index.create(source, regions).write(env, node);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } finally {
+            unit = null;
+        }
+        return null;
     }
 
     @Override
@@ -204,9 +211,10 @@ final class Scanner extends TreePathScanner<Void, Trees> implements Closeable {
     }
 
     private void add(Tree node, Trees trees) {
-
+        if (unit == null) {
+            return;
+        }
         SourcePositions positions = trees.getSourcePositions();
-        CompilationUnitTree unit = getCurrentPath().getCompilationUnit();
         LineMap lineMap = unit.getLineMap();
         if (lineMap == null) {
             return;
