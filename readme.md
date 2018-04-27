@@ -17,7 +17,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 
 ## Usage
 
-### `pom.xml`
+### Maven `pom.xml`
 
 ```xml
 <project>
@@ -81,4 +81,43 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     </pluginManagement>
   </build>
 </project>
+```
+
+### JUnit 5
+
+```java
+import stack.source.junit5.ErrorDecorator;
+
+/* Alternatively, run your tests with
+ * -Djunit.jupiter.extensions.autodetection.enabled=true
+ * then you don't need to use @ExtendWith(ErrorDecorator.class)
+ */
+
+@ExtendWith(ErrorDecorator.class)
+class BaseTest {}
+
+class MyTest extends BaseTest {
+  @Test
+  void myTest() {
+    // ...
+  }
+}
+```
+
+### JUnit 4
+
+```java
+import stack.source.junit4.ErrorDecorator;
+
+public class BaseTest {
+  @Rule
+  public final ErrorDecorator errorDecorator = new ErrorDecorator();
+}
+
+public final class MyTest extends BaseTest {
+  @Test
+  public void myTest() {
+    // ...
+  }
+}
 ```
