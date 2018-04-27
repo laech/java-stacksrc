@@ -92,15 +92,22 @@ the command line, it appears Gradle writes it's own stack trace instead of
 calling `Throwable.printStackTrace`, I haven't investigate further.
 
 ```groovy
-
 dependencies {
 
-    // If you use JUnit 4
-    testCompile             'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta6'
+  // If you use JUnit 4
+  testCompile             'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta6'
 
-    // If you use JUnit 5
-    // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-    testCompile             'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta6'
+  // If you use JUnit 5
+  // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
+  testCompile             'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta6'
+}
+
+// If you are creating a test jar similar to the following,
+// exclude the 'stack-source' folder
+task testJar(type: Jar) {
+  classifier = 'tests'
+  from sourceSets.test.output
+  exclude 'stack-source'
 }
 ```
 
