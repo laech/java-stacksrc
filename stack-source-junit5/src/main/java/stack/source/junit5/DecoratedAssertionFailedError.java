@@ -11,7 +11,7 @@ import java.io.UncheckedIOException;
 final class DecoratedAssertionFailedError extends AssertionFailedError {
 
     /*
-     * Decorates an original DecoratedAssertionFailedError, by being a DecoratedAssertionFailedError
+     * Decorates an original AssertionFailedError, by being a AssertionFailedError
      * as well this just works with existing IDEs features such as those in
      * IntelliJ. IntelliJ provides diff like viewer when test are failed
      * due to comparison failures, it's quite useful.
@@ -72,5 +72,10 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
+    }
+
+    @Override
+    public String toString() {
+        return getMessage();
     }
 }

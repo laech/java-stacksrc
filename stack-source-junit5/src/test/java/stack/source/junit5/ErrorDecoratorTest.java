@@ -60,7 +60,7 @@ class ErrorDecoratorTest {
 
         private void assertEqualsFailure(Throwable e) {
             String expected = String.join(lineSeparator(),
-                    "stack.source.junit5.DecoratedAssertionFailedError: org.opentest4j.AssertionFailedError: testing failure",
+                    "org.opentest4j.AssertionFailedError: testing failure",
                     "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
                     "\tat org.junit.jupiter.api.Assertions.fail(Assertions.java:62)",
                     "\tat stack.source.junit5.Fail.run(Fail.java:8)",
@@ -80,7 +80,7 @@ class ErrorDecoratorTest {
 
         private void assertArrayEqualsFailure(Throwable e) {
             String expected = String.join(lineSeparator(),
-                    "stack.source.junit5.DecoratedAssertionFailedError: org.opentest4j.AssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>",
+                    "org.opentest4j.AssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>",
                     "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:36)",
                     "\tat org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:434)",
                     "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:246)",

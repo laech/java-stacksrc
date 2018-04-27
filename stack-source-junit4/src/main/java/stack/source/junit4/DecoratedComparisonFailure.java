@@ -43,4 +43,9 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
             throw new UncheckedIOException(e);
         }
     }
+
+    @Override
+    public String toString() {
+        return getMessage();
+    }
 }
