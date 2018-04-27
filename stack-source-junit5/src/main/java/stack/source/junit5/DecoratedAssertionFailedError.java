@@ -76,6 +76,6 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
 
     @Override
     public String toString() {
-        return getMessage();
+        return "decorated " + getMessage();
     }
 }

@@ -17,13 +17,21 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
      * due to comparison failures, it's quite useful.
      */
 
+    private final String fullMessage;
+
     DecoratedComparisonFailure(ComparisonFailure src) {
-        super(src.toString(), src.getExpected(), src.getActual());
+        super(null, src.getExpected(), src.getActual());
+        this.fullMessage = src.toString();
         initCause(src.getCause());
         setStackTrace(src.getStackTrace());
         for (Throwable sp : src.getSuppressed()) {
             addSuppressed(sp);
         }
+    }
+
+    @Override
+    public String getMessage() {
+        return fullMessage;
     }
 
     @Override
@@ -46,6 +54,6 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
 
     @Override
     public String toString() {
-        return getMessage();
+        return "decorated " + getMessage();
     }
 }

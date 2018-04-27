@@ -37,6 +37,6 @@ final class DecoratedAssertionError extends AssertionError {
 
     @Override
     public String toString() {
-        return getMessage();
+        return "decorated " + getMessage();
     }
 }
