@@ -3,17 +3,17 @@
 Decorates test failure stacks trace with source code snippets to make them more helpful.
 
 ```
-org.junit.ComparisonFailure: expected:<Bob h[ello]!> but was:<Bob h[i]!> expected:<Bob h[ello]!> but was:<Bob h[i]!>
-        at org.junit.Assert.assertEquals(Assert.java:115)
-        at org.junit.Assert.assertEquals(Assert.java:144)
-        at bob.BobTest.helloBob(BobTest.java:16)
+decorated org.junit.ComparisonFailure: bob expected:<H[ello]!> but was:<H[i]!>
+	at org.junit.Assert.assertEquals(Assert.java:115)
+	at example.HelloTest.hello(HelloTest.java:16)
 
-           14      @Test
-           15      public void helloBob() {
-        -> 16          assertEquals("Bob hello!", greet("Bob"));
-           17      }
+	   14      @Test
+	   15      public void hello() {
+	-> 16          assertEquals("bob", "Hello!", greet());
+	   17      }
 
-        ...
+
+    ...
 ```
 
 ## Usage
