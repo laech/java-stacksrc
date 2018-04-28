@@ -11,14 +11,14 @@
     <description>
         Decorates test failure stack trace with source code snippets.
     </description>
-    <url>https://gitlab.com/lae/stack-source</url>
+    <url>https://gitlab.com/lae/java-stack-source</url>
 
     <scm>
-        <url>https://gitlab.com/lae/stack-source</url>
+        <url>https://gitlab.com/lae/java-stack-source</url>
         <developerConnection>
-            scm:git:git@gitlab.com:lae/stack-source.git
+            scm:git:git@gitlab.com:lae/java-stack-source.git
         </developerConnection>
-        <tag>0.2-beta4</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
