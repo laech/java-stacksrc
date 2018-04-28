@@ -24,6 +24,7 @@ public final class DecoratorTest {
                 {hasSuppressedThrowable()},
                 {hasCauseThrowable()},
                 {hasEmptyStackTrace()},
+                {hasStackTraceWithNoFileName()},
         });
     }
 
@@ -56,6 +57,14 @@ public final class DecoratorTest {
         return e;
     }
 
+    private static Throwable hasStackTraceWithNoFileName() {
+        Exception e = new Exception("Has no stack");
+        e.setStackTrace(new StackTraceElement[]{
+                new StackTraceElement("Bob", "bob", null, 1)
+        });
+        return e;
+    }
+
     private final Throwable e;
 
     public DecoratorTest(Throwable e) {
@@ -76,6 +85,7 @@ public final class DecoratorTest {
     }
 
     private String getOurStackTrace() throws IOException {
+        new Decorator(e, true).print(); // No error
         return new Decorator(e, false).print();
     }
 }

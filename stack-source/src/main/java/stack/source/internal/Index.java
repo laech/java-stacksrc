@@ -44,7 +44,7 @@ abstract class Index {
 
     private static String relativePath(String pkgName, String fileName) {
         return Stream.of("stack-source", pkgName, fileName)
-                .filter(s -> !s.isEmpty())
+                .filter(s -> s != null && !s.isEmpty())
                 .collect(joining("/", "", ".index"));
     }
 
