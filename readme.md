@@ -15,9 +15,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     ...
 ```
 
-## Usage
-
-### Maven `pom.xml`
+## Maven `pom.xml`
 
 ```xml
 <project>
@@ -84,7 +82,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 </project>
 ```
 
-### Gradle `build.gradle`
+## Gradle `build.gradle`
 
 Gradle is not currently fully supported, when using Gradle you can see
 the decorated stack traces in your IDE, but not when running Gradle from
@@ -111,7 +109,7 @@ task testJar(type: Jar) {
 }
 ```
 
-### JUnit 5
+## JUnit 5
 
 ```java
 /* Alternatively, run your tests with
@@ -130,7 +128,7 @@ class MyTest extends BaseTest {
 }
 ```
 
-### JUnit 4
+## JUnit 4
 
 ```java
 public class BaseTest {
@@ -146,11 +144,13 @@ public final class MyTest extends BaseTest {
 }
 ```
 
-### IntelliJ IDEA
+## IntelliJ IDEA
 
 * With Maven this works out of the box.
-* With Gradle you need to enable: Preferences | Build, Execution, Deployment | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
+* With Gradle you need to enable: Preferences | Build, Execution, Deployment
+  | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
 
-### Eclise
+## Eclise
 
-* Have not tried this.
+Eclipse is not supported as it uses its own compiler, which is not supported by
+the Java Compiler Tree API.
