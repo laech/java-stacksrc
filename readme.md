@@ -146,7 +146,7 @@ public final class MyTest extends BaseTest {
 
 ## IntelliJ IDEA
 
-* With Maven this works out of the box.
+* With Maven this works out of the box when running tests inside IntelliJ.
 * With Gradle you need to enable: Preferences | Build, Execution, Deployment
   | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
   Currently running Gradle on the command line doesn't show the decorated
@@ -157,4 +157,5 @@ public final class MyTest extends BaseTest {
 
 Running tests within Eclipse don't show decorated stack traces, because Eclipse
 uses its own compiler which is not supported by the Java Compiler Tree API.
-However if the project was built by Maven before it would still work.
+However if the project was built by Maven before running the tests then it
+would work.
