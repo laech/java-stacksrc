@@ -93,11 +93,11 @@ calling `Throwable.printStackTrace`, I haven't investigate further.
 dependencies {
 
   // If you use JUnit 4
-  testCompile             'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta6'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta6'
 
   // If you use JUnit 5
   // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-  testCompile             'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta6'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta6'
 }
 
 // If you are creating a test jar similar to the following,
