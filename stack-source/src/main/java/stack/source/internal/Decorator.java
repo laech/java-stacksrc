@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import static java.lang.String.format;
 import static java.lang.System.getProperty;
+import static java.nio.file.Files.getLastModifiedTime;
 import static java.util.Collections.newSetFromMap;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
@@ -199,6 +200,10 @@ public final class Decorator {
                 return null;
             }
             index = read.get();
+            if (index.sourceModTime() < getLastModifiedTime(index.source()).toMillis()) {
+                negativeCache.add(key);
+                return null;
+            }
             positiveCache.put(key, index);
         }
         return index;

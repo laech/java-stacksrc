@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.nio.file.Files.getLastModifiedTime;
 import static java.util.Objects.requireNonNull;
 import static javax.tools.Diagnostic.NOPOS;
 
@@ -39,7 +40,8 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         super.visitCompilationUnit(node, trees);
         Path source = Paths.get(uri).toAbsolutePath();
         try {
-            Index.create(source, regions).write(env, node);
+            long sourceModTime = getLastModifiedTime(source).toMillis();
+            Index.create(source, sourceModTime, regions).write(env, node);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } finally {
