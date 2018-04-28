@@ -87,7 +87,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 Gradle is not currently fully supported, when using Gradle you can see
 the decorated stack traces in your IDE, but not when running Gradle from
 the command line, it appears Gradle writes it's own stack trace instead of
-calling `Throwable.printStackTrace`, I haven't investigate further.
+calling `Throwable.printStackTrace`.
 
 ```groovy
 dependencies {
