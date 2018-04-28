@@ -28,7 +28,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit5</artifactId>
-      <version>0.2-beta6</version>
+      <version>0.2-beta7</version>
       <scope>test</scope>
     </dependency>
 
@@ -38,7 +38,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit4</artifactId>
-      <version>0.2-beta6</version>
+      <version>0.2-beta7</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -93,11 +93,11 @@ calling `Throwable.printStackTrace`.
 dependencies {
 
   // If you use JUnit 4
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta6'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta7'
 
   // If you use JUnit 5
   // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta6'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta7'
 }
 
 // If you are creating a test jar similar to the following,
