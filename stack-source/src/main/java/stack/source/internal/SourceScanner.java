@@ -57,12 +57,6 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
     }
 
     @Override
-    public Void visitBlock(BlockTree node, Trees trees) {
-        add(node, trees);
-        return super.visitBlock(node, trees);
-    }
-
-    @Override
     public Void visitDoWhileLoop(DoWhileLoopTree node, Trees trees) {
         add(node, trees);
         return super.visitDoWhileLoop(node, trees);

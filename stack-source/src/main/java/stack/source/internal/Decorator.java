@@ -143,7 +143,7 @@ public final class Decorator {
                 .filter(e -> element.getLineNumber() >= e.startLineNum())
                 .filter(e -> element.getLineNumber() <= e.endLineNum())
                 .sorted(comparing(IndexRegion::lineCount))
-                .reduce((a, b) -> b.lineCount() <= 6 ? b : a);
+                .reduce((a, b) -> a.lineCount() <= 1 ? b : a);
 
         if (region.isPresent()) {
             print(element, out, index, region.get());

@@ -91,12 +91,10 @@ public final class ErrorDecoratorTest {
                 "\tat org.junit.Assert.assertArrayEquals(Assert.java:283)",
                 "\tat stack.source.junit4.FailByAssertArrayEquals.run(FailByAssertArrayEquals.java:8)",
                 "",
-                "\t    7      public void run() {",
                 "\t->  8          assertArrayEquals(",
                 "\t    9                  \"test message\",",
                 "\t   10                  new String[]{\"1\"},",
                 "\t   11                  new String[]{\"2\"});",
-                "\t   12      }",
                 "",
                 ""
         );
