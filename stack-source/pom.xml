@@ -3,7 +3,7 @@
     <parent>
         <groupId>com.gitlab.lae.stack.source</groupId>
         <artifactId>stack-source-parent</artifactId>
-        <version>0.2-beta6</version>
+        <version>0.2-beta7-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
