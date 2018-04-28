@@ -147,12 +147,6 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
     }
 
     @Override
-    public Void visitMethodInvocation(MethodInvocationTree node, Trees trees) {
-        add(node, trees);
-        return super.visitMethodInvocation(node, trees);
-    }
-
-    @Override
     public Void visitNewClass(NewClassTree node, Trees trees) {
         add(node, trees);
         return super.visitNewClass(node, trees);

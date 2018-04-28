@@ -5,23 +5,24 @@ class Chained implements Runnable {
     @Override
     public void run() {
         new Chained()
-                .nothing1("blah")
-                .nothing2("meh")
+                .nothing1()
+                .nothing2()
                 .fail("what?")
-                .nothing3();
+                .nothing3()
+                .fail("more?")
+                .fail("and more?")
+                .fail("and more more?");
     }
 
     private Chained fail(String message) throws TestException {
         throw new TestException(message);
     }
 
-    private Chained nothing1(
-            @SuppressWarnings("UnusedParameters") String ignored) {
+    private Chained nothing1() {
         return this;
     }
 
-    private Chained nothing2(
-            @SuppressWarnings("UnusedParameters") String ignored) {
+    private Chained nothing2() {
         return this;
     }
 
