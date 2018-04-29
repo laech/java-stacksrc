@@ -15,50 +15,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     ...
 ```
 
-## Usage
-
-### JUnit 5
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit5/latest)
-[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
-
-```java
-/* Alternatively, run your tests with
- * -Djunit.jupiter.extensions.autodetection.enabled=true
- * then you don't need to use @ExtendWith(ErrorDecorator.class)
- */
-
-@ExtendWith(ErrorDecorator.class)
-class BaseTest {}
-
-class MyTest extends BaseTest {
-  @Test
-  void myTest() {
-    // ...
-  }
-}
-```
-
-### JUnit 4
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit4/latest)
-[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
-
-```java
-public class BaseTest {
-  @Rule
-  public final ErrorDecorator errorDecorator = new ErrorDecorator();
-}
-
-public final class MyTest extends BaseTest {
-  @Test
-  public void myTest() {
-    // ...
-  }
-}
-```
-
-### Maven `pom.xml`
+## Maven `pom.xml`
 
 ```xml
 <project>
@@ -125,7 +82,7 @@ public final class MyTest extends BaseTest {
 </project>
 ```
 
-### Gradle `build.gradle`
+## Gradle `build.gradle`
 
 Gradle is not currently fully supported, when using Gradle you can see
 the decorated stack traces in your IDE, but not when running Gradle from
@@ -149,6 +106,41 @@ task testJar(type: Jar) {
   classifier = 'tests'
   from sourceSets.test.output
   exclude 'stack-source'
+}
+```
+
+## JUnit 5
+
+```java
+/* Alternatively, run your tests with
+ * -Djunit.jupiter.extensions.autodetection.enabled=true
+ * then you don't need to use @ExtendWith(ErrorDecorator.class)
+ */
+
+@ExtendWith(ErrorDecorator.class)
+class BaseTest {}
+
+class MyTest extends BaseTest {
+  @Test
+  void myTest() {
+    // ...
+  }
+}
+```
+
+## JUnit 4
+
+```java
+public class BaseTest {
+  @Rule
+  public final ErrorDecorator errorDecorator = new ErrorDecorator();
+}
+
+public final class MyTest extends BaseTest {
+  @Test
+  public void myTest() {
+    // ...
+  }
 }
 ```
 
