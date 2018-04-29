@@ -111,6 +111,7 @@ task testJar(type: Jar) {
 
 ## JUnit 5
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit5)
 [![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
 
 ```java
@@ -132,6 +133,7 @@ class MyTest extends BaseTest {
 
 ## JUnit 4
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit4)
 [![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
 
 ```java
