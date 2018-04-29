@@ -15,7 +15,50 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     ...
 ```
 
-## Maven `pom.xml`
+## Usage
+
+### JUnit 5
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit5/latest)
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
+
+```java
+/* Alternatively, run your tests with
+ * -Djunit.jupiter.extensions.autodetection.enabled=true
+ * then you don't need to use @ExtendWith(ErrorDecorator.class)
+ */
+
+@ExtendWith(ErrorDecorator.class)
+class BaseTest {}
+
+class MyTest extends BaseTest {
+  @Test
+  void myTest() {
+    // ...
+  }
+}
+```
+
+### JUnit 4
+
+[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit4/latest)
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
+
+```java
+public class BaseTest {
+  @Rule
+  public final ErrorDecorator errorDecorator = new ErrorDecorator();
+}
+
+public final class MyTest extends BaseTest {
+  @Test
+  public void myTest() {
+    // ...
+  }
+}
+```
+
+### Maven `pom.xml`
 
 ```xml
 <project>
@@ -82,7 +125,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 </project>
 ```
 
-## Gradle `build.gradle`
+### Gradle `build.gradle`
 
 Gradle is not currently fully supported, when using Gradle you can see
 the decorated stack traces in your IDE, but not when running Gradle from
@@ -109,48 +152,7 @@ task testJar(type: Jar) {
 }
 ```
 
-## JUnit 5
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit5)
-[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
-
-```java
-/* Alternatively, run your tests with
- * -Djunit.jupiter.extensions.autodetection.enabled=true
- * then you don't need to use @ExtendWith(ErrorDecorator.class)
- */
-
-@ExtendWith(ErrorDecorator.class)
-class BaseTest {}
-
-class MyTest extends BaseTest {
-  @Test
-  void myTest() {
-    // ...
-  }
-}
-```
-
-## JUnit 4
-
-[![Maven Central](https://img.shields.io/maven-central/v/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://mvnrepository.com/artifact/com.gitlab.lae.stack.source/stack-source-junit4)
-[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
-
-```java
-public class BaseTest {
-  @Rule
-  public final ErrorDecorator errorDecorator = new ErrorDecorator();
-}
-
-public final class MyTest extends BaseTest {
-  @Test
-  public void myTest() {
-    // ...
-  }
-}
-```
-
-## IntelliJ IDEA
+### IntelliJ IDEA
 
 * With Maven this works out of the box when running tests inside IntelliJ.
 * With Gradle you need to enable: Preferences | Build, Execution, Deployment
@@ -159,7 +161,7 @@ public final class MyTest extends BaseTest {
   stack trace, but running the tests in IntelliJ still shows decorated
   stack trace.
 
-## Eclise
+### Eclise
 
 Running tests within Eclipse don't show decorated stack traces, because Eclipse
 uses its own compiler which is not supported by the Java Compiler Tree API.
