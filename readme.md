@@ -144,7 +144,7 @@ public final class MyTest extends BaseTest {
 }
 ```
 
-### IntelliJ IDEA
+## IntelliJ IDEA
 
 * With Maven this works out of the box when running tests inside IntelliJ.
 * With Gradle you need to enable: Preferences | Build, Execution, Deployment
@@ -153,7 +153,7 @@ public final class MyTest extends BaseTest {
   stack trace, but running the tests in IntelliJ still shows decorated
   stack trace.
 
-### Eclise
+## Eclise
 
 Running tests within Eclipse don't show decorated stack traces, because Eclipse
 uses its own compiler which is not supported by the Java Compiler Tree API.
