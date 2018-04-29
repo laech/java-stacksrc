@@ -1,6 +1,8 @@
 package stack.source.internal;
 
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.*;
 import java.util.Map.Entry;
@@ -11,6 +13,8 @@ import static java.nio.file.Files.getLastModifiedTime;
 import static java.util.Collections.newSetFromMap;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
+import static java.util.logging.Logger.getLogger;
+import static stack.source.internal.Throwables.getStackTraceAsString;
 
 public final class Decorator {
 
@@ -40,7 +44,23 @@ public final class Decorator {
         return builder.toString();
     }
 
-    public void print(Appendable out) throws IOException {
+    public void printSafely(PrintStream out) {
+        printSafely(new PrintWriter(out));
+    }
+
+    public void printSafely(PrintWriter out) {
+        StringBuilder builder = new StringBuilder();
+        try {
+            print(builder);
+        } catch (Throwable e) {
+            throwable.printStackTrace(out);
+            getLogger(getClass().getName()).warning(() ->
+                    "Failed to decorate " + getStackTraceAsString(e));
+        }
+        out.append(builder);
+    }
+
+    private void print(Appendable out) throws IOException {
         seen.add(throwable);
         out.append(String.valueOf(throwable));
         out.append(LINE_SEPARATOR);

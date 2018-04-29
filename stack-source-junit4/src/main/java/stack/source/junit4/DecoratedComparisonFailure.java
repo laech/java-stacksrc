@@ -3,10 +3,8 @@ package stack.source.junit4;
 import org.junit.ComparisonFailure;
 import stack.source.internal.Decorator;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.UncheckedIOException;
 
 final class DecoratedComparisonFailure extends ComparisonFailure {
 
@@ -36,20 +34,12 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        try {
-            new Decorator(this).print(s);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        new Decorator(this).printSafely(s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        try {
-            new Decorator(this).print(s);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        new Decorator(this).printSafely(s);
     }
 
     @Override
