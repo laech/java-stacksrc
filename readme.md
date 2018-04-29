@@ -111,6 +111,8 @@ task testJar(type: Jar) {
 
 ## JUnit 5
 
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
+
 ```java
 /* Alternatively, run your tests with
  * -Djunit.jupiter.extensions.autodetection.enabled=true
@@ -129,6 +131,8 @@ class MyTest extends BaseTest {
 ```
 
 ## JUnit 4
+
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
 
 ```java
 public class BaseTest {
