@@ -7,7 +7,6 @@
     <packaging>pom</packaging>
     <version>0.2-beta12-SNAPSHOT</version>
 
-    <name>stack-source</name>
     <description>
         Decorates test failure stack trace with source code snippets.
     </description>
