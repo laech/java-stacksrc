@@ -15,35 +15,33 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
      * due to comparison failures, it's quite useful.
      */
 
-    private final String fullMessage;
+    private final ComparisonFailure src;
 
     DecoratedComparisonFailure(ComparisonFailure src) {
         super(null, src.getExpected(), src.getActual());
-        this.fullMessage = src.toString();
         initCause(src.getCause());
         setStackTrace(src.getStackTrace());
         for (Throwable sp : src.getSuppressed()) {
             addSuppressed(sp);
         }
+        this.src = src;
     }
 
     @Override
     public String getMessage() {
-        return fullMessage;
+        return src.toString();
     }
 
     @Override
     public void printStackTrace(PrintStream s) {
-        new Decorator(this).printSafely(s);
+        s.print("decorated ");
+        new Decorator(src).printSafely(s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        new Decorator(this).printSafely(s);
+        s.print("decorated ");
+        new Decorator(src).printSafely(s);
     }
 
-    @Override
-    public String toString() {
-        return "decorated " + getMessage();
-    }
 }

@@ -15,13 +15,17 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
      * due to comparison failures, it's quite useful.
      */
 
-    private DecoratedAssertionFailedError(String message, Throwable cause) {
-        super(message, cause);
+    private final Throwable src;
+
+    private DecoratedAssertionFailedError(String message, Throwable src) {
+        super(message, src.getCause());
+        this.src = src;
     }
 
     private DecoratedAssertionFailedError(
-            String message, Object expected, Object actual, Throwable cause) {
-        super(message, expected, actual, cause);
+            String message, Object expected, Object actual, Throwable src) {
+        super(message, expected, actual, src.getCause());
+        this.src = src;
     }
 
     static DecoratedAssertionFailedError create(Throwable src) {
@@ -38,12 +42,12 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
                     src.toString(),
                     ((AssertionFailedError) src).getExpected().getValue(),
                     ((AssertionFailedError) src).getActual().getValue(),
-                    src.getCause()
+                    src
             );
         } else {
             result = new DecoratedAssertionFailedError(
                     src.toString(),
-                    src.getCause()
+                    src
             );
         }
 
@@ -56,16 +60,13 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        new Decorator(this).printSafely(s);
+        s.print("decorated ");
+        new Decorator(src).printSafely(s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        new Decorator(this).printSafely(s);
-    }
-
-    @Override
-    public String toString() {
-        return "decorated " + getMessage();
+        s.print("decorated ");
+        new Decorator(src).printSafely(s);
     }
 }
