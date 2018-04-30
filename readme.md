@@ -155,7 +155,7 @@ public final class MyTest extends BaseTest {
   stack trace, but running the tests in IntelliJ still shows decorated
   stack trace.
 
-### Eclise
+### Eclipse
 
 Running tests within Eclipse don't show decorated stack traces, because Eclipse
 uses its own compiler which is not supported by the Java Compiler Tree API.
