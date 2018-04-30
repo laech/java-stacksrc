@@ -53,7 +53,7 @@ public final class ErrorDecoratorTest {
 
     private static void assertFail(Throwable e) {
         String expected = String.join(lineSeparator(),
-                "decorated java.lang.AssertionError: testing failure",
+                "java.lang.AssertionError: testing failure",
                 "\tat org.junit.Assert.fail(Assert.java:88)",
                 "\tat stack.source.junit4.Fail.run(Fail.java:8)",
                 "",
@@ -69,7 +69,7 @@ public final class ErrorDecoratorTest {
 
     private static void assertFailByAssertEquals(Throwable e) {
         String expected = String.join(lineSeparator(),
-                "decorated org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>",
+                "org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>",
                 "\tat org.junit.Assert.assertEquals(Assert.java:115)",
                 "\tat stack.source.junit4.FailByAssertEquals.run(FailByAssertEquals.java:8)",
                 "",
@@ -85,7 +85,7 @@ public final class ErrorDecoratorTest {
 
     private static void assertFailByAssertArrayEquals(Throwable e) {
         String expected = String.join(lineSeparator(),
-                "decorated test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>",
+                "test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>",
                 "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:55)",
                 "\tat org.junit.Assert.internalArrayEquals(Assert.java:532)",
                 "\tat org.junit.Assert.assertArrayEquals(Assert.java:283)",

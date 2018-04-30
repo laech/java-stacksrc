@@ -60,13 +60,11 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        s.print("decorated ");
         new Decorator(src).printSafely(s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        s.print("decorated ");
         new Decorator(src).printSafely(s);
     }
 }
