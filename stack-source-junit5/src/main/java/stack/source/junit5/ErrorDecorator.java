@@ -13,7 +13,7 @@ import org.opentest4j.IncompleteExecutionException;
  *
  * <pre>
  *
- * decorated org.junit.ComparisonFailure: expected:&lt;H[ello]!&gt; but was:&lt;H[i]!&gt;
+ * org.junit.ComparisonFailure: expected:&lt;H[ello]!&gt; but was:&lt;H[i]!&gt;
  *     at org.junit.Assert.assertEquals(Assert.java:115)
  *     at example.HelloTest.hello(HelloTest.java:16)
  *

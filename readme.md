@@ -3,7 +3,7 @@
 Decorates test failure stack traces with source code snippets to make them more helpful:
 
 ```
-decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
+org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 	at org.junit.Assert.assertEquals(Assert.java:115)
 	at example.HelloTest.hello(HelloTest.java:16)
 
@@ -30,7 +30,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit5</artifactId>
-      <version>0.2-beta11</version>
+      <version>0.2-beta14</version>
       <scope>test</scope>
     </dependency>
 
@@ -40,7 +40,7 @@ decorated org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit4</artifactId>
-      <version>0.2-beta11</version>
+      <version>0.2-beta14</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -95,11 +95,11 @@ calling `Throwable.printStackTrace`.
 dependencies {
 
   // If you use JUnit 4
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta11'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.2-beta14'
 
   // If you use JUnit 5
   // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta11'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.2-beta14'
 }
 
 // If you are creating a test jar similar to the following,
