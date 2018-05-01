@@ -157,6 +157,15 @@ public final class StackSourceTest {
                         "",
                         ""
                 ), null},
+
+                {new LongMethod(), join(lineSeparator(),
+                        "stack.source.test.TestException: test",
+                        "\tat stack.source.test.LongMethod.run(LongMethod.java:34)",
+                        "",
+                        "\t-> 34          throw new TestException(\"test\");",
+                        "",
+                        ""
+                ), null},
         });
     }
 

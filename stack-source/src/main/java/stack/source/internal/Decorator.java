@@ -96,7 +96,7 @@ public final class Decorator {
                 .filter(e -> stack.getLineNumber() >= e.startLineNum())
                 .filter(e -> stack.getLineNumber() <= e.endLineNum())
                 .sorted(comparing(IndexRegion::lineCount))
-                .reduce((a, b) -> a.lineCount() <= 1 ? b : a);
+                .reduce((a, b) -> a.lineCount() <= 1 && b.lineCount() <= 10 ? b : a);
     }
 
     private String printRegion(StackTraceElement stack, Index index, IndexRegion region)
