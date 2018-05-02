@@ -21,38 +21,6 @@
             <version>1.6</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>com.google.auto.service</groupId>
-            <artifactId>auto-service</artifactId>
-            <version>1.0-rc4</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>tools.jar</id>
-            <activation>
-                <file>
-                    <exists>${java.home}/../lib/tools.jar</exists>
-                </file>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>com.sun</groupId>
-                    <artifactId>tools</artifactId>
-                    <version>0</version>
-                    <scope>system</scope>
-                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
-                </dependency>
-            </dependencies>
-        </profile>
-    </profiles>
 
 </project>

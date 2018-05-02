@@ -47,6 +47,7 @@
         <module>stack-source-test</module>
         <module>stack-source-junit4</module>
         <module>stack-source-junit5</module>
+        <module>stack-source-processor</module>
     </modules>
 
     <properties>
