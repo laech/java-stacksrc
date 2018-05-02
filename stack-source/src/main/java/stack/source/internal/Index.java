@@ -1,8 +1,6 @@
 package stack.source.internal;
 
 import com.google.auto.value.AutoValue;
-import com.sun.source.tree.CompilationUnitTree;
-import com.sun.source.tree.ExpressionTree;
 
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.FileObject;
@@ -91,11 +89,12 @@ abstract class Index {
 
     void write(
             ProcessingEnvironment env,
-            CompilationUnitTree src
+            FileObject src,
+            String pkg
     ) throws IOException {
         try (DataOutputStream out = new DataOutputStream(
                 new GZIPOutputStream(
-                        createIndexFile(env, src)
+                        createIndexFile(env, src, pkg)
                                 .openOutputStream()))) {
             write(out);
         }
@@ -113,18 +112,14 @@ abstract class Index {
 
     private static FileObject createIndexFile(
             ProcessingEnvironment env,
-            CompilationUnitTree unit
+            FileObject unit,
+            String pkg
     ) throws IOException {
-        String name = new File(unit.getSourceFile().getName()).getName();
+        String name = new File(unit.getName()).getName();
         return env.getFiler().createResource(
                 CLASS_OUTPUT,
                 "",
-                Index.relativePath(getPackageName(unit), name)
+                Index.relativePath(pkg, name)
         );
-    }
-
-    private static String getPackageName(CompilationUnitTree unit) {
-        ExpressionTree pkg = unit.getPackageName();
-        return pkg == null ? "" : pkg.toString();
     }
 }

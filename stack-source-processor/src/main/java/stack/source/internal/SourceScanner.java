@@ -6,6 +6,7 @@ import com.sun.source.util.TreeScanner;
 import com.sun.source.util.Trees;
 
 import javax.annotation.processing.ProcessingEnvironment;
+import javax.tools.FileObject;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -41,7 +42,9 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         Path source = Paths.get(uri).toAbsolutePath();
         try {
             long sourceModTime = getLastModifiedTime(source).toMillis();
-            Index.create(source, sourceModTime, regions).write(env, node);
+            FileObject src = node.getSourceFile();
+            String pkg = getPackageName(node);
+            Index.create(source, sourceModTime, regions).write(env, src, pkg);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         } finally {
@@ -222,5 +225,10 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         regions.add(IndexRegion.create(
                 startLineNum, endLineNum, startLineStartPos
         ));
+    }
+
+    private static String getPackageName(CompilationUnitTree unit) {
+        ExpressionTree pkg = unit.getPackageName();
+        return pkg == null ? "" : pkg.toString();
     }
 }
