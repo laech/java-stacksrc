@@ -1,10 +1,9 @@
----
+image: maven:3.5.3-jdk-8
 
 build:
   stage: build
   script:
- - 'mvn --batch-mode clean verify'
-  image: maven:3.5.3-jdk-8
+  - 'mvn --batch-mode clean verify'
 
 pages:
   stage: deploy
