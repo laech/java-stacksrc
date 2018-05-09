@@ -126,6 +126,15 @@
                             <goal>jar</goal>
                         </goals>
                     </execution>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <excludePackageNames>*internal*</excludePackageNames>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

@@ -12,5 +12,13 @@ variables:
 build:
   stage: build
   script:
-    - 'mvn $MAVEN_CLI_OPTS package'
+    - 'mvn $MAVEN_CLI_OPTS verify'
   image: maven:3.5.3-jdk-8
+
+pages:
+  stage: deploy
+  artifacts:
+    paths:
+    - target/site/apidocs
+  only:
+  - master
