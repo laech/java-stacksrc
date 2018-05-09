@@ -7,8 +7,9 @@ pages:
   stage: deploy
   script:
   - 'mvn --batch-mode clean verify'
+  - 'mv target/site/apidocs public'
   artifacts:
     paths:
-    - target/site/apidocs
+    - public
   only:
   - master
