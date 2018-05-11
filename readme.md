@@ -19,7 +19,7 @@ org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 
 ### JUnit 5
 
-[Javadoc](https://lae.gitlab.io/java-stack-source/stack/source/junit5/package-summary.html)
+[Javadoc](https://lae.gitlab.io/java-stack-source/apidocs/stack/source/junit5/package-summary.html)
 
 ```java
 /* Alternatively, run your tests with
@@ -40,7 +40,7 @@ class MyTest extends BaseTest {
 
 ### JUnit 4
 
-[Javadoc](https://lae.gitlab.io/java-stack-source/stack/source/junit4/package-summary.html)
+[Javadoc](https://lae.gitlab.io/java-stack-source/apidocs/stack/source/junit4/package-summary.html)
 
 ```java
 public class BaseTest {
