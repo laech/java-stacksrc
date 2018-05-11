@@ -123,6 +123,7 @@ public final class MyTest extends BaseTest {
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-jar-plugin</artifactId>
+          <version>3.1.0</version>
           <configuration>
           <excludes>
             <exclude>stack-source/**</exclude>
