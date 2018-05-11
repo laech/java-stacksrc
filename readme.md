@@ -2,7 +2,7 @@
 
 Decorates test failure stack traces with source code snippets to make them more helpful:
 
-```
+```java
 org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 	at org.junit.Assert.assertEquals(Assert.java:115)
 	at example.HelloTest.hello(HelloTest.java:16)
