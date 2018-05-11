@@ -139,8 +139,8 @@ public final class MyTest extends BaseTest {
 
 Gradle is not currently fully supported, when using Gradle you can see
 the decorated stack traces in your IDE, but not when running Gradle from
-the command line, it appears Gradle writes it's own stack trace instead of
-calling `Throwable.printStackTrace`.
+the command line, this is due to Gradle writes it's own stack trace instead of
+calling `Throwable.printStackTrace`. [#5203](https://github.com/gradle/gradle/issues/5203)
 
 ```groovy
 dependencies {
