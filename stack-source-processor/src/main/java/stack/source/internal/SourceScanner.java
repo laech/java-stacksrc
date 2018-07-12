@@ -2,7 +2,7 @@ package stack.source.internal;
 
 import com.sun.source.tree.*;
 import com.sun.source.util.SourcePositions;
-import com.sun.source.util.TreeScanner;
+import com.sun.source.util.TreePathScanner;
 import com.sun.source.util.Trees;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -12,22 +12,38 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static java.nio.file.Files.getLastModifiedTime;
 import static java.util.Objects.requireNonNull;
 import static javax.tools.Diagnostic.NOPOS;
 
-final class SourceScanner extends TreeScanner<Void, Trees> {
+final class SourceScanner extends TreePathScanner<Void, Trees> {
 
     private final ProcessingEnvironment env;
-    private final Set<IndexRegion> regions;
-    private CompilationUnitTree unit;
+    private final Map<CompilationUnitTree, Set<IndexRegion>> regions;
 
     SourceScanner(ProcessingEnvironment env) {
         this.env = requireNonNull(env);
-        this.regions = new HashSet<>();
+        this.regions = new HashMap<>();
+    }
+
+    void flush() {
+        regions.forEach((unit, regions) -> {
+            FileObject file = unit.getSourceFile();
+            Path path = Paths.get(file.toUri()).toAbsolutePath();
+            try {
+                long sourceModTime = getLastModifiedTime(path).toMillis();
+                String pkg = getPackageName(unit);
+                Index.create(path, sourceModTime, regions).write(env, file, pkg);
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        });
+        regions.clear();
     }
 
     @Override
@@ -36,21 +52,7 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         if (!"file".equalsIgnoreCase(uri.getScheme())) {
             return null;
         }
-        unit = node;
-        regions.clear();
-        super.visitCompilationUnit(node, trees);
-        Path source = Paths.get(uri).toAbsolutePath();
-        try {
-            long sourceModTime = getLastModifiedTime(source).toMillis();
-            FileObject src = node.getSourceFile();
-            String pkg = getPackageName(node);
-            Index.create(source, sourceModTime, regions).write(env, src, pkg);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        } finally {
-            unit = null;
-        }
-        return null;
+        return super.visitCompilationUnit(node, trees);
     }
 
     @Override
@@ -210,9 +212,7 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
     }
 
     private void add(Tree node, Trees trees) {
-        if (unit == null) {
-            return;
-        }
+        CompilationUnitTree unit = getCurrentPath().getCompilationUnit();
         SourcePositions positions = trees.getSourcePositions();
         LineMap lineMap = unit.getLineMap();
         if (lineMap == null) {
@@ -228,9 +228,8 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         long endLineNum = lineMap.getLineNumber(endPos);
         long startLineNum = lineMap.getLineNumber(startPos);
         long startLineStartPos = lineMap.getStartPosition(startLineNum);
-        regions.add(IndexRegion.create(
-                startLineNum, endLineNum, startLineStartPos
-        ));
+        regions.computeIfAbsent(unit, __ -> new HashSet<>())
+                .add(IndexRegion.create(startLineNum, endLineNum, startLineStartPos));
     }
 
     private static String getPackageName(CompilationUnitTree unit) {
