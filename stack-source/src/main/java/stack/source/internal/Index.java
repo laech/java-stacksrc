@@ -46,13 +46,13 @@ abstract class Index {
                 .collect(joining("/", "", ".index"));
     }
 
-    static String relativePath(StackTraceElement element) {
+    private static String relativePath(StackTraceElement element) {
         String pkgName = getPackageName(element);
         String fileName = element.getFileName();
         return Index.relativePath(pkgName, fileName);
     }
 
-    static Optional<Index> read(StackTraceElement element) throws IOException {
+    static Optional<Index> read(StackTraceElement element) {
         String resource = relativePath(element);
         try (InputStream in = Index.class.getClassLoader().getResourceAsStream(resource)) {
             if (in == null) {
@@ -60,6 +60,8 @@ abstract class Index {
             }
             DataInputStream data = new DataInputStream(new GZIPInputStream(in));
             return read(data);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -73,40 +75,44 @@ abstract class Index {
         }
     }
 
-    private static Optional<Index> read(DataInput in) throws IOException {
-        if (in.readByte() != VERSION) {
-            return Optional.empty();
+    private static Optional<Index> read(DataInput in) {
+        try {
+            if (in.readByte() != VERSION) {
+                return Optional.empty();
+            }
+            Path source = Paths.get(in.readUTF());
+            long sourceModTime = in.readLong();
+            int count = in.readInt();
+            Set<IndexRegion> regions = new HashSet<>();
+            for (int i = 0; i < count; i++) {
+                regions.add(IndexRegion.read(in));
+            }
+            return Optional.of(Index.create(source, sourceModTime, regions));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
-        Path source = Paths.get(in.readUTF());
-        long sourceModTime = in.readLong();
-        int count = in.readInt();
-        Set<IndexRegion> regions = new HashSet<>();
-        for (int i = 0; i < count; i++) {
-            regions.add(IndexRegion.read(in));
-        }
-        return Optional.of(Index.create(source, sourceModTime, regions));
     }
 
-    void write(
-            ProcessingEnvironment env,
-            FileObject src,
-            String pkg
-    ) throws IOException {
-        try (DataOutputStream out = new DataOutputStream(
-                new GZIPOutputStream(
-                        createIndexFile(env, src, pkg)
-                                .openOutputStream()))) {
+    void write(ProcessingEnvironment env, FileObject src, String pkg) {
+        try (DataOutputStream out = new DataOutputStream(new GZIPOutputStream(
+                createIndexFile(env, src, pkg).openOutputStream()))) {
             write(out);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
-    private void write(DataOutput out) throws IOException {
-        out.writeByte(VERSION);
-        out.writeUTF(source().toString());
-        out.writeLong(sourceModTime());
-        out.writeInt(regions().size());
-        for (IndexRegion element : regions()) {
-            element.write(out);
+    private void write(DataOutput out) {
+        try {
+            out.writeByte(VERSION);
+            out.writeUTF(source().toString());
+            out.writeLong(sourceModTime());
+            out.writeInt(regions().size());
+            for (IndexRegion element : regions()) {
+                element.write(out);
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -114,12 +120,13 @@ abstract class Index {
             ProcessingEnvironment env,
             FileObject unit,
             String pkg
-    ) throws IOException {
+    ) {
         String name = new File(unit.getName()).getName();
-        return env.getFiler().createResource(
-                CLASS_OUTPUT,
-                "",
-                Index.relativePath(pkg, name)
-        );
+        try {
+            return env.getFiler().createResource(CLASS_OUTPUT, "", Index.relativePath(pkg, name)
+            );
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

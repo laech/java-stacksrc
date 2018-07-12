@@ -25,5 +25,6 @@ final class MultiCalls implements Runnable {
     @Override
     public void run() {
         assertList(asList("bob", "bob"));
+        assertList(asList("abc", "def"));
     }
 }

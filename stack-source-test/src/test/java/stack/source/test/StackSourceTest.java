@@ -1,23 +1,18 @@
 package stack.source.test;
 
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import stack.source.internal.Decorator;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.function.Function;
 
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
-public final class StackSourceTest {
+public final class StackSourceTest extends StackSourceTestBase {
 
     @Parameters(name = "{0}")
     public static Collection<Object[]> data() {
@@ -37,12 +32,6 @@ public final class StackSourceTest {
                 {new Chained(), join(lineSeparator(),
                         "stack.source.test.TestException: what?",
                         "\tat stack.source.test.Chained.fail(Chained.java:18)",
-                        "",
-                        "\t   17      private Chained fail(String message) throws TestException {",
-                        "\t-> 18          throw new TestException(message);",
-                        "\t   19      }",
-                        "",
-                        "",
                         "\tat stack.source.test.Chained.run(Chained.java:10)",
                         "",
                         "\t    7          new Chained()",
@@ -86,12 +75,6 @@ public final class StackSourceTest {
                 {new ReturnFailure(), join(lineSeparator(),
                         "stack.source.test.TestException: testing",
                         "\tat stack.source.test.ReturnFailure.bye(ReturnFailure.java:15)",
-                        "",
-                        "\t   14      private String bye() {",
-                        "\t-> 15          throw new TestException(\"testing\");",
-                        "\t   16      }",
-                        "",
-                        "",
                         "\tat stack.source.test.ReturnFailure.hi(ReturnFailure.java:11)",
                         "\tat stack.source.test.ReturnFailure.run(ReturnFailure.java:7)",
                         "",
@@ -105,12 +88,6 @@ public final class StackSourceTest {
                 {new MultiCalls(), join(lineSeparator(),
                         "stack.source.test.TestException: bob",
                         "\tat stack.source.test.MultiCalls.assertString(MultiCalls.java:12)",
-                        "",
-                        "\t   11          if (s.equals(\"bob\")) {",
-                        "\t-> 12              throw new TestException(\"bob\");",
-                        "\t   13          }",
-                        "",
-                        "",
                         "\tat stack.source.test.MultiCalls.lambda$null$0(MultiCalls.java:21)",
                         "\tat java.util.Optional.ifPresent(xxx)",
                         "\tat stack.source.test.MultiCalls.lambda$assertList$1(MultiCalls.java:17)",
@@ -121,7 +98,8 @@ public final class StackSourceTest {
                         "\t   25      @Override",
                         "\t   26      public void run() {",
                         "\t-> 27          assertList(asList(\"bob\", \"bob\"));",
-                        "\t   28      }",
+                        "\t   28          assertList(asList(\"abc\", \"def\"));",
+                        "\t   29      }",
                         "",
                         ""
                 ), (Function<String, String>) s -> s
@@ -134,12 +112,6 @@ public final class StackSourceTest {
                 {new DeepCalls(), join(lineSeparator(),
                         "stack.source.test.TestException: test",
                         "\tat stack.source.test.DeepCalls.call9(DeepCalls.java:43)",
-                        "",
-                        "\t   42      private void call9() {",
-                        "\t-> 43          throw new TestException(\"test\");",
-                        "\t   44      }",
-                        "",
-                        "",
                         "\tat stack.source.test.DeepCalls.call8(DeepCalls.java:39)",
                         "\tat stack.source.test.DeepCalls.call7(DeepCalls.java:35)",
                         "\tat stack.source.test.DeepCalls.call6(DeepCalls.java:31)",
@@ -166,35 +138,28 @@ public final class StackSourceTest {
                         "",
                         ""
                 ), null},
+
+                {new Lambda(), join(lineSeparator(),
+                        "stack.source.test.TestException: hi",
+                        "\tat stack.source.test.Lambda.lambda$run$0(Lambda.java:12)",
+                        "",
+                        "\t   10          lambda(() -> {",
+                        "\t   11              assertTrue(true);",
+                        "\t-> 12              throw new TestException(expected);",
+                        "\t   13          });",
+                        "",
+                        "",
+                        "\tat stack.source.test.Lambda.lambda(Lambda.java:17)",
+                        "\tat stack.source.test.Lambda.run(Lambda.java:10)"
+                ), null},
         });
     }
 
-    @Parameter
-    public Runnable test;
-
-    @Parameter(1)
-    public String expectedStackTraceBeginning;
-
-    @Parameter(2)
-    public Function<String, String> processor;
-
-    @Test
-    public void test() throws Exception {
-        try {
-            test.run();
-        } catch (TestException e) {
-
-            String actual = print(e);
-            if (processor != null) {
-                actual = processor.apply(actual);
-            }
-            actual = actual.substring(0, expectedStackTraceBeginning.length());
-            assertEquals(expectedStackTraceBeginning, actual);
-        }
-    }
-
-    private static String print(Throwable e) throws IOException {
-        return new Decorator(e).print();
+    public StackSourceTest(
+            Runnable test,
+            String expectedStackTraceBeginning,
+            Function<String, String> processor) {
+        super(test, expectedStackTraceBeginning, processor);
     }
 
 }

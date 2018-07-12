@@ -9,22 +9,20 @@ import static org.junit.Assert.assertEquals;
 public final class NoPackageTest {
 
     @Test
-    public void noPackage() throws Exception {
+    public void noPackage() {
         try {
             new NoPackage().run();
         } catch (TestException e) {
             String expected = String.join(lineSeparator(),
                     "stack.source.test.TestException: no package",
                     "\tat NoPackage.run(NoPackage.java:7)",
+                    "\tat NoPackageTest.noPackage(NoPackageTest.java:14)",
                     "",
-                    "\t   5      @Override",
-                    "\t   6      public void run() {",
-                    "\t-> 7          throw new TestException(\"no package\");",
-                    "\t   8      }",
+                    "\t-> 14              new NoPackage().run();",
                     "",
                     ""
             );
-            String actual = new Decorator(e).print();
+            String actual = Decorator.print(e);
             actual = actual.substring(0, min(expected.length(), actual.length()));
             assertEquals(expected, actual);
         }

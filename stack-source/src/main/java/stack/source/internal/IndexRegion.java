@@ -2,10 +2,7 @@ package stack.source.internal;
 
 import com.google.auto.value.AutoValue;
 
-import java.io.BufferedReader;
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -45,26 +42,36 @@ abstract class IndexRegion {
         return endLineNum() - startLineNum() + 1;
     }
 
-    List<String> lines(Path path) throws IOException {
+    List<String> lines(Path path) {
         long lineCount = endLineNum() - startLineNum() + 1;
         try (BufferedReader in = newBufferedReader(path)) {
             if (in.skip(startLineStartPos()) != startLineStartPos()) {
                 return emptyList();
             }
             return in.lines().limit(lineCount).collect(toList());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 
-    static IndexRegion read(DataInput in) throws IOException {
-        long startLineNum = in.readLong();
-        long endLineNum = in.readLong();
-        long startLineStartPos = in.readLong();
-        return IndexRegion.create(startLineNum, endLineNum, startLineStartPos);
+    static IndexRegion read(DataInput in) {
+        try {
+            long startLineNum = in.readLong();
+            long endLineNum = in.readLong();
+            long startLineStartPos = in.readLong();
+            return IndexRegion.create(startLineNum, endLineNum, startLineStartPos);
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
-    void write(DataOutput out) throws IOException {
-        out.writeLong(startLineNum());
-        out.writeLong(endLineNum());
-        out.writeLong(startLineStartPos());
+    void write(DataOutput out) {
+        try {
+            out.writeLong(startLineNum());
+            out.writeLong(endLineNum());
+            out.writeLong(startLineStartPos());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }

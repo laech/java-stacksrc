@@ -1,97 +1,78 @@
 package stack.source.internal;
 
-import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.io.UncheckedIOException;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.requireNonNull;
 import static java.util.logging.Logger.getLogger;
-import static stack.source.internal.Index.relativePath;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 public final class Decorator {
 
-    private final Throwable throwable;
-    private final Map<String, Optional<Index>> indexes = new HashMap<>();
-    private final Map<StackTraceElement, String> snippets = new HashMap<>();
-    private final Set<Entry<Index, IndexRegion>> printedRegions = new HashSet<>();
-
-    public Decorator(Throwable throwable) {
-        this.throwable = requireNonNull(throwable);
+    private Decorator() {
     }
 
-    public void printSafely(PrintStream out) {
-        printSafely(new PrintWriter(out));
+    public static void printSafely(Throwable throwable, PrintStream out) {
+        printSafely(throwable, new PrintWriter(out));
     }
 
-    public void printSafely(PrintWriter out) {
+    public static void printSafely(Throwable throwable, PrintWriter out) {
         try {
-            out.println(print());
+            out.println(print(throwable));
         } catch (Throwable e) {
             throwable.printStackTrace(out);
-            getLogger(getClass().getName()).warning(() ->
+            getLogger(Decorator.class.getName()).warning(() ->
                     "Failed to decorate " + getStackTraceAsString(e));
         }
     }
 
-    public String print() throws IOException {
+    public static String print(Throwable throwable) {
 
-        StackTraceElement[] stacks = throwable.getStackTrace();
+        StackTraceElement[] elements = throwable.getStackTrace();
 
-        int i = 0;
-        for (; i < stacks.length && snippets.size() < 1; i++) {
-            read(stacks[i]);
-        }
+        // We only want to decorate a single (hopefully the most useful)
+        // stack trace element, otherwise the decorated output looks messy,
+        // which defeats the purpose.
+        Decoration decor = null;
 
-        for (int j = stacks.length - 1; j >= i && snippets.size() < 3; j--) {
-            read(stacks[j]);
-        }
+        for (int i = elements.length - 1; i >= 0; i--) {
+            StackTraceElement element = elements[i];
 
-        return snippets.entrySet().stream().reduce(
-                getStackTraceAsString(throwable),
-                (str, entry) -> {
-                    String line = entry.getKey().toString();
-                    return str.replace(line, line + lineSeparator() + lineSeparator() +
-                            entry.getValue() + lineSeparator());
-                },
-                (a, b) -> {
-                    throw new UnsupportedOperationException();
-                });
-    }
-
-    private void read(StackTraceElement stack) throws IOException {
-        Optional<Index> index = findIndex(stack);
-        if (!index.isPresent()) {
-            return;
-        }
-
-        Optional<IndexRegion> region = findRegion(stack, index.get());
-        if (!region.isPresent() ||
-                !printedRegions.add(new SimpleEntry<>(index.get(), region.get()))) {
-            return;
-        }
-
-        snippets.put(stack, printRegion(stack, index.get(), region.get()));
-    }
-
-    private Optional<Index> findIndex(StackTraceElement stack) {
-        return indexes.computeIfAbsent(relativePath(stack), key -> {
-            try {
-                return Index.read(stack);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
+            // If we have found one already, ignore nested calls to other files
+            if (decor != null && !Objects.equals(decor.element.getFileName(), element.getFileName())) {
+                continue;
             }
-        });
+
+            Optional<Entry<Index, IndexRegion>> op = read(element);
+            if (op.isPresent()) {
+
+                // If a nested element has the same region as an outer element,
+                // pick the nested one as it has a more specific line number
+                if (decor == null || decor.region.equals(op.get().getValue())) {
+                    decor = new Decoration(element, op.get().getKey(), op.get().getValue());
+                }
+            }
+        }
+
+        return decor != null
+                ? decor.decorate(throwable)
+                : getStackTraceAsString(throwable);
     }
 
-    private Optional<IndexRegion> findRegion(StackTraceElement stack, Index index) {
+    private static Optional<Entry<Index, IndexRegion>> read(StackTraceElement stack) {
+        return Index.read(stack)
+                .flatMap(index -> findRegion(stack, index)
+                        .map(region -> new SimpleEntry<>(index, region)));
+    }
+
+    private static Optional<IndexRegion> findRegion(StackTraceElement stack, Index index) {
         return index.regions().stream()
                 .filter(e -> stack.getLineNumber() >= e.startLineNum())
                 .filter(e -> stack.getLineNumber() <= e.endLineNum())
@@ -99,24 +80,44 @@ public final class Decorator {
                 .reduce((a, b) -> a.lineCount() <= 1 && b.lineCount() <= 10 ? b : a);
     }
 
-    private String printRegion(StackTraceElement stack, Index index, IndexRegion region)
-            throws IOException {
-        StringBuilder out = new StringBuilder();
-        int width = String.valueOf(region.endLineNum()).length();
-        long lineNumber = region.startLineNum();
-        for (String line : region.lines(index.source())) {
-            out.append("\t");
-            out.append(lineNumber == stack.getLineNumber()
-                    ? "-> "
-                    : "   "
-            );
-            out.append(format("%" + width + "d", lineNumber));
-            out.append("  ");
-            out.append(line);
-            out.append(lineSeparator());
-            lineNumber++;
-        }
-        return out.toString();
-    }
+    private static final class Decoration {
+        final StackTraceElement element;
+        final Index index;
+        final IndexRegion region;
 
+        Decoration(StackTraceElement element, Index index, IndexRegion region) {
+            this.element = requireNonNull(element);
+            this.index = requireNonNull(index);
+            this.region = requireNonNull(region);
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder out = new StringBuilder();
+            int width = String.valueOf(region.endLineNum()).length();
+            long lineNumber = region.startLineNum();
+            for (String line : region.lines(index.source())) {
+                out.append("\t");
+                out.append(lineNumber == element.getLineNumber()
+                        ? "-> "
+                        : "   "
+                );
+                out.append(format("%" + width + "d", lineNumber));
+                out.append("  ");
+                out.append(line);
+                out.append(lineSeparator());
+                lineNumber++;
+            }
+            return out.toString();
+        }
+
+        String decorate(Throwable e) {
+            String line = element.toString();
+            return getStackTraceAsString(e).replace(line, line
+                    + lineSeparator()
+                    + lineSeparator()
+                    + toString()
+                    + lineSeparator());
+        }
+    }
 }

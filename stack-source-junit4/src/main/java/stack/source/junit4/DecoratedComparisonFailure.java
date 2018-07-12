@@ -34,12 +34,12 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        new Decorator(src).printSafely(s);
+        Decorator.printSafely(src, s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        new Decorator(src).printSafely(s);
+        Decorator.printSafely(src, s);
     }
 
 }
