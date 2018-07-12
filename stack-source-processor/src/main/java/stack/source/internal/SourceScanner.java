@@ -203,6 +203,12 @@ final class SourceScanner extends TreeScanner<Void, Trees> {
         return super.visitArrayAccess(node, trees);
     }
 
+    @Override
+    public Void visitVariable(VariableTree node, Trees trees) {
+        add(node, trees);
+        return super.visitVariable(node, trees);
+    }
+
     private void add(Tree node, Trees trees) {
         if (unit == null) {
             return;

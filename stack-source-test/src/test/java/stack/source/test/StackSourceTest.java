@@ -152,6 +152,20 @@ public final class StackSourceTest extends StackSourceTestBase {
                         "\tat stack.source.test.Lambda.lambda(Lambda.java:17)",
                         "\tat stack.source.test.Lambda.run(Lambda.java:10)"
                 ), null},
+
+                {new MutipleLongChains(), join(lineSeparator(),
+                        "stack.source.test.TestException: bob",
+                        "\tat stack.source.test.MutipleLongChains$Helper.test(MutipleLongChains.java:57)",
+                        "\tat stack.source.test.MutipleLongChains$Helper.access$100(MutipleLongChains.java:55)",
+                        "\tat stack.source.test.MutipleLongChains.run(MutipleLongChains.java:20)",
+                        "",
+                        "\t   19          Helper helper2 = helper1",
+                        "\t-> 20                  .test(\"x\")",
+                        "\t   21                  .test(\"x\")",
+                        "\t   22                  .test(\"x\");",
+                        "",
+                        ""
+                ), null},
         });
     }
 

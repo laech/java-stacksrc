@@ -2,7 +2,7 @@ package stack.source.test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class Lambda implements Runnable {
+final class Lambda implements Runnable {
 
     @Override
     public void run() {
