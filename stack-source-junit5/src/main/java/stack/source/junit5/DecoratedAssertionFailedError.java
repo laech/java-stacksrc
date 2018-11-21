@@ -1,10 +1,13 @@
 package stack.source.junit5;
 
+import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import stack.source.internal.Decorator;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+
+import static java.util.Collections.singleton;
 
 final class DecoratedAssertionFailedError extends AssertionFailedError {
 
@@ -60,11 +63,11 @@ final class DecoratedAssertionFailedError extends AssertionFailedError {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        Decorator.printSafely(src, s);
+        Decorator.printSafely(src, s, singleton(Test.class));
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        Decorator.printSafely(src, s);
+        Decorator.printSafely(src, s, singleton(Test.class));
     }
 }

@@ -2,10 +2,11 @@ package stack.source.internal;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
@@ -19,13 +20,21 @@ public final class Decorator {
     private Decorator() {
     }
 
-    public static void printSafely(Throwable throwable, PrintStream out) {
-        printSafely(throwable, new PrintWriter(out));
+    public static void printSafely(
+            Throwable throwable,
+            PrintStream out,
+            Set<Class<? extends Annotation>> testMethodAnnotations
+    ) {
+        printSafely(throwable, new PrintWriter(out), testMethodAnnotations);
     }
 
-    public static void printSafely(Throwable throwable, PrintWriter out) {
+    public static void printSafely(
+            Throwable throwable,
+            PrintWriter out,
+            Set<Class<? extends Annotation>> testMethodAnnotations
+    ) {
         try {
-            out.println(print(throwable));
+            out.println(print(throwable, testMethodAnnotations));
         } catch (Throwable e) {
             throwable.printStackTrace(out);
             getLogger(Decorator.class.getName()).warning(() ->
@@ -33,37 +42,61 @@ public final class Decorator {
         }
     }
 
-    public static String print(Throwable throwable) {
+    public static String print(
+            Throwable throwable,
+            Set<Class<? extends Annotation>> testMethodAnnotations
+    ) {
 
         StackTraceElement[] elements = throwable.getStackTrace();
 
-        // We only want to decorate a single (hopefully the most useful)
-        // stack trace element, otherwise the decorated output looks messy,
-        // which defeats the purpose.
-        Decoration decor = null;
+        Map<IndexRegion, Decoration> decorations = new HashMap<>();
+        String fileName = null;
 
         for (int i = elements.length - 1; i >= 0; i--) {
             StackTraceElement element = elements[i];
 
-            // If we have found one already, ignore nested calls to other files
-            if (decor != null && !Objects.equals(decor.element.getFileName(), element.getFileName())) {
+            if (fileName == null && methodHasAnyAnnotation(element, testMethodAnnotations)) {
+                fileName = element.getFileName();
+            }
+            if (fileName == null) {
+                continue;
+            }
+            if (!fileName.equals(element.getFileName())) {
                 continue;
             }
 
-            Optional<Entry<Index, IndexRegion>> op = read(element);
-            if (op.isPresent()) {
-
-                // If a nested element has the same region as an outer element,
-                // pick the nested one as it has a more specific line number
-                if (decor == null || decor.region.equals(op.get().getValue())) {
-                    decor = new Decoration(element, op.get().getKey(), op.get().getValue());
-                }
-            }
+            read(element).ifPresent(entry -> {
+                Index index = entry.getKey();
+                IndexRegion region = entry.getValue();
+                decorations.put(region, new Decoration(element, index, region));
+            });
         }
 
-        return decor != null
-                ? decor.decorate(throwable)
-                : getStackTraceAsString(throwable);
+        String stackTrace = getStackTraceAsString(throwable);
+        for (Decoration decoration : decorations.values()) {
+            stackTrace = decoration.decorate(stackTrace);
+        }
+        return stackTrace;
+    }
+
+    private static boolean methodHasAnyAnnotation(
+            StackTraceElement element,
+            Collection<Class<? extends Annotation>> annotations
+    ) {
+        try {
+
+            String className = element.getClassName();
+            String methodName = element.getMethodName();
+            if (className == null || methodName == null) {
+                return false;
+            }
+            Class<?> clazz = Class.forName(className, false, Decorator.class.getClassLoader());
+            Method method = clazz.getDeclaredMethod(methodName);
+            return annotations.stream().anyMatch(method::isAnnotationPresent);
+
+        } catch (ReflectiveOperationException e) {
+            return false;
+        }
     }
 
     private static Optional<Entry<Index, IndexRegion>> read(StackTraceElement stack) {
@@ -111,9 +144,9 @@ public final class Decorator {
             return out.toString();
         }
 
-        String decorate(Throwable e) {
+        String decorate(String stackTrace) {
             String line = element.toString();
-            return getStackTraceAsString(e).replace(line, line
+            return stackTrace.replace(line, line
                     + lineSeparator()
                     + lineSeparator()
                     + toString()

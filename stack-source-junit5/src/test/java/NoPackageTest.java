@@ -6,6 +6,7 @@ import stack.source.junit5.ErrorDecorator;
 
 import static java.lang.Math.min;
 import static java.lang.System.lineSeparator;
+import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith({ErrorDecorator.class})
@@ -18,12 +19,12 @@ final class NoPackageTest {
         } catch (AssertionError e) {
             String expected = String.join(lineSeparator(),
                     "java.lang.AssertionError: no package",
-                    "\tat NoPackageTest.noPackage(NoPackageTest.java:17)",
+                    "\tat NoPackageTest.noPackage(NoPackageTest.java:18)",
                     "",
-                    "\t-> 17              throw new AssertionError(\"no package\");",
+                    "\t-> 18              throw new AssertionError(\"no package\");",
                     ""
             );
-            String actual = Decorator.print(e);
+            String actual = Decorator.print(e, singleton(Test.class));
             actual = actual.substring(0, min(expected.length(), actual.length()));
             assertEquals(expected, actual);
         }

@@ -9,26 +9,24 @@ import static java.lang.Math.min;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @ExtendWith({
-        LambdaTest.AssertDecoration.class,
+        NestedMethodTest.AssertDecoration.class,
         ErrorDecorator.class
 })
-class LambdaTest {
+class NestedMethodTest {
 
     @Test
     void test() {
-        String expected = "hi";
-        lambda(() -> {
-            assertTrue(true);
-            throw new AssertionError(expected);
-        });
+        doTest();
     }
 
-    private void lambda(Runnable code) {
-        code.run();
+    private void doTest() {
+        assertEquals(1, 1);
+        assertEquals(1, 1);
+        assertEquals(1, 1);
+        throw new AssertionError("test");
     }
 
     static class AssertDecoration implements TestExecutionExceptionHandler {
@@ -36,24 +34,24 @@ class LambdaTest {
         @Override
         public void handleTestExecutionException(ExtensionContext context, Throwable e) {
             String expected = join(lineSeparator(),
-                    "java.lang.AssertionError: hi",
-                    "\tat stack.source.junit5.LambdaTest.lambda$test$0(LambdaTest.java:26)",
+                    "java.lang.AssertionError: test",
+                    "\tat stack.source.junit5.NestedMethodTest.doTest(NestedMethodTest.java:29)",
                     "",
-                    "\t   24          lambda(() -> {",
-                    "\t   25              assertTrue(true);",
-                    "\t-> 26              throw new AssertionError(expected);",
-                    "\t   27          });",
-                    "",
-                    "",
-                    "\tat stack.source.junit5.LambdaTest.lambda(LambdaTest.java:31)",
-                    "",
-                    "\t   30      private void lambda(Runnable code) {",
-                    "\t-> 31          code.run();",
-                    "\t   32      }",
+                    "\t   25      private void doTest() {",
+                    "\t   26          assertEquals(1, 1);",
+                    "\t   27          assertEquals(1, 1);",
+                    "\t   28          assertEquals(1, 1);",
+                    "\t-> 29          throw new AssertionError(\"test\");",
+                    "\t   30      }",
                     "",
                     "",
-                    "\tat stack.source.junit5.LambdaTest.test(LambdaTest.java:24)",
-                    "\tat "
+                    "\tat stack.source.junit5.NestedMethodTest.test(NestedMethodTest.java:22)",
+                    "",
+                    "\t   20      @Test",
+                    "\t   21      void test() {",
+                    "\t-> 22          doTest();",
+                    "\t   23      }",
+                    ""
             );
             assertEquals(DecoratedAssertionFailedError.class, e.getClass());
             assertStackTrace(expected, e);

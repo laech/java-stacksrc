@@ -10,18 +10,12 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableSet;
+import static java.util.Collections.singleton;
 import static javax.tools.Diagnostic.Kind.WARNING;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @AutoService(Processor.class)
 public final class SourceProcessor extends AbstractProcessor {
-
-    private static final Set<String> supportedAnnotations = unmodifiableSet(new HashSet<>(asList(
-            "org.junit.Test",
-            "org.junit.jupiter.api.Test"
-    )));
 
     private final Set<TreePath> elements = new HashSet<>();
     private SourceScanner scanner;
@@ -30,7 +24,7 @@ public final class SourceProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return supportedAnnotations;
+        return singleton("*");
     }
 
     @Override
@@ -83,14 +77,9 @@ public final class SourceProcessor extends AbstractProcessor {
     }
 
     private void collectCompilationUnits(RoundEnvironment roundEnv) {
-        for (String annotation : supportedAnnotations) {
-            TypeElement type = processingEnv.getElementUtils().getTypeElement(annotation);
-            if (type != null) {
-                roundEnv.getElementsAnnotatedWith(type).stream()
-                        .map(trees::getPath)
-                        .forEach(elements::add);
-            }
-        }
+        roundEnv.getRootElements().stream()
+                .map(trees::getPath)
+                .forEach(elements::add);
     }
 
     private void processCompilationUnits() {
