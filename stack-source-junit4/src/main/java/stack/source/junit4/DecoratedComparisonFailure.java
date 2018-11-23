@@ -1,13 +1,10 @@
 package stack.source.junit4;
 
 import org.junit.ComparisonFailure;
-import org.junit.Test;
 import stack.source.internal.Decorator;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-
-import static java.util.Collections.singleton;
 
 final class DecoratedComparisonFailure extends ComparisonFailure {
 
@@ -37,12 +34,12 @@ final class DecoratedComparisonFailure extends ComparisonFailure {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        Decorator.printSafely(src, s, singleton(Test.class));
+        Decorator.printSafely(src, s);
     }
 
     @Override
     public void printStackTrace(PrintWriter s) {
-        Decorator.printSafely(src, s, singleton(Test.class));
+        Decorator.printSafely(src, s);
     }
 
 }

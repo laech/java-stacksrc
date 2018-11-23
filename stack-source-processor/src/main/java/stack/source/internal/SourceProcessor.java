@@ -1,6 +1,7 @@
 package stack.source.internal;
 
 import com.google.auto.service.AutoService;
+import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.util.TreePath;
 import com.sun.source.util.Trees;
 
@@ -10,21 +11,28 @@ import javax.lang.model.element.TypeElement;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Collections.singleton;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableSet;
+import static javax.tools.Diagnostic.Kind.NOTE;
 import static javax.tools.Diagnostic.Kind.WARNING;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @AutoService(Processor.class)
 public final class SourceProcessor extends AbstractProcessor {
 
-    private final Set<TreePath> elements = new HashSet<>();
+    private static final Set<String> supportedAnnotations = unmodifiableSet(new HashSet<>(asList(
+            "org.junit.Test",
+            "org.junit.jupiter.api.Test"
+    )));
+
+    private final Set<CompilationUnitTree> units = new HashSet<>();
     private SourceScanner scanner;
     private Trees trees;
     private boolean enabled = true;
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {
-        return singleton("*");
+        return supportedAnnotations;
     }
 
     @Override
@@ -77,14 +85,20 @@ public final class SourceProcessor extends AbstractProcessor {
     }
 
     private void collectCompilationUnits(RoundEnvironment roundEnv) {
-        roundEnv.getRootElements().stream()
-                .map(trees::getPath)
-                .forEach(elements::add);
+        for (String annotation : supportedAnnotations) {
+            TypeElement type = processingEnv.getElementUtils().getTypeElement(annotation);
+            if (type != null) {
+                roundEnv.getElementsAnnotatedWith(type).stream()
+                        .map(trees::getPath)
+                        .map(TreePath::getCompilationUnit)
+                        .forEach(units::add);
+            }
+        }
     }
 
     private void processCompilationUnits() {
-        elements.forEach(element -> scanner.scan(element, trees));
-        elements.clear();
+        units.forEach(unit -> scanner.scan(unit, trees));
+        units.clear();
     }
 
     private void logWarning(Throwable e) {

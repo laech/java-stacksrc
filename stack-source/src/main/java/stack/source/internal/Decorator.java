@@ -2,11 +2,11 @@ package stack.source.internal;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
@@ -20,21 +20,13 @@ public final class Decorator {
     private Decorator() {
     }
 
-    public static void printSafely(
-            Throwable throwable,
-            PrintStream out,
-            Set<Class<? extends Annotation>> testMethodAnnotations
-    ) {
-        printSafely(throwable, new PrintWriter(out), testMethodAnnotations);
+    public static void printSafely(Throwable throwable, PrintStream out) {
+        printSafely(throwable, new PrintWriter(out));
     }
 
-    public static void printSafely(
-            Throwable throwable,
-            PrintWriter out,
-            Set<Class<? extends Annotation>> testMethodAnnotations
-    ) {
+    public static void printSafely(Throwable throwable, PrintWriter out) {
         try {
-            out.println(print(throwable, testMethodAnnotations));
+            out.println(print(throwable));
         } catch (Throwable e) {
             throwable.printStackTrace(out);
             getLogger(Decorator.class.getName()).warning(() ->
@@ -42,61 +34,30 @@ public final class Decorator {
         }
     }
 
-    public static String print(
-            Throwable throwable,
-            Set<Class<? extends Annotation>> testMethodAnnotations
-    ) {
+    public static String print(Throwable throwable) {
 
-        StackTraceElement[] elements = throwable.getStackTrace();
+        Map<String, Map<IndexRegion, Decoration>> decorations = new HashMap<>();
 
-        Map<IndexRegion, Decoration> decorations = new HashMap<>();
-        String fileName = null;
-
-        for (int i = elements.length - 1; i >= 0; i--) {
-            StackTraceElement element = elements[i];
-
-            if (fileName == null && methodHasAnyAnnotation(element, testMethodAnnotations)) {
-                fileName = element.getFileName();
-            }
-            if (fileName == null) {
+        for (StackTraceElement element : throwable.getStackTrace()) {
+            if (element.getFileName() == null) {
                 continue;
             }
-            if (!fileName.equals(element.getFileName())) {
-                continue;
-            }
-
             read(element).ifPresent(entry -> {
                 Index index = entry.getKey();
                 IndexRegion region = entry.getValue();
-                decorations.put(region, new Decoration(element, index, region));
+                decorations
+                        .computeIfAbsent(element.getFileName(), __ -> new HashMap<>())
+                        .computeIfAbsent(region, r -> new Decoration(element, index, r));
             });
         }
 
         String stackTrace = getStackTraceAsString(throwable);
-        for (Decoration decoration : decorations.values()) {
-            stackTrace = decoration.decorate(stackTrace);
+        for (Map<IndexRegion, Decoration> values : decorations.values()) {
+            for (Decoration decoration : values.values()) {
+                stackTrace = decoration.decorate(stackTrace);
+            }
         }
         return stackTrace;
-    }
-
-    private static boolean methodHasAnyAnnotation(
-            StackTraceElement element,
-            Collection<Class<? extends Annotation>> annotations
-    ) {
-        try {
-
-            String className = element.getClassName();
-            String methodName = element.getMethodName();
-            if (className == null || methodName == null) {
-                return false;
-            }
-            Class<?> clazz = Class.forName(className, false, Decorator.class.getClassLoader());
-            Method method = clazz.getDeclaredMethod(methodName);
-            return annotations.stream().anyMatch(method::isAnnotationPresent);
-
-        } catch (ReflectiveOperationException e) {
-            return false;
-        }
     }
 
     private static Optional<Entry<Index, IndexRegion>> read(StackTraceElement stack) {
