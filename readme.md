@@ -71,13 +71,13 @@ public final class MyTest extends BaseTest {
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit5</artifactId>
-      <version>0.3</version>
+      <version>0.4.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-processor</artifactId>
-      <version>0.3</version>
+      <version>0.4.1</version>
       <scope>test</scope>
     </dependency>
 
@@ -87,13 +87,13 @@ public final class MyTest extends BaseTest {
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit4</artifactId>
-      <version>0.3</version>
+      <version>0.4.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-processor</artifactId>
-      <version>0.3</version>
+      <version>0.4.1</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -111,7 +111,7 @@ public final class MyTest extends BaseTest {
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.19.1</version>
+          <version>2.22.1</version>
           <configuration>
             <trimStackTrace>false</trimStackTrace>
           </configuration>
@@ -149,13 +149,13 @@ calling `Throwable.printStackTrace`. [#5203](https://github.com/gradle/gradle/is
 dependencies {
 
   // If you use JUnit 4
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.3'
-  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.3'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.4.1'
+  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.1'
 
   // If you use JUnit 5
   // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.3'
-  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.3'
+  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.4.1'
+  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.1'
 }
 
 // If you are creating a test jar similar to the following,
