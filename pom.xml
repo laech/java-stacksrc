@@ -5,7 +5,7 @@
     <groupId>com.gitlab.lae.stack.source</groupId>
     <artifactId>stack-source-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.4.1</version>
+    <version>0.4.2-SNAPSHOT</version>
 
     <name>${project.artifactId}</name>
     <description>
@@ -18,7 +18,7 @@
         <developerConnection>
             scm:git:git@gitlab.com:lae/java-stack-source.git
         </developerConnection>
-        <tag>0.4.1</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
