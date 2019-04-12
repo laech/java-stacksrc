@@ -21,7 +21,7 @@ Requires Java 8+.
 
 ### JUnit 5
 
-[Javadoc](https://lae.gitlab.io/java-stack-source/apidocs/stack/source/junit5/package-summary.html)
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit5.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit5)
 
 ```java
 /* Alternatively, run your tests with
@@ -42,7 +42,7 @@ class MyTest extends BaseTest {
 
 ### JUnit 4
 
-[Javadoc](https://lae.gitlab.io/java-stack-source/apidocs/stack/source/junit4/package-summary.html)
+[![Javadocs](https://www.javadoc.io/badge/com.gitlab.lae.stack.source/stack-source-junit4.svg)](https://www.javadoc.io/doc/com.gitlab.lae.stack.source/stack-source-junit4)
 
 ```java
 public class BaseTest {
