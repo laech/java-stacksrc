@@ -140,46 +140,12 @@ public final class MyTest extends BaseTest {
 
 ### Gradle `build.gradle`
 
-Gradle is not currently fully supported, when using Gradle you can see
-the decorated stack traces in your IDE, but not when running Gradle from
-the command line, this is due to Gradle writes it's own stack trace instead of
-calling `Throwable.printStackTrace`. [#5203](https://github.com/gradle/gradle/issues/5203)
-
-```groovy
-dependencies {
-
-  // If you use JUnit 4
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit4:0.4.1'
-  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.1'
-
-  // If you use JUnit 5
-  // You also need https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle
-  testCompile 'com.gitlab.lae.stack.source:stack-source-junit5:0.4.1'
-  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.1'
-}
-
-// If you are creating a test jar similar to the following,
-// exclude the 'stack-source' folder
-task testJar(type: Jar) {
-  classifier = 'tests'
-  from sourceSets.test.output
-  exclude 'stack-source'
-}
-```
+Gradle is not supported due to [#5203](https://github.com/gradle/gradle/issues/5203)
 
 ### IntelliJ IDEA
 
-* With Maven this works out of the box when running tests inside IntelliJ.
-* With Gradle you need to enable: Preferences | Build, Execution, Deployment
-  | Build Tools | Gradle, change both 'Build and run using' and 'Run tests using'
-  to Gradle.
-  Currently running Gradle on the command line doesn't show the decorated
-  stack trace, but running the tests in IntelliJ still shows decorated
-  stack trace.
+Works with Maven.
 
 ### Eclipse
 
-Running tests within Eclipse don't show decorated stack traces, because Eclipse
-uses its own compiler which is not supported by the Java Compiler Tree API.
-However if the project was built by Maven before running the tests then it
-would work.
+Not supported because Eclipse uses its own compiler which is not supported by the Java Compiler Tree API.
