@@ -171,7 +171,8 @@ task testJar(type: Jar) {
 
 * With Maven this works out of the box when running tests inside IntelliJ.
 * With Gradle you need to enable: Preferences | Build, Execution, Deployment
-  | Build Tools | Gradle | Runner | Delegate IDE build/run actions to gradle.
+  | Build Tools | Gradle, change both 'Build and run using' and 'Run tests using'
+  to Gradle.
   Currently running Gradle on the command line doesn't show the decorated
   stack trace, but running the tests in IntelliJ still shows decorated
   stack trace.
