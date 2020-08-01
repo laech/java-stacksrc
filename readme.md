@@ -2,7 +2,7 @@
 
 Decorates test failure stack traces with source code snippets to make them more helpful:
 
-```java
+```
 org.junit.ComparisonFailure: expected:<H[ello]!> but was:<H[i]!>
 	at org.junit.Assert.assertEquals(Assert.java:115)
 	at example.HelloTest.hello(HelloTest.java:16)
@@ -71,13 +71,13 @@ public final class MyTest extends BaseTest {
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit5</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-processor</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
       <scope>test</scope>
     </dependency>
 
@@ -87,13 +87,13 @@ public final class MyTest extends BaseTest {
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-junit4</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
       <artifactId>stack-source-processor</artifactId>
-      <version>0.4.1</version>
+      <version>0.4.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -101,21 +101,6 @@ public final class MyTest extends BaseTest {
   <build>
     <pluginManagement>
       <plugins>
-
-        <!--
-          Set <trimStackTrace> to false to prevent trimming
-          of stack traces, therefore allowing decorated
-          stack traces to be shown under build servers
-          such as Jenkins. 
-        -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.22.1</version>
-          <configuration>
-            <trimStackTrace>false</trimStackTrace>
-          </configuration>
-        </plugin>
 
         <!--
           If you distribute your tests as a jar file,
@@ -140,11 +125,23 @@ public final class MyTest extends BaseTest {
 
 ### Gradle `build.gradle`
 
-Gradle is not supported due to [#5203](https://github.com/gradle/gradle/issues/5203)
+```groovy
+dependencies {
+
+  // For JUnit 4
+  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.2'
+  testImplementation 'com.gitlab.lae.stack.source:stack-source-junit4:0.4.2'
+
+  // For JUnit 5
+  testAnnotationProcessor 'com.gitlab.lae.stack.source:stack-source-processor:0.4.2'
+  testImplementation 'com.gitlab.lae.stack.source:stack-source-junit5:0.4.2'
+
+}
+```
 
 ### IntelliJ IDEA
 
-Works with Maven.
+Works with Maven and Gradle.
 
 ### Eclipse
 
