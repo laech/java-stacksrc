@@ -30,6 +30,8 @@
     </license>
   </licenses>
 
+  <!-- https://central.sonatype.org/pages/ossrh-guide.html -->
+  <!-- https://central.sonatype.org/pages/apache-maven.html -->
   <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
@@ -88,7 +90,6 @@
             <releaseProfiles>release</releaseProfiles>
             <tagNameFormat>@{version}</tagNameFormat>
             <goals>deploy</goals>
-            <pushChanges>false</pushChanges>
           </configuration>
         </plugin>
       </plugins>
