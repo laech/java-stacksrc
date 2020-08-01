@@ -88,6 +88,7 @@
             <releaseProfiles>release</releaseProfiles>
             <tagNameFormat>@{version}</tagNameFormat>
             <goals>deploy</goals>
+            <pushChanges>false</pushChanges>
           </configuration>
         </plugin>
       </plugins>
