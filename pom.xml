@@ -18,7 +18,7 @@
   <scm>
     <url>https://gitlab.com/lae/java-stack-source</url>
     <developerConnection>
-      scm:git:git@gitlab.com:lae/java-stack-source.git
+      scm:git:https://gitlab.com/lae/java-stack-source.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
