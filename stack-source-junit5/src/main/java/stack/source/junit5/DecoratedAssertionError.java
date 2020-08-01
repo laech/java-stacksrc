@@ -1,11 +1,12 @@
-package stack.source.junit4;
+package stack.source.junit5;
 
+import org.opentest4j.AssertionFailedError;
 import stack.source.internal.Decorator;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
-final class DecoratedAssertionError extends AssertionError {
+final class DecoratedAssertionError extends AssertionFailedError {
 
   private final Throwable original;
 

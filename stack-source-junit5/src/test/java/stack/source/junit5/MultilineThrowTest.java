@@ -12,39 +12,43 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @ExtendWith({
-        MultilineThrowTest.AssertDecoration.class,
-        ErrorDecorator.class
+  MultilineThrowTest.AssertDecoration.class,
+  ErrorDecorator.class
 })
 class MultilineThrowTest {
 
-    @Test
-    void test() {
-        throw new AssertionError(
-                "hello world"
-        );
-    }
+  @Test
+  void test() {
+    throw new AssertionError(
+      "hello world"
+    );
+  }
 
-    static class AssertDecoration implements TestExecutionExceptionHandler {
+  static class AssertDecoration implements TestExecutionExceptionHandler {
 
-        @Override
-        public void handleTestExecutionException(ExtensionContext context, Throwable e) {
-            String expected = join(lineSeparator(),
-                    "java.lang.AssertionError: hello world",
-                    "\tat stack.source.junit5.MultilineThrowTest.test(MultilineThrowTest.java:22)",
-                    "",
-                    "\t-> 22          throw new AssertionError(",
-                    "\t   23                  \"hello world\"",
-                    "\t   24          );",
-                    ""
-            );
-            assertEquals(DecoratedAssertionFailedError.class, e.getClass());
-            assertStackTrace(expected, e);
-        }
+    @Override
+    public void handleTestExecutionException(
+      ExtensionContext context,
+      Throwable e
+    ) {
+      String expected = join(
+        lineSeparator(),
+        "java.lang.AssertionError: hello world",
+        "\tat stack.source.junit5.MultilineThrowTest.test(MultilineThrowTest.java:22)",
+        "",
+        "\t-> 22      throw new AssertionError(",
+        "\t   23        \"hello world\"",
+        "\t   24      );",
+        ""
+      );
+      assertEquals(DecoratedAssertionError.class, e.getClass());
+      assertStackTrace(expected, e);
     }
+  }
 
-    private static void assertStackTrace(String expected, Throwable e) {
-        String actual = getStackTraceAsString(e);
-        actual = actual.substring(0, min(expected.length(), actual.length()));
-        assertEquals(expected, actual);
-    }
+  private static void assertStackTrace(String expected, Throwable e) {
+    String actual = getStackTraceAsString(e);
+    actual = actual.substring(0, min(expected.length(), actual.length()));
+    assertEquals(expected, actual);
+  }
 }

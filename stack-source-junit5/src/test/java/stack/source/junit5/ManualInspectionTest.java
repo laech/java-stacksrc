@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.stream.IntStream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -16,31 +16,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ExtendWith(ErrorDecorator.class)
 final class ManualInspectionTest {
 
-    @Test
-    void compareInts() {
-        assertEquals(1, 2);
-    }
+  @Test
+  void compareInts() {
+    assertEquals(1, 2);
+  }
 
-    @Test
-    void compareStrings() {
-        assertEquals("bob", "bab");
-    }
+  @Test
+  void compareStrings() {
+    assertEquals("bob", "bab");
+  }
 
-    @Test
-    void compareLongStrings() {
-        assertEquals(
-                "2" + String.join("\n", IntStream.range(1, 100)
-                        .mapToObj(String::valueOf)
-                        .collect(toList())),
-                "2"
-        );
-    }
+  @Test
+  void compareLongStrings() {
+    assertEquals(
+      "2" + IntStream.range(1, 100)
+        .mapToObj(String::valueOf)
+        .collect(joining("\n")),
+      "2"
+    );
+  }
 
-    @Test
-    void compareArrays() {
-        assertArrayEquals(
-                new String[]{"111", "112", "113"},
-                new String[]{"111", "112", "114"}
-        );
-    }
+  @Test
+  void compareArrays() {
+    assertArrayEquals(
+      new String[]{"111", "112", "113"},
+      new String[]{"111", "112", "114"}
+    );
+  }
 }

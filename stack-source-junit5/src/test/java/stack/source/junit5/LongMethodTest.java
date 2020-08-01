@@ -12,62 +12,66 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
 @ExtendWith({
-        LongMethodTest.AssertDecoration.class,
-        ErrorDecorator.class
+  LongMethodTest.AssertDecoration.class,
+  ErrorDecorator.class
 })
 class LongMethodTest {
 
-    @Test
-    void test() {
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        assertEquals(1, 1);
-        throw new AssertionError("test");
+  @Test
+  void test() {
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    assertEquals(1, 1);
+    throw new AssertionError("test");
+  }
+
+
+  static class AssertDecoration implements TestExecutionExceptionHandler {
+
+    @Override
+    public void handleTestExecutionException(
+      ExtensionContext context,
+      Throwable e
+    ) {
+      String expected = join(
+        lineSeparator(),
+        "java.lang.AssertionError: test",
+        "\tat stack.source.junit5.LongMethodTest.test(LongMethodTest.java:48)",
+        "",
+        "\t-> 48      throw new AssertionError(\"test\");",
+        ""
+      );
+      assertEquals(DecoratedAssertionError.class, e.getClass());
+      assertStackTrace(expected, e);
     }
+  }
 
-
-    static class AssertDecoration implements TestExecutionExceptionHandler {
-
-        @Override
-        public void handleTestExecutionException(ExtensionContext context, Throwable e) {
-            String expected = join(lineSeparator(),
-                    "java.lang.AssertionError: test",
-                    "\tat stack.source.junit5.LongMethodTest.test(LongMethodTest.java:48)",
-                    "",
-                    "\t-> 48          throw new AssertionError(\"test\");",
-                    ""
-            );
-            assertEquals(DecoratedAssertionFailedError.class, e.getClass());
-            assertStackTrace(expected, e);
-        }
-    }
-
-    private static void assertStackTrace(String expected, Throwable e) {
-        String actual = getStackTraceAsString(e);
-        actual = actual.substring(0, min(expected.length(), actual.length()));
-        assertEquals(expected, actual);
-    }
+  private static void assertStackTrace(String expected, Throwable e) {
+    String actual = getStackTraceAsString(e);
+    actual = actual.substring(0, min(expected.length(), actual.length()));
+    assertEquals(expected, actual);
+  }
 }
