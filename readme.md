@@ -66,7 +66,6 @@ public final class MyTest extends BaseTest {
 
     <!--
       If you use JUnit 5
-      You also need: https://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven
     -->
     <dependency>
       <groupId>com.gitlab.lae.stack.source</groupId>
