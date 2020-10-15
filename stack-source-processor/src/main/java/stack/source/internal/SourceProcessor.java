@@ -13,7 +13,6 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
-import static javax.tools.Diagnostic.Kind.NOTE;
 import static javax.tools.Diagnostic.Kind.WARNING;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
