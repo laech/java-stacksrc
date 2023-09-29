@@ -3,14 +3,11 @@ package nz.lae.stacksrc.core;
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
 import static java.nio.file.Files.isDirectory;
-import static java.util.logging.Logger.getLogger;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,20 +22,6 @@ public final class Decorator {
   private Decorator() {}
 
   private static final int CONTEXT_LINE_COUNT = 2;
-
-  public static void printSafely(Throwable throwable, PrintStream out) {
-    printSafely(throwable, new PrintWriter(out));
-  }
-
-  public static void printSafely(Throwable throwable, PrintWriter out) {
-    try {
-      out.println(print(throwable));
-    } catch (Throwable e) {
-      throwable.printStackTrace(out);
-      getLogger(Decorator.class.getName())
-          .warning(() -> "Failed to decorate " + getStackTraceAsString(e));
-    }
-  }
 
   public static String print(Throwable throwable) {
     var output = getStackTraceAsString(throwable);
