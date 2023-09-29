@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.gitlab.lae.stack.source</groupId>
-  <artifactId>stack-source-parent</artifactId>
+  <groupId>nz.lae.stacksrc</groupId>
+  <artifactId>parent</artifactId>
   <packaging>pom</packaging>
   <version>0.4.3-SNAPSHOT</version>
 
@@ -11,12 +13,12 @@
   <description>
     Decorates test failure stack trace with source code snippets.
   </description>
-  <url>https://gitlab.com/lae/java-stack-source</url>
+  <url>https://github.com/laech/java-stacksrc</url>
 
   <scm>
-    <url>https://gitlab.com/lae/java-stack-source</url>
+    <url>https://github.com/laech/java-stacksrc</url>
     <developerConnection>
-      scm:git:https://gitlab.com/lae/java-stack-source.git
+      scm:git:https://github.com/laech/java-stacksrc.git
     </developerConnection>
     <tag>HEAD</tag>
   </scm>
@@ -45,9 +47,9 @@
   </developers>
 
   <modules>
-    <module>stack-source</module>
-    <module>stack-source-junit4</module>
-    <module>stack-source-junit5</module>
+    <module>core</module>
+    <module>junit4</module>
+    <module>junit5</module>
   </modules>
 
   <properties>
