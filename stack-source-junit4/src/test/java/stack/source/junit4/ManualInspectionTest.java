@@ -1,14 +1,13 @@
 package stack.source.junit4;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-
-import java.util.stream.IntStream;
-
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+
+import java.util.stream.IntStream;
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
 
 @Ignore("Test intended to be viewed by a human in an IDE," +
         " to compare the differences with and without" +

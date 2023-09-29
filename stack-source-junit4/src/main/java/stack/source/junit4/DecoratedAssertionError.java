@@ -1,9 +1,8 @@
 package stack.source.junit4;
 
-import stack.source.internal.Decorator;
-
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import stack.source.internal.Decorator;
 
 final class DecoratedAssertionError extends AssertionError {
 
