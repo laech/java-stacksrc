@@ -6,26 +6,23 @@ import stack.source.internal.Decorator;
 
 final class DecoratedAssertionError extends AssertionError {
 
-  private final Throwable original;
-
   DecoratedAssertionError(Throwable original) {
     super(Decorator.print(original));
-    this.original = original;
     setStackTrace(new StackTraceElement[0]);
   }
 
   @Override
   public void printStackTrace(PrintWriter out) {
-    out.println(getMessage());
+    out.println(this);
   }
 
   @Override
   public void printStackTrace(PrintStream out) {
-    out.println(getMessage());
+    out.println(this);
   }
 
   @Override
   public String toString() {
-    return getClass().getName() + ": " + original.getClass().getName();
+    return String.format("%s:%n%s", getClass().getName(), getMessage());
   }
 }

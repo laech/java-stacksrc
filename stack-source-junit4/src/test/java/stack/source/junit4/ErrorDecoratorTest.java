@@ -78,6 +78,7 @@ public final class ErrorDecoratorTest {
     var expected =
         String.join(
             lineSeparator(),
+            "stack.source.junit4.DecoratedAssertionError:",
             "java.lang.AssertionError: testing failure",
             "\tat org.junit.Assert.fail(Assert.java:89)",
             "\tat stack.source.junit4.ErrorDecoratorTest.failure(ErrorDecoratorTest.java:21)",
@@ -94,6 +95,7 @@ public final class ErrorDecoratorTest {
     var expected =
         String.join(
             lineSeparator(),
+            "stack.source.junit4.DecoratedAssertionError:",
             "org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>",
             "\tat org.junit.Assert.assertEquals(Assert.java:117)",
             "\tat stack.source.junit4.ErrorDecoratorTest.failByAssertEquals(ErrorDecoratorTest.java:26)",
@@ -110,6 +112,7 @@ public final class ErrorDecoratorTest {
     var expected =
         String.join(
             lineSeparator(),
+            "stack.source.junit4.DecoratedAssertionError:",
             "test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>",
             "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:78)",
             "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:28)",
