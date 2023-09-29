@@ -1,18 +1,18 @@
 package stack.source.junit4;
 
-import org.junit.Ignore;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.RuleChain;
-import org.junit.runner.Description;
-import org.junit.runners.model.Statement;
-
 import static java.lang.Math.min;
 import static java.lang.System.lineSeparator;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.*;
 import static org.junit.Assume.assumeThat;
 import static stack.source.internal.Throwables.getStackTraceAsString;
+
+import org.junit.Ignore;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.RuleChain;
+import org.junit.runner.Description;
+import org.junit.runners.model.Statement;
 
 public final class ErrorDecoratorTest {
 
@@ -82,7 +82,7 @@ public final class ErrorDecoratorTest {
   }
 
   private static void assertFail(Throwable e) {
-    String expected = String.join(
+    var expected = String.join(
       lineSeparator(),
       "java.lang.AssertionError: testing failure",
       "\tat org.junit.Assert.fail(Assert.java:89)",
@@ -98,7 +98,7 @@ public final class ErrorDecoratorTest {
   }
 
   private static void assertFailByAssertEquals(Throwable e) {
-    String expected = String.join(
+    var expected = String.join(
       lineSeparator(),
       "org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>",
       "\tat org.junit.Assert.assertEquals(Assert.java:117)",
@@ -114,7 +114,7 @@ public final class ErrorDecoratorTest {
   }
 
   private static void assertFailByAssertArrayEquals(Throwable e) {
-    String expected = String.join(
+    var expected = String.join(
       lineSeparator(),
       "test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>",
       "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:78)",
@@ -123,18 +123,18 @@ public final class ErrorDecoratorTest {
       "\tat org.junit.Assert.assertArrayEquals(Assert.java:285)",
       "\tat stack.source.junit4.ErrorDecoratorTest.failByAssertArrayEquals(ErrorDecoratorTest.java:31)",
       "",
+      "\t   29    @Test",
+      "\t   30    public void failByAssertArrayEquals() {",
       "\t-> 31      assertArrayEquals(",
       "\t   32        \"test message\",",
       "\t   33        new String[]{\"1\"},",
-      "\t   34        new String[]{\"2\"}",
-      "\t   35      );",
       ""
     );
     assertStackTrace(expected, e);
   }
 
   private static void assertStackTrace(String expected, Throwable e) {
-    String actual = getStackTraceAsString(e);
+    var actual = getStackTraceAsString(e);
     actual = actual.substring(0, min(expected.length(), actual.length()));
     assertEquals(expected, actual);
   }

@@ -1,15 +1,15 @@
 package stack.source.junit5;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-
 import static java.lang.Math.min;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static stack.source.internal.Throwables.getStackTraceAsString;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 @ExtendWith({
   NestedMethodTest.AssertDecoration.class,
@@ -41,8 +41,6 @@ class NestedMethodTest {
         "java.lang.AssertionError: test",
         "\tat stack.source.junit5.NestedMethodTest.doTest(NestedMethodTest.java:29)",
         "",
-        "\t   25    private void doTest() {",
-        "\t   26      assertEquals(1, 1);",
         "\t   27      assertEquals(1, 1);",
         "\t   28      assertEquals(1, 1);",
         "\t-> 29      throw new AssertionError(\"test\");",

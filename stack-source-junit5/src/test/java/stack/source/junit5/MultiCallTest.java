@@ -1,19 +1,18 @@
 package stack.source.junit5;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-
-import java.util.List;
-import java.util.Optional;
-
 import static java.lang.Math.min;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static stack.source.internal.Throwables.getStackTraceAsString;
+
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 @ExtendWith({
   MultiCallTest.AssertDecoration.class,
@@ -50,28 +49,36 @@ class MultiCallTest {
       ExtensionContext context,
       Throwable e
     ) {
-      String expected = join(
+      var expected = join(
         lineSeparator(),
         "java.lang.AssertionError: bob",
         "\tat stack.source.junit5.MultiCallTest.assertString(MultiCallTest.java:33)",
         "",
+        "\t   31    private void assertString(String s) {",
         "\t   32      if (s.equals(\"bob\")) {",
         "\t-> 33        throw new AssertionError(\"bob\");",
         "\t   34      }",
+        "\t   35    }",
         "",
         "",
         "\tat stack.source.junit5.MultiCallTest.lambda$null$0(MultiCallTest.java:42)",
         "",
-        "\t   38      list.forEach(s -> Optional.of(s.toLowerCase()).ifPresent(ss -> {",
-        "\t   39        if (ss.length() > 1000) {",
         "\t   40          throw new AssertionError(\"no\");",
         "\t   41        }",
         "\t-> 42        assertString(ss);",
         "\t   43      }));",
+        "\t   44    }",
         "",
         "",
         "\tat java.util.Optional.ifPresent(xxx)",
         "\tat stack.source.junit5.MultiCallTest.lambda$assertList$1(MultiCallTest.java:38)",
+        "",
+        "\t   37    private void assertList(List<String> list) {",
+        "\t-> 38      list.forEach(s -> Optional.of(s.toLowerCase()).ifPresent(ss -> {",
+        "\t   39        if (ss.length() > 1000) {",
+        "\t   40          throw new AssertionError(\"no\");",
+        "",
+        "",
         "\tat java.util.Arrays$ArrayList.forEach(xxx)",
         "\tat stack.source.junit5.MultiCallTest.assertList(MultiCallTest.java:38)",
         "\tat stack.source.junit5.MultiCallTest.test(MultiCallTest.java:26)",
@@ -90,7 +97,7 @@ class MultiCallTest {
 
   private static void assertStackTrace(String expected, Throwable e) {
     // Temporary hack to make this work on Java 9 too
-    String actual = getStackTraceAsString(e)
+    var actual = getStackTraceAsString(e)
       .replaceAll("java.base/", "")
       .replaceAll("Optional\\.java:\\d+", "xxx")
       .replaceAll("Arrays\\.java:\\d+", "xxx")

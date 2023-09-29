@@ -1,15 +1,15 @@
 package stack.source.junit5;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-
 import static java.lang.Math.min;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static stack.source.internal.Throwables.getStackTraceAsString;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 @ExtendWith({
   LongMethodTest.AssertDecoration.class,
@@ -56,12 +56,15 @@ class LongMethodTest {
       ExtensionContext context,
       Throwable e
     ) {
-      String expected = join(
+      var expected = join(
         lineSeparator(),
         "java.lang.AssertionError: test",
         "\tat stack.source.junit5.LongMethodTest.test(LongMethodTest.java:48)",
         "",
+        "\t   46      assertEquals(1, 1);",
+        "\t   47      assertEquals(1, 1);",
         "\t-> 48      throw new AssertionError(\"test\");",
+        "\t   49    }",
         ""
       );
       assertEquals(DecoratedAssertionError.class, e.getClass());
@@ -70,7 +73,7 @@ class LongMethodTest {
   }
 
   private static void assertStackTrace(String expected, Throwable e) {
-    String actual = getStackTraceAsString(e);
+    var actual = getStackTraceAsString(e);
     actual = actual.substring(0, min(expected.length(), actual.length()));
     assertEquals(expected, actual);
   }

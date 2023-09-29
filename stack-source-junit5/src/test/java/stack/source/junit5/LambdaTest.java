@@ -1,16 +1,16 @@
 package stack.source.junit5;
 
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
-
 import static java.lang.Math.min;
 import static java.lang.String.join;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static stack.source.internal.Throwables.getStackTraceAsString;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.ExtensionContext;
+import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 
 @ExtendWith({
   LambdaTest.AssertDecoration.class,
@@ -47,6 +47,7 @@ class LambdaTest {
         "\t   25        assertTrue(true);",
         "\t-> 26        throw new AssertionError(expected);",
         "\t   27      });",
+        "\t   28    }",
         "",
         "",
         "\tat stack.source.junit5.LambdaTest.lambda(LambdaTest.java:31)",
@@ -56,8 +57,7 @@ class LambdaTest {
         "\t   32    }",
         "",
         "",
-        "\tat stack.source.junit5.LambdaTest.test(LambdaTest.java:24)",
-        "\tat "
+        "\tat stack.source.junit5.LambdaTest.test(LambdaTest.java:24)"
       );
       assertEquals(DecoratedAssertionError.class, e.getClass());
       assertStackTrace(expected, e);
@@ -65,7 +65,7 @@ class LambdaTest {
   }
 
   private static void assertStackTrace(String expected, Throwable e) {
-    String actual = getStackTraceAsString(e);
+    var actual = getStackTraceAsString(e);
     actual = actual.substring(0, min(expected.length(), actual.length()));
     assertEquals(expected, actual);
   }

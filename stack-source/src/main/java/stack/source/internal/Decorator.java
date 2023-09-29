@@ -1,117 +1,170 @@
 package stack.source.internal;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
-import static java.util.Comparator.comparing;
-import static java.util.Objects.requireNonNull;
+import static java.nio.file.Files.isDirectory;
 import static java.util.logging.Logger.getLogger;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static stack.source.internal.Throwables.getStackTraceAsString;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.NavigableMap;
+import java.util.Optional;
+import java.util.TreeMap;
+import java.util.stream.IntStream;
+
 public final class Decorator {
+  private Decorator() {}
 
-    private Decorator() {
+  private static final int CONTEXT_LINE_COUNT = 2;
+
+  public static void printSafely(Throwable throwable, PrintStream out) {
+    printSafely(throwable, new PrintWriter(out));
+  }
+
+  public static void printSafely(Throwable throwable, PrintWriter out) {
+    try {
+      out.println(print(throwable));
+    } catch (Throwable e) {
+      throwable.printStackTrace(out);
+      getLogger(Decorator.class.getName())
+          .warning(() -> "Failed to decorate " + getStackTraceAsString(e));
     }
+  }
 
-    public static void printSafely(Throwable throwable, PrintStream out) {
-        printSafely(throwable, new PrintWriter(out));
-    }
+  public static String print(Throwable throwable) {
+    var output = getStackTraceAsString(throwable);
+    try {
 
-    public static void printSafely(Throwable throwable, PrintWriter out) {
-        try {
-            out.println(print(throwable));
-        } catch (Throwable e) {
-            throwable.printStackTrace(out);
-            getLogger(Decorator.class.getName()).warning(() ->
-                    "Failed to decorate " + getStackTraceAsString(e));
-        }
-    }
+      var snippets = new HashSet<String>();
+      for (var elem : throwable.getStackTrace()) {
 
-    public static String print(Throwable throwable) {
-
-        Map<String, Map<IndexRegion, Decoration>> decorations = new HashMap<>();
-
-        for (StackTraceElement element : throwable.getStackTrace()) {
-            if (element.getFileName() == null) {
-                continue;
-            }
-            read(element).ifPresent(entry -> {
-                Index index = entry.getKey();
-                IndexRegion region = entry.getValue();
-                decorations
-                        .computeIfAbsent(element.getFileName(), __ -> new HashMap<>())
-                        .computeIfAbsent(region, r -> new Decoration(element, index, r));
-            });
+        var snippet = getSourceSnippet(elem);
+        if (snippet.isEmpty() || !snippets.add(snippet.get())) {
+          // Don't print the same snippet multiple times,
+          // multiple lambda on one line can create this situation
+          continue;
         }
 
-        String stackTrace = getStackTraceAsString(throwable);
-        for (Map<IndexRegion, Decoration> values : decorations.values()) {
-            for (Decoration decoration : values.values()) {
-                stackTrace = decoration.decorate(stackTrace);
-            }
-        }
-        return stackTrace;
+        var line = elem.toString();
+        var replacement =
+            line + lineSeparator() + lineSeparator() + snippet.get() + lineSeparator();
+        output = output.replace(line, replacement);
+      }
+
+    } catch (IOException | URISyntaxException | ClassNotFoundException ignored) {
+    }
+    return output;
+  }
+
+  private static Optional<String> getSourceSnippet(StackTraceElement elem)
+      throws ClassNotFoundException, URISyntaxException, IOException {
+
+    if (elem.getLineNumber() < 1
+        || elem.getFileName() == null
+        || elem.getMethodName().startsWith("access$")) { // Ignore class entry
+      return Optional.empty();
     }
 
-    private static Optional<Entry<Index, IndexRegion>> read(StackTraceElement stack) {
-        return Index.read(stack)
-                .flatMap(index -> findRegion(stack, index)
-                        .map(region -> new SimpleEntry<>(index, region)));
+    var clazz = Class.forName(elem.getClassName(), false, Decorator.class.getClassLoader());
+    var source = clazz.getProtectionDomain().getCodeSource();
+    if (source == null) {
+      return Optional.empty();
     }
 
-    private static Optional<IndexRegion> findRegion(StackTraceElement stack, Index index) {
-        return index.regions().stream()
-                .filter(e -> stack.getLineNumber() >= e.startLineNum())
-                .filter(e -> stack.getLineNumber() <= e.endLineNum())
-                .sorted(comparing(IndexRegion::lineCount))
-                .reduce((a, b) -> a.lineCount() <= 2 && b.lineCount() <= 10 ? b : a);
+    var location = source.getLocation();
+    if (location == null || !"file".equalsIgnoreCase(location.getProtocol())) {
+      return Optional.empty();
     }
 
-    private static final class Decoration {
-        final StackTraceElement element;
-        final Index index;
-        final IndexRegion region;
-
-        Decoration(StackTraceElement element, Index index, IndexRegion region) {
-            this.element = requireNonNull(element);
-            this.index = requireNonNull(index);
-            this.region = requireNonNull(region);
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder out = new StringBuilder();
-            int width = String.valueOf(region.endLineNum()).length();
-            long lineNumber = region.startLineNum();
-            for (String line : region.lines(index.source())) {
-                out.append("\t");
-                out.append(lineNumber == element.getLineNumber()
-                        ? "-> "
-                        : "   "
-                );
-                out.append(format("%" + width + "d", lineNumber));
-                out.append("  ");
-                out.append(line);
-                out.append(lineSeparator());
-                lineNumber++;
-            }
-            return out.toString();
-        }
-
-        String decorate(String stackTrace) {
-            String line = element.toString();
-            return stackTrace.replace(line, line
-                    + lineSeparator()
-                    + lineSeparator()
-                    + toString()
-                    + lineSeparator());
-        }
+    var dir = Paths.get(location.toURI());
+    if (!isDirectory(dir)) {
+      return Optional.empty();
     }
+
+    var path = findFile(elem.getFileName(), clazz);
+    if (path.isEmpty()) {
+      return Optional.empty();
+    }
+
+    var contextLines = readContextLines(elem, path.get());
+    removeBlankLinesFromStart(contextLines);
+    removeBlankLinesFromEnd(contextLines);
+    return Optional.of(buildSnippet(contextLines, elem));
+  }
+
+  private static Optional<Path> findFile(String fileName, Class<?> clazz) throws IOException {
+    var suffix =
+        Optional.ofNullable(clazz.getPackage())
+            .map(pkg -> pkg.getName().split("\\."))
+            .map(parts -> Paths.get("", parts))
+            .orElseGet(() -> Paths.get(""))
+            .resolve(fileName);
+
+    try (var paths =
+        Files.find(
+            Paths.get(""),
+            Integer.MAX_VALUE,
+            (p, attrs) -> attrs.isRegularFile() && p.endsWith(suffix))) {
+      return paths.findFirst();
+    }
+  }
+
+  private static NavigableMap<Integer, String> readContextLines(StackTraceElement elem, Path path)
+      throws IOException {
+
+    var startLineNum = Math.max(1, elem.getLineNumber() - CONTEXT_LINE_COUNT);
+    try (var stream = Files.lines(path)) {
+
+      var lines =
+          stream
+              .limit(elem.getLineNumber() + CONTEXT_LINE_COUNT)
+              .skip(startLineNum - 1)
+              .collect(toList());
+
+      return IntStream.range(0, lines.size())
+          .boxed()
+          .reduce(
+              new TreeMap<>(),
+              (acc, i) -> {
+                acc.put(i + startLineNum, lines.get(i));
+                return acc;
+              },
+              (a, b) -> b);
+    }
+  }
+
+  private static void removeBlankLinesFromStart(NavigableMap<Integer, String> lines) {
+    IntStream.rangeClosed(lines.firstKey(), lines.lastKey())
+        .takeWhile(i -> lines.get(i).isBlank())
+        .forEach(lines::remove);
+  }
+
+  private static void removeBlankLinesFromEnd(NavigableMap<Integer, String> lines) {
+    IntStream.iterate(lines.lastKey(), i -> i >= lines.firstKey(), i -> i - 1)
+        .takeWhile(i -> lines.get(i).isBlank())
+        .forEach(lines::remove);
+  }
+
+  private static String buildSnippet(NavigableMap<Integer, String> lines, StackTraceElement elem) {
+    var maxLineNumWidth = String.valueOf(lines.lastKey()).length();
+    return lines.entrySet().stream()
+        .map(
+            entry -> {
+              var lineNum = entry.getKey();
+              var isTargetLine = lineNum == elem.getLineNumber();
+              var line = entry.getValue();
+              var lineNumStr = format("%" + maxLineNumWidth + "d", lineNum);
+              return format("\t%s %s  %s", isTargetLine ? "->" : "  ", lineNumStr, line);
+            })
+        .collect(joining(lineSeparator(), "", lineSeparator()));
+  }
 }
