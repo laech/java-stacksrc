@@ -2,7 +2,6 @@ package nz.lae.stacksrc.core;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
-import static java.nio.file.Files.isDirectory;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
@@ -38,13 +37,7 @@ public final class StackTraceDecorator {
         }
 
         var line = elem.toString();
-        var replacement =
-            line
-                + lineSeparator()
-                + lineSeparator()
-                + snippet.get()
-                + lineSeparator()
-                + lineSeparator();
+        var replacement = String.format("%s%n%n%s%n%n", line, snippet.get());
         output = output.replace(line, replacement);
       }
 
@@ -53,7 +46,7 @@ public final class StackTraceDecorator {
     return output;
   }
 
-  static Optional<String> decorate(StackTraceElement elem)
+  private static Optional<String> decorate(StackTraceElement elem)
       throws ClassNotFoundException, URISyntaxException, IOException {
 
     if (elem.getLineNumber() < 1
@@ -75,7 +68,7 @@ public final class StackTraceDecorator {
     }
 
     var dir = Paths.get(location.toURI());
-    if (!isDirectory(dir)) {
+    if (!Files.isDirectory(dir)) {
       return Optional.empty();
     }
 
@@ -98,8 +91,8 @@ public final class StackTraceDecorator {
             (path, attrs) ->
                 attrs.isRegularFile() && path.getFileName().toString().equals(fileName))) {
 
-      var paths = stream.collect(toList());
-      return paths.size() == 1 ? Optional.of(paths.get(0)) : Optional.empty();
+      var paths = stream.limit(2).collect(toList());
+      return Optional.ofNullable(paths.size() == 1 ? paths.get(0) : null);
     }
   }
 
