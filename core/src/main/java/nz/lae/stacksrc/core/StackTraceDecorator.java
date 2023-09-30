@@ -79,7 +79,7 @@ public final class StackTraceDecorator {
       return Optional.empty();
     }
 
-    var path = findFile(elem.getFileName(), clazz);
+    var path = findFile(elem.getFileName());
     if (path.isEmpty()) {
       return Optional.empty();
     }
@@ -90,21 +90,16 @@ public final class StackTraceDecorator {
     return Optional.of(buildSnippet(contextLines, elem));
   }
 
-  private static Optional<Path> findFile(String fileName, Class<?> clazz) throws IOException {
-    // TODO find better
-    var suffix =
-        Optional.ofNullable(clazz.getPackage())
-            .map(pkg -> pkg.getName().split("\\."))
-            .map(parts -> Paths.get("", parts))
-            .orElseGet(() -> Paths.get(""))
-            .resolve(fileName);
-
-    try (var paths =
+  private static Optional<Path> findFile(String fileName) throws IOException {
+    try (var stream =
         Files.find(
             Paths.get(""),
             Integer.MAX_VALUE,
-            (p, attrs) -> attrs.isRegularFile() && p.endsWith(suffix))) {
-      return paths.findFirst();
+            (path, attrs) ->
+                attrs.isRegularFile() && path.getFileName().toString().equals(fileName))) {
+
+      var paths = stream.collect(toList());
+      return paths.size() == 1 ? Optional.of(paths.get(0)) : Optional.empty();
     }
   }
 
