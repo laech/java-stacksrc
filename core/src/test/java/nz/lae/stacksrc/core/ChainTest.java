@@ -1,7 +1,6 @@
 package nz.lae.stacksrc.core;
 
-import static java.lang.Math.min;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static nz.lae.stacksrc.core.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -41,28 +40,22 @@ class ChainTest {
     var expected =
         """
 java.lang.AssertionError: what?
-	at nz.lae.stacksrc.core.ChainTest.fail(ChainTest.java:23)
+	at nz.lae.stacksrc.core.ChainTest.fail(ChainTest.java:22)
 
-	   22    private ChainTest fail(String message) {
-	-> 23      throw new AssertionError(message);
-	   24    }
+	   21    private ChainTest fail(String message) {
+	-> 22      throw new AssertionError(message);
+	   23    }
 
 
-	at nz.lae.stacksrc.core.ChainTest.doThrow(ChainTest.java:15)
+	at nz.lae.stacksrc.core.ChainTest.doThrow(ChainTest.java:14)
 
-	   13          .nothing1()
-	   14          .nothing2()
-	-> 15          .fail("what?")
-	   16          .nothing3()
-	   17          .fail("more?")
+	   12          .nothing1()
+	   13          .nothing2()
+	-> 14          .fail("what?")
+	   15          .nothing3()
+	   16          .fail("more?")
 
 """;
     assertStackTrace(expected, exception);
-  }
-
-  private static void assertStackTrace(String expected, Throwable e) {
-    var actual = StackTraceDecorator.print(e);
-    actual = actual.substring(0, min(expected.length(), actual.length()));
-    assertEquals(expected, actual);
   }
 }
