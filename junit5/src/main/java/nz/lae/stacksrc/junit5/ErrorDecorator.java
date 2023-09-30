@@ -8,8 +8,8 @@ import org.opentest4j.IncompleteExecutionException;
 
 /**
  * Decorates stack traces with source code snippets.
- * <p>
- * Example output:
+ *
+ * <p>Example output:
  *
  * <pre>
  *
@@ -24,8 +24,8 @@ import org.opentest4j.IncompleteExecutionException;
  *
  * ...
  * </pre>
- * <p>
- * Usage:
+ *
+ * <p>Usage:
  *
  * <pre>
  *
@@ -39,23 +39,18 @@ import org.opentest4j.IncompleteExecutionException;
  *   }
  * }
  * </pre>
- * <p>
- * Alternatively, run your tests with
- * {@code -Djunit.jupiter.extensions.autodetection.enabled=true}
- * instead of using annotations.
+ *
+ * <p>Alternatively, run your tests with {@code
+ * -Djunit.jupiter.extensions.autodetection.enabled=true} instead of using annotations.
  */
 @AutoService(Extension.class)
 public final class ErrorDecorator implements TestExecutionExceptionHandler {
 
   @Override
-  public void handleTestExecutionException(
-    ExtensionContext context,
-    Throwable e
-  ) throws Throwable {
+  public void handleTestExecutionException(ExtensionContext context, Throwable e) throws Throwable {
     if (e instanceof IncompleteExecutionException) {
       throw e;
     }
     throw new DecoratedAssertionError(e);
   }
-
 }
