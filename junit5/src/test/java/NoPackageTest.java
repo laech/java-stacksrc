@@ -2,7 +2,7 @@ import static java.lang.Math.min;
 import static java.lang.System.lineSeparator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import nz.lae.stacksrc.core.Decorator;
+import nz.lae.stacksrc.core.StackTraceDecorator;
 import nz.lae.stacksrc.junit5.ErrorDecorator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ final class NoPackageTest {
               "\t   18        var expected =",
               "",
               "");
-      var actual = Decorator.print(e);
+      var actual = StackTraceDecorator.print(e);
       actual = actual.substring(0, min(expected.length(), actual.length()));
       assertEquals(expected, actual);
     }

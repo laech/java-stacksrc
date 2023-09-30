@@ -18,8 +18,8 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
-public final class Decorator {
-  private Decorator() {}
+public final class StackTraceDecorator {
+  private StackTraceDecorator() {}
 
   private static final int CONTEXT_LINE_COUNT = 2;
 
@@ -30,7 +30,7 @@ public final class Decorator {
       var snippets = new HashSet<String>();
       for (var elem : throwable.getStackTrace()) {
 
-        var snippet = getSourceSnippet(elem);
+        var snippet = decorate(elem);
         if (snippet.isEmpty() || !snippets.add(snippet.get())) {
           // Don't print the same snippet multiple times,
           // multiple lambda on one line can create this situation
@@ -39,7 +39,12 @@ public final class Decorator {
 
         var line = elem.toString();
         var replacement =
-            line + lineSeparator() + lineSeparator() + snippet.get() + lineSeparator();
+            line
+                + lineSeparator()
+                + lineSeparator()
+                + snippet.get()
+                + lineSeparator()
+                + lineSeparator();
         output = output.replace(line, replacement);
       }
 
@@ -48,7 +53,7 @@ public final class Decorator {
     return output;
   }
 
-  private static Optional<String> getSourceSnippet(StackTraceElement elem)
+  static Optional<String> decorate(StackTraceElement elem)
       throws ClassNotFoundException, URISyntaxException, IOException {
 
     if (elem.getLineNumber() < 1
@@ -57,7 +62,8 @@ public final class Decorator {
       return Optional.empty();
     }
 
-    var clazz = Class.forName(elem.getClassName(), false, Decorator.class.getClassLoader());
+    var clazz =
+        Class.forName(elem.getClassName(), false, StackTraceDecorator.class.getClassLoader());
     var source = clazz.getProtectionDomain().getCodeSource();
     if (source == null) {
       return Optional.empty();
@@ -85,6 +91,7 @@ public final class Decorator {
   }
 
   private static Optional<Path> findFile(String fileName, Class<?> clazz) throws IOException {
+    // TODO find better
     var suffix =
         Optional.ofNullable(clazz.getPackage())
             .map(pkg -> pkg.getName().split("\\."))
@@ -148,6 +155,6 @@ public final class Decorator {
               var lineNumStr = format("%" + maxLineNumWidth + "d", lineNum);
               return format("\t%s %s  %s", isTargetLine ? "->" : "  ", lineNumStr, line);
             })
-        .collect(joining(lineSeparator(), "", lineSeparator()));
+        .collect(joining(lineSeparator()));
   }
 }
