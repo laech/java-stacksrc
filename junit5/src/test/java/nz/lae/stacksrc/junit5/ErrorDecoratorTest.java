@@ -1,7 +1,6 @@
 package nz.lae.stacksrc.junit5;
 
 import static java.lang.Math.min;
-import static java.lang.System.lineSeparator;
 import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,58 +40,52 @@ class ErrorDecoratorTest {
     @Override
     public void handleTestExecutionException(ExtensionContext context, Throwable e)
         throws Throwable {
-
       switch (context.getRequiredTestMethod().getName()) {
-        case "decoratesFailure":
-          assertEqualsFailure(e);
-          break;
-        case "decoratesArrayFailure":
-          assertArrayEqualsFailure(e);
-          break;
-        default:
-          throw e;
+        case "decoratesFailure" -> assertEqualsFailure(e);
+        case "decoratesArrayFailure" -> assertArrayEqualsFailure(e);
+        default -> throw e;
       }
     }
 
     private void assertEqualsFailure(Throwable e) {
       var expected =
-          String.join(
-              lineSeparator(),
-              "nz.lae.stacksrc.junit5.DecoratedAssertionError:",
-              "org.opentest4j.AssertionFailedError: testing failure",
-              "\tat org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)",
-              "\tat org.junit.jupiter.api.Assertions.fail(Assertions.java:134)",
-              "\tat nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:22)",
-              "",
-              "\t   20    @Test",
-              "\t   21    void decoratesFailure() {",
-              "\t-> 22      fail(\"testing failure\");",
-              "\t   23    }",
-              "");
+          """
+nz.lae.stacksrc.junit5.DecoratedAssertionError:
+org.opentest4j.AssertionFailedError: testing failure
+	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
+	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
+	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:21)
+
+	   19    @Test
+	   20    void decoratesFailure() {
+	-> 21      fail("testing failure");
+	   22    }
+
+""";
       assertEquals(DecoratedAssertionError.class, e.getClass());
       assertStackTrace(expected, e);
     }
 
     private void assertArrayEqualsFailure(Throwable e) {
       var expected =
-          String.join(
-              lineSeparator(),
-              "nz.lae.stacksrc.junit5.DecoratedAssertionError:",
-              "org.opentest4j.AssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>",
-              "\tat org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)",
-              "\tat org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)",
-              "\tat org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:440)",
-              "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:241)",
-              "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:87)",
-              "\tat org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:83)",
-              "\tat org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1277)",
-              "\tat nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesArrayFailure(ErrorDecoratorTest.java:27)",
-              "",
-              "\t   25    @Test",
-              "\t   26    void decoratesArrayFailure() {",
-              "\t-> 27      assertArrayEquals(new int[] {1}, new int[] {2});",
-              "\t   28    }",
-              "");
+          """
+nz.lae.stacksrc.junit5.DecoratedAssertionError:
+org.opentest4j.AssertionFailedError: array contents differ at index [0], expected: <1> but was: <2>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertArrayEquals.failArraysNotEqual(AssertArrayEquals.java:440)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:241)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:87)
+	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:83)
+	at org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1277)
+	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesArrayFailure(ErrorDecoratorTest.java:26)
+
+	   24    @Test
+	   25    void decoratesArrayFailure() {
+	-> 26      assertArrayEquals(new int[] {1}, new int[] {2});
+	   27    }
+
+""";
       assertEquals(DecoratedAssertionError.class, e.getClass());
       assertStackTrace(expected, e);
     }

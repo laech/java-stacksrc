@@ -1,13 +1,11 @@
 package nz.lae.stacksrc.junit4;
 
 import static java.lang.Math.min;
-import static java.lang.System.lineSeparator;
 import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.*;
-import static org.junit.Assume.assumeThat;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -31,16 +29,6 @@ public final class ErrorDecoratorTest {
     assertArrayEquals("test message", new String[] {"1"}, new String[] {"2"});
   }
 
-  @Test
-  @SuppressWarnings("ConstantConditions")
-  public void assumeApiPassThrough() {
-    assumeThat(false, is(true));
-  }
-
-  @Test
-  @Ignore
-  public void ignoreApiPassThrough() {}
-
   @Rule
   public final RuleChain r =
       RuleChain.outerRule(ErrorDecoratorTest::apply).around(new ErrorDecorator());
@@ -60,71 +48,65 @@ public final class ErrorDecoratorTest {
 
   private static void assertFailure(Throwable e, Description desc) {
     switch (desc.getMethodName()) {
-      case "failure":
-        assertFail(e);
-        break;
-      case "failByAssertEquals":
-        assertFailByAssertEquals(e);
-        break;
-      case "failByAssertArrayEquals":
-        assertFailByAssertArrayEquals(e);
-        break;
-      default:
-        throw new AssertionError("Unexpected test method name: " + desc.getMethodName(), e);
+      case "failure" -> assertFail(e);
+      case "failByAssertEquals" -> assertFailByAssertEquals(e);
+      case "failByAssertArrayEquals" -> assertFailByAssertArrayEquals(e);
+      default -> throw new AssertionError(
+          "Unexpected test method name: " + desc.getMethodName(), e);
     }
   }
 
   private static void assertFail(Throwable e) {
     var expected =
-        String.join(
-            lineSeparator(),
-            "nz.lae.stacksrc.junit4.DecoratedAssertionError:",
-            "java.lang.AssertionError: testing failure",
-            "\tat org.junit.Assert.fail(Assert.java:89)",
-            "\tat nz.lae.stacksrc.junit4.ErrorDecoratorTest.failure(ErrorDecoratorTest.java:21)",
-            "",
-            "\t   19    @Test",
-            "\t   20    public void failure() {",
-            "\t-> 21      fail(\"testing failure\");",
-            "\t   22    }",
-            "");
+        """
+nz.lae.stacksrc.junit4.DecoratedAssertionError:
+java.lang.AssertionError: testing failure
+	at org.junit.Assert.fail(Assert.java:89)
+	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.failure(ErrorDecoratorTest.java:19)
+
+	   17    @Test
+	   18    public void failure() {
+	-> 19      fail("testing failure");
+	   20    }
+
+""";
     assertStackTrace(expected, e);
   }
 
   private static void assertFailByAssertEquals(Throwable e) {
     var expected =
-        String.join(
-            lineSeparator(),
-            "nz.lae.stacksrc.junit4.DecoratedAssertionError:",
-            "org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>",
-            "\tat org.junit.Assert.assertEquals(Assert.java:117)",
-            "\tat nz.lae.stacksrc.junit4.ErrorDecoratorTest.failByAssertEquals(ErrorDecoratorTest.java:26)",
-            "",
-            "\t   24    @Test",
-            "\t   25    public void failByAssertEquals() {",
-            "\t-> 26      assertEquals(\"test message\", \"1\", \"2\");",
-            "\t   27    }",
-            "");
+        """
+nz.lae.stacksrc.junit4.DecoratedAssertionError:
+org.junit.ComparisonFailure: test message expected:<[1]> but was:<[2]>
+	at org.junit.Assert.assertEquals(Assert.java:117)
+	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.failByAssertEquals(ErrorDecoratorTest.java:24)
+
+	   22    @Test
+	   23    public void failByAssertEquals() {
+	-> 24      assertEquals("test message", "1", "2");
+	   25    }
+
+""";
     assertStackTrace(expected, e);
   }
 
   private static void assertFailByAssertArrayEquals(Throwable e) {
     var expected =
-        String.join(
-            lineSeparator(),
-            "nz.lae.stacksrc.junit4.DecoratedAssertionError:",
-            "test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>",
-            "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:78)",
-            "\tat org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:28)",
-            "\tat org.junit.Assert.internalArrayEquals(Assert.java:534)",
-            "\tat org.junit.Assert.assertArrayEquals(Assert.java:285)",
-            "\tat nz.lae.stacksrc.junit4.ErrorDecoratorTest.failByAssertArrayEquals(ErrorDecoratorTest.java:31)",
-            "",
-            "\t   29    @Test",
-            "\t   30    public void failByAssertArrayEquals() {",
-            "\t-> 31      assertArrayEquals(\"test message\", new String[] {\"1\"}, new String[] {\"2\"});",
-            "\t   32    }",
-            "");
+        """
+nz.lae.stacksrc.junit4.DecoratedAssertionError:
+test message: arrays first differed at element [0]; expected:<[1]> but was:<[2]>
+	at org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:78)
+	at org.junit.internal.ComparisonCriteria.arrayEquals(ComparisonCriteria.java:28)
+	at org.junit.Assert.internalArrayEquals(Assert.java:534)
+	at org.junit.Assert.assertArrayEquals(Assert.java:285)
+	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.failByAssertArrayEquals(ErrorDecoratorTest.java:29)
+
+	   27    @Test
+	   28    public void failByAssertArrayEquals() {
+	-> 29      assertArrayEquals("test message", new String[] {"1"}, new String[] {"2"});
+	   30    }
+
+""";
     assertStackTrace(expected, e);
   }
 
