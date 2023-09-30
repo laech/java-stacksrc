@@ -141,7 +141,9 @@ public final class StackTraceDecorator {
               var isTargetLine = lineNum == elem.getLineNumber();
               var line = entry.getValue();
               var lineNumStr = format("%" + maxLineNumWidth + "d", lineNum);
-              return format("\t%s %s  %s", isTargetLine ? "->" : "  ", lineNumStr, line);
+              return format(
+                  "\t%s %s%s",
+                  isTargetLine ? "->" : "  ", lineNumStr, line.isEmpty() ? "" : "  " + line);
             })
         .collect(joining(lineSeparator()));
   }
