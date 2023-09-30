@@ -5,9 +5,7 @@ import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -25,15 +23,6 @@ class ErrorDecoratorTest {
   void decoratesArrayFailure() {
     assertArrayEquals(new int[] {1}, new int[] {2});
   }
-
-  @Test
-  void assumeApiPassThrough() {
-    assumeTrue(() -> false);
-  }
-
-  @Test
-  @Disabled
-  void disabledApiPassThrough() {}
 
   static class AssertDecoration implements TestExecutionExceptionHandler {
 
@@ -54,12 +43,12 @@ nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: testing failure
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
-	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:21)
+	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:19)
 
-	   19    @Test
-	   20    void decoratesFailure() {
-	-> 21      fail("testing failure");
-	   22    }
+	   17    @Test
+	   18    void decoratesFailure() {
+	-> 19      fail("testing failure");
+	   20    }
 
 """;
       assertEquals(DecoratedAssertionError.class, e.getClass());
@@ -78,12 +67,12 @@ org.opentest4j.AssertionFailedError: array contents differ at index [0], expecte
 	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:87)
 	at org.junit.jupiter.api.AssertArrayEquals.assertArrayEquals(AssertArrayEquals.java:83)
 	at org.junit.jupiter.api.Assertions.assertArrayEquals(Assertions.java:1277)
-	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesArrayFailure(ErrorDecoratorTest.java:26)
+	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesArrayFailure(ErrorDecoratorTest.java:24)
 
-	   24    @Test
-	   25    void decoratesArrayFailure() {
-	-> 26      assertArrayEquals(new int[] {1}, new int[] {2});
-	   27    }
+	   22    @Test
+	   23    void decoratesArrayFailure() {
+	-> 24      assertArrayEquals(new int[] {1}, new int[] {2});
+	   25    }
 
 """;
       assertEquals(DecoratedAssertionError.class, e.getClass());
