@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.core;
 
 import static java.lang.String.format;
+import static java.lang.System.lineSeparator;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
@@ -36,7 +37,7 @@ public final class StackTraceDecorator {
         }
 
         var line = elem.toString();
-        var replacement = String.format("%s\n\n%s\n\n", line, snippet.get());
+        var replacement = String.format("%s%n%n%s%n%n", line, snippet.get());
         output = output.replace(line, replacement);
       }
 
@@ -144,6 +145,6 @@ public final class StackTraceDecorator {
                   "\t%s %s%s",
                   isTargetLine ? "->" : "  ", lineNumStr, line.isEmpty() ? "" : "  " + line);
             })
-        .collect(joining("\n"));
+        .collect(joining(lineSeparator()));
   }
 }
