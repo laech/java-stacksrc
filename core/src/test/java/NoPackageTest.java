@@ -1,5 +1,6 @@
-import static nz.lae.stacksrc.core.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
+import nz.lae.stacksrc.core.StackTraceDecorator;
 import org.junit.jupiter.api.Test;
 
 class NoPackageTest {
@@ -12,16 +13,16 @@ class NoPackageTest {
       var expected =
           """
 java.lang.AssertionError: no package
-	at NoPackageTest.noPackage(NoPackageTest.java:10)
+	at NoPackageTest.noPackage(NoPackageTest.java:11)
 
-	    8    void noPackage() {
-	    9      try {
-	-> 10        throw new AssertionError("no package");
-	   11      } catch (AssertionError e) {
-	   12        var expected =
+	    9    void noPackage() {
+	   10      try {
+	-> 11        throw new AssertionError("no package");
+	   12      } catch (AssertionError e) {
+	   13        var expected =
 
 """;
-      assertStackTrace(expected, e);
+      assertStackTrace(expected, StackTraceDecorator.print(e));
     }
   }
 }

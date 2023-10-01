@@ -1,9 +1,6 @@
 package nz.lae.stacksrc.junit4;
 
-import static java.lang.Math.min;
-import static java.lang.System.lineSeparator;
-import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
-import static org.junit.Assert.assertEquals;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.Assert.fail;
 
 import org.junit.Rule;
@@ -41,21 +38,14 @@ public final class ErrorDecoratorTest {
 nz.lae.stacksrc.junit4.DecoratedAssertionError:
 java.lang.AssertionError: testing failure
 	at org.junit.Assert.fail(Assert.java:89)
-	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:18)
+	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:15)
 
-	   16    @Test
-	   17    public void decoratesFailure() {
-	-> 18      fail("testing failure");
-	   19    }
+	   13    @Test
+	   14    public void decoratesFailure() {
+	-> 15      fail("testing failure");
+	   16    }
 
 """;
     assertStackTrace(expected, e);
-  }
-
-  private static void assertStackTrace(String expected, Throwable e) {
-    var actual = getStackTraceAsString(e);
-    actual = actual.substring(0, min(expected.length(), actual.length()));
-    expected = expected.replaceAll("\n\r?", lineSeparator());
-    assertEquals(expected, actual);
   }
 }

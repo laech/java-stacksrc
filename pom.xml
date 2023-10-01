@@ -51,6 +51,7 @@
     <module>junit4</module>
     <module>junit5</module>
     <module>test</module>
+    <module>test-lib</module>
   </modules>
 
   <properties>

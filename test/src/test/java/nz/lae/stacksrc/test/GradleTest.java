@@ -1,10 +1,8 @@
 package nz.lae.stacksrc.test;
 
-import static java.lang.Math.min;
 import static java.lang.System.getProperty;
-import static java.lang.System.lineSeparator;
 import static java.util.concurrent.TimeUnit.MINUTES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import jakarta.xml.bind.JAXB;
 import java.io.IOException;
@@ -84,11 +82,5 @@ org.opentest4j.AssertionFailedError: example failure
     if (process.exitValue() != 0) {
       throw new AssertionFailedError("Process failed, check the log for error.");
     }
-  }
-
-  private static void assertStackTrace(String expected, String actual) {
-    actual = actual.substring(0, min(expected.length(), actual.length()));
-    expected = expected.replaceAll("\n\r?", lineSeparator());
-    assertEquals(expected, actual);
   }
 }

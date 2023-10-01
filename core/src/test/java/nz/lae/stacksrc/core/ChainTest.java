@@ -1,6 +1,6 @@
 package nz.lae.stacksrc.core;
 
-import static nz.lae.stacksrc.core.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -56,6 +56,6 @@ java.lang.AssertionError: what?
 	   16          .fail("more?")
 
 """;
-    assertStackTrace(expected, exception);
+    assertStackTrace(expected, StackTraceDecorator.print(exception));
   }
 }

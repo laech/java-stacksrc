@@ -1,7 +1,7 @@
 package nz.lae.stacksrc.core;
 
 import static java.util.Arrays.asList;
-import static nz.lae.stacksrc.core.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
@@ -97,6 +97,6 @@ java.lang.AssertionError: bob
 	   41          ""\"
 
 """;
-    assertStackTrace(expected, exception);
+    assertStackTrace(expected, StackTraceDecorator.print(exception));
   }
 }

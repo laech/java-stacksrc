@@ -1,8 +1,6 @@
 package nz.lae.stacksrc.junit5;
 
-import static java.lang.Math.min;
-import static java.lang.System.lineSeparator;
-import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -29,23 +27,16 @@ nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: testing failure
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
-	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:19)
+	at nz.lae.stacksrc.junit5.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:17)
 
-	   17    @Test
-	   18    void decoratesFailure() {
-	-> 19      fail("testing failure");
-	   20    }
+	   15    @Test
+	   16    void decoratesFailure() {
+	-> 17      fail("testing failure");
+	   18    }
 
 """;
       assertEquals(DecoratedAssertionError.class, e.getClass());
       assertStackTrace(expected, e);
     }
-  }
-
-  private static void assertStackTrace(String expected, Throwable e) {
-    var actual = getStackTraceAsString(e);
-    actual = actual.substring(0, min(expected.length(), actual.length()));
-    expected = expected.replaceAll("\n\r?", lineSeparator());
-    assertEquals(expected, actual);
   }
 }

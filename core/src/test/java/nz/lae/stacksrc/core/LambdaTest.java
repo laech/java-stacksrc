@@ -1,6 +1,6 @@
 package nz.lae.stacksrc.core;
 
-import static nz.lae.stacksrc.core.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -43,6 +43,6 @@ java.lang.AssertionError: hi
 	   22    }
 
 """;
-    assertStackTrace(expected, exception);
+    assertStackTrace(expected, StackTraceDecorator.print(exception));
   }
 }

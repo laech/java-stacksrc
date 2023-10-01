@@ -9,20 +9,20 @@
     <version>0.4.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test</artifactId>
+  <artifactId>test-lib</artifactId>
+
+  <properties>
+    <maven.compiler.source>${maven.compiler.testSource}</maven.compiler.source>
+    <maven.compiler.target>${maven.compiler.testTarget}</maven.compiler.target>
+    <maven.compiler.release>
+      ${maven.compiler.testRelease}
+    </maven.compiler.release>
+  </properties>
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>test-lib</artifactId>
-      <version>${project.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish.jaxb</groupId>
-      <artifactId>jaxb-runtime</artifactId>
-      <version>4.0.3</version>
-      <scope>test</scope>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
     </dependency>
   </dependencies>
 
