@@ -122,7 +122,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.0.1</version>
+        <version>3.6.0</version>
         <configuration>
           <quiet>true</quiet>
         </configuration>
@@ -138,9 +138,6 @@
             <goals>
               <goal>aggregate</goal>
             </goals>
-            <configuration>
-              <excludePackageNames>*internal*</excludePackageNames>
-            </configuration>
           </execution>
         </executions>
       </plugin>
