@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>nz.lae.stacksrc</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>stacksrc-parent</artifactId>
   <packaging>pom</packaging>
   <version>0.4.3-SNAPSHOT</version>
 
@@ -47,11 +47,11 @@
   </developers>
 
   <modules>
-    <module>core</module>
-    <module>junit4</module>
-    <module>junit5</module>
-    <module>test</module>
-    <module>test-lib</module>
+    <module>stacksrc-core</module>
+    <module>stacksrc-junit4</module>
+    <module>stacksrc-junit5</module>
+    <module>stacksrc-test-it</module>
+    <module>stacksrc-test-lib</module>
   </modules>
 
   <properties>

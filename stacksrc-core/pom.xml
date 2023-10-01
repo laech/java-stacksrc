@@ -4,26 +4,14 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <groupId>nz.lae.stacksrc</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>stacksrc-parent</artifactId>
     <version>0.4.3-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>junit4</artifactId>
+  <artifactId>stacksrc-core</artifactId>
 
   <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>core</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>[4.13.1,]</version>
-      <scope>provided</scope>
-    </dependency>
-
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>test-lib</artifactId>

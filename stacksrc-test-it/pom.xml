@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nz.lae.stacksrc</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>stacksrc-parent</artifactId>
     <version>0.4.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test</artifactId>
+  <artifactId>stacksrc-test-it</artifactId>
 
   <dependencies>
     <dependency>
@@ -44,12 +44,12 @@
           <artifactItems>
             <artifactItem>
               <groupId>${project.groupId}</groupId>
-              <artifactId>core</artifactId>
+              <artifactId>stacksrc-core</artifactId>
               <version>${project.version}</version>
             </artifactItem>
             <artifactItem>
               <groupId>${project.groupId}</groupId>
-              <artifactId>junit5</artifactId>
+              <artifactId>stacksrc-junit5</artifactId>
               <version>${project.version}</version>
             </artifactItem>
           </artifactItems>

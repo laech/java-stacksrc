@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>nz.lae.stacksrc</groupId>
-    <artifactId>parent</artifactId>
+    <artifactId>stacksrc-parent</artifactId>
     <version>0.4.3-SNAPSHOT</version>
   </parent>
 
-  <artifactId>test-lib</artifactId>
+  <artifactId>stacksrc-test-lib</artifactId>
 
   <properties>
     <maven.compiler.source>${maven.compiler.testSource}</maven.compiler.source>
