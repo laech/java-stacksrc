@@ -11,29 +11,18 @@ import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 
-class GradleTest {
+class GradleIT {
 
   @Test
   void checkGradleTestReportContainsCodeSnippet() throws Exception {
 
-    var moduleRoot =
+    var gradleRoot =
         Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
             .toAbsolutePath()
             .resolve("../..")
-            .normalize();
+            .normalize()
+            .resolve("gradle");
 
-    var projectRoot = moduleRoot.resolve("..").normalize();
-    runProcess(
-        projectRoot,
-        projectRoot
-            .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
-            .toString(),
-        "install",
-        "-am",
-        "-pl",
-        "junit5");
-
-    var gradleRoot = moduleRoot.resolve("gradle");
     runProcess(
         gradleRoot,
         gradleRoot
