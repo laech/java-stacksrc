@@ -29,6 +29,7 @@ class GradleTest {
             .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
             .toString(),
         "install",
+        "-am",
         "-pl",
         "junit5");
 
