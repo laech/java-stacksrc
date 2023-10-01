@@ -14,7 +14,7 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>test-lib</artifactId>
+      <artifactId>stacksrc-test-lib</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>
