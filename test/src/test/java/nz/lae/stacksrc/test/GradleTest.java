@@ -39,7 +39,6 @@ class GradleTest {
         gradleRoot
             .resolve(getProperty("os.name").startsWith("Windows") ? "gradlew.bat" : "gradlew")
             .toString(),
-        "--no-daemon",
         "clean",
         "test");
 
