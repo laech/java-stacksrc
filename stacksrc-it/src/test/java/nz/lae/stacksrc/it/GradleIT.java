@@ -1,15 +1,11 @@
-package nz.lae.stacksrc.test;
+package nz.lae.stacksrc.it;
 
 import static java.lang.System.getProperty;
-import static java.util.concurrent.TimeUnit.MINUTES;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import jakarta.xml.bind.JAXB;
-import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
-import org.opentest4j.AssertionFailedError;
 
 class GradleIT {
 
@@ -23,7 +19,7 @@ class GradleIT {
             .normalize()
             .resolve("gradle");
 
-    runProcess(
+    Processes.run(
         gradleRoot,
         gradleRoot
             .resolve(getProperty("os.name").startsWith("Windows") ? "gradlew.bat" : "gradlew")
@@ -31,12 +27,12 @@ class GradleIT {
         "clean",
         "test");
 
-    var testSuite =
+    var report =
         JAXB.unmarshal(
             gradleRoot
-                .resolve("build/test-results/test/TEST-nz.lae.stacksrc.test.gradle.GradleTest.xml")
+                .resolve("build/test-results/test/TEST-nz.lae.stacksrc.it.gradle.GradleTest.xml")
                 .toFile(),
-            TestSuite.class);
+            TestReport.class);
 
     assertStackTrace(
         """
@@ -44,7 +40,7 @@ nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: example failure
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
-	at nz.lae.stacksrc.test.gradle.GradleTest.run(GradleTest.java:11)
+	at nz.lae.stacksrc.it.gradle.GradleTest.run(GradleTest.java:11)
 
 	    9    @Test
 	   10    void run() {
@@ -53,23 +49,6 @@ org.opentest4j.AssertionFailedError: example failure
 	   13  }
 
 """,
-        testSuite.testCase.failure.message);
-  }
-
-  private void runProcess(Path directory, String... command)
-      throws IOException, InterruptedException {
-
-    var builder = new ProcessBuilder(command).directory(directory.toFile()).inheritIO();
-    var process = builder.start();
-    try {
-      if (!process.waitFor(2, MINUTES)) {
-        throw new AssertionFailedError("Timed out.");
-      }
-    } finally {
-      process.destroyForcibly();
-    }
-    if (process.exitValue() != 0) {
-      throw new AssertionFailedError("Process failed, check the log for error.");
-    }
+        report.testCase.failure.message);
   }
 }

@@ -1,10 +1,10 @@
-package nz.lae.stacksrc.test.gradle;
+package nz.lae.stacksrc.it.maven;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
 import org.junit.jupiter.api.Test;
 
-class GradleTest {
+class ExampleTest {
 
   @Test
   void run() {

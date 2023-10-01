@@ -50,7 +50,7 @@
     <module>stacksrc-core</module>
     <module>stacksrc-junit4</module>
     <module>stacksrc-junit5</module>
-    <module>stacksrc-test-it</module>
+    <module>stacksrc-it</module>
     <module>stacksrc-test-lib</module>
   </modules>
 
@@ -114,6 +114,19 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
