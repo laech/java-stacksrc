@@ -24,6 +24,6 @@ final class DecoratedAssertionError extends AssertionFailedError {
 
   @Override
   public String toString() {
-    return String.format("%s:%n%s", getClass().getName(), getMessage());
+    return String.format("%s:\n%s", getClass().getName(), getMessage());
   }
 }

@@ -36,7 +36,7 @@ public final class StackTraceDecorator {
         }
 
         var line = elem.toString();
-        var replacement = String.format("%s%n%n%s%n%n", line, snippet.get());
+        var replacement = String.format("%s\n\n%s\n\n", line, snippet.get());
         output = output.replace(line, replacement);
       }
 
