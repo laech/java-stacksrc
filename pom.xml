@@ -144,6 +144,9 @@
         <version>3.6.0</version>
         <configuration>
           <quiet>true</quiet>
+          <excludePackageNames>
+            nz.lae.stacksrc.test
+          </excludePackageNames>
         </configuration>
         <executions>
           <execution>
