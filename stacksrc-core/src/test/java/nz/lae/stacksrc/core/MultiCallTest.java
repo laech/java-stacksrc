@@ -97,6 +97,6 @@ java.lang.AssertionError: bob
 	   41          ""\"
 
 """;
-    assertStackTrace(expected, StackTraceDecorator.print(exception));
+    assertStackTrace(expected, new StackTraceDecorator().decorateStackTrace(exception));
   }
 }

@@ -2,12 +2,11 @@ package nz.lae.stacksrc.junit4;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import nz.lae.stacksrc.core.StackTraceDecorator;
 
 final class DecoratedAssertionError extends AssertionError {
 
-  DecoratedAssertionError(Throwable original) {
-    super(StackTraceDecorator.print(original));
+  DecoratedAssertionError(String stackTrace) {
+    super(stackTrace);
     setStackTrace(new StackTraceElement[0]);
   }
 

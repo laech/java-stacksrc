@@ -1,5 +1,8 @@
 package nz.lae.stacksrc.junit4;
 
+import static java.util.Objects.requireNonNull;
+
+import nz.lae.stacksrc.core.StackTraceDecorator;
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
@@ -43,6 +46,16 @@ import org.junit.runners.model.Statement;
  */
 public final class ErrorDecorator implements TestRule {
 
+  private final StackTraceDecorator decorator;
+
+  public ErrorDecorator() {
+    this(new StackTraceDecorator());
+  }
+
+  public ErrorDecorator(StackTraceDecorator decorator) {
+    this.decorator = requireNonNull(decorator, "decorator");
+  }
+
   @Override
   public Statement apply(Statement base, Description description) {
     return new Statement() {
@@ -59,7 +72,7 @@ public final class ErrorDecorator implements TestRule {
     } catch (AssumptionViolatedException e) {
       throw e;
     } catch (Throwable e) {
-      throw new DecoratedAssertionError(e);
+      throw new DecoratedAssertionError(decorator.decorateStackTrace(e));
     }
   }
 }

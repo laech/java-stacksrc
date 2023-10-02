@@ -2,11 +2,13 @@ package nz.lae.stacksrc.core;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
-import static nz.lae.stacksrc.core.Throwables.getStackTraceAsString;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,16 +20,39 @@ import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 public final class StackTraceDecorator {
-  private StackTraceDecorator() {}
 
-  private static final int CONTEXT_LINE_COUNT = 2;
+  private final Path searchPath;
+  private final int contextLineCount;
 
-  public static String print(Throwable throwable) {
-    var output = getStackTraceAsString(throwable);
+  /**
+   * Creates a decorator with default config, where search path is set to the current working
+   * directory, and context line count is 2.
+   */
+  public StackTraceDecorator() {
+    this(Paths.get(""), 2);
+  }
+
+  /**
+   * @param searchPath where to search for source code
+   * @param contextLineCount number of context lines to show for a given stack trace element
+   */
+  public StackTraceDecorator(Path searchPath, int contextLineCount) {
+    if (contextLineCount < 1) {
+      throw new IllegalArgumentException("Invalid contextLineCount: " + contextLineCount);
+    }
+    this.searchPath = requireNonNull(searchPath, "searchPath");
+    this.contextLineCount = contextLineCount;
+  }
+
+  /** Returns the stack trace of the throwable with code snippets applied. */
+  public String decorateStackTrace(Throwable e) {
+    requireNonNull(e);
+
+    var output = getStackTraceAsString(e);
     try {
 
       var snippets = new HashSet<String>();
-      for (var elem : throwable.getStackTrace()) {
+      for (var elem : e.getStackTrace()) {
 
         var snippet = decorate(elem);
         if (snippet.isEmpty() || !snippets.add(snippet.get())) {
@@ -46,7 +71,7 @@ public final class StackTraceDecorator {
     return output;
   }
 
-  private static Optional<String> decorate(StackTraceElement elem)
+  private Optional<String> decorate(StackTraceElement elem)
       throws ClassNotFoundException, URISyntaxException, IOException {
 
     if (elem.getLineNumber() < 1
@@ -83,10 +108,11 @@ public final class StackTraceDecorator {
     return Optional.of(buildSnippet(contextLines, elem));
   }
 
-  private static Optional<Path> findFile(String fileName) throws IOException {
+  private Optional<Path> findFile(String fileName) throws IOException {
+    // TODO add some caching
     try (var stream =
         Files.find(
-            Paths.get(""),
+            searchPath,
             Integer.MAX_VALUE,
             (path, attrs) ->
                 attrs.isRegularFile() && path.getFileName().toString().equals(fileName))) {
@@ -96,15 +122,15 @@ public final class StackTraceDecorator {
     }
   }
 
-  private static NavigableMap<Integer, String> readContextLines(StackTraceElement elem, Path path)
+  private NavigableMap<Integer, String> readContextLines(StackTraceElement elem, Path path)
       throws IOException {
 
-    var startLineNum = Math.max(1, elem.getLineNumber() - CONTEXT_LINE_COUNT);
+    var startLineNum = Math.max(1, elem.getLineNumber() - contextLineCount);
     try (var stream = Files.lines(path)) {
 
       var lines =
           stream
-              .limit(elem.getLineNumber() + CONTEXT_LINE_COUNT)
+              .limit(elem.getLineNumber() + contextLineCount)
               .skip(startLineNum - 1)
               .collect(toList());
 
@@ -146,5 +172,13 @@ public final class StackTraceDecorator {
                   isTargetLine ? "->" : "  ", lineNumStr, line.isEmpty() ? "" : "  " + line);
             })
         .collect(joining(lineSeparator()));
+  }
+
+  private static String getStackTraceAsString(Throwable e) {
+    var stringWriter = new StringWriter();
+    var printWriter = new PrintWriter(stringWriter);
+    e.printStackTrace(printWriter);
+    printWriter.flush();
+    return stringWriter.toString();
   }
 }

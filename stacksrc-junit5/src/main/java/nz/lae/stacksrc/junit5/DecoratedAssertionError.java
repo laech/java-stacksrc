@@ -2,13 +2,12 @@ package nz.lae.stacksrc.junit5;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import nz.lae.stacksrc.core.StackTraceDecorator;
 import org.opentest4j.AssertionFailedError;
 
 final class DecoratedAssertionError extends AssertionFailedError {
 
-  DecoratedAssertionError(Throwable original) {
-    super(StackTraceDecorator.print(original));
+  DecoratedAssertionError(String stackTrace) {
+    super(stackTrace);
     setStackTrace(new StackTraceElement[0]);
   }
 
