@@ -1,20 +1,16 @@
-package nz.lae.stacksrc.junit5;
+package nz.lae.stacksrc.example;
 
 import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.stream.IntStream;
-import org.junit.jupiter.api.Disabled;
+import nz.lae.stacksrc.junit5.ErrorDecorator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-@Disabled(
-    "Test intended to be viewed by a human in an IDE,"
-        + " to compare the differences with and without"
-        + " an error decorator.")
 @ExtendWith(ErrorDecorator.class)
-final class ManualInspectionTest {
+final class JUnit5Test {
 
   @Test
   void compareInts() {

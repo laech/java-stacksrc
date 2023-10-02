@@ -52,6 +52,8 @@
     <module>junit5</module>
     <module>test-integration</module>
     <module>test-lib</module>
+    <module>example/junit4</module>
+    <module>example/junit5</module>
   </modules>
 
   <properties>
@@ -84,6 +86,11 @@
         <version>5.10.0</version>
         <type>pom</type>
         <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

@@ -1,19 +1,15 @@
-package nz.lae.stacksrc.junit4;
+package nz.lae.stacksrc.example;
 
 import static java.util.stream.Collectors.joining;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.util.stream.IntStream;
-import org.junit.Ignore;
+import nz.lae.stacksrc.junit4.ErrorDecorator;
 import org.junit.Rule;
 import org.junit.Test;
 
-@Ignore(
-    "Test intended to be viewed by a human in an IDE,"
-        + " to compare the differences with and without"
-        + " an error decorator.")
-public final class ManualInspectionTest {
+public class JUnit4Test {
 
   @Rule public final ErrorDecorator errorDecorator = new ErrorDecorator();
 
