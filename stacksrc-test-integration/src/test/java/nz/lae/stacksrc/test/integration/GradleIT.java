@@ -30,7 +30,8 @@ class GradleIT {
     var report =
         JAXB.unmarshal(
             gradleRoot
-                .resolve("build/test-results/test/TEST-nz.lae.stacksrc.test.integration.GradleTest.xml")
+                .resolve(
+                    "build/test-results/test/TEST-nz.lae.stacksrc.test.integration.GradleTest.xml")
                 .toFile(),
             TestReport.class);
 

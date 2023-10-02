@@ -30,7 +30,8 @@ class MavenIT {
     var report =
         JAXB.unmarshal(
             mavenRoot
-                .resolve("target/surefire-reports/TEST-nz.lae.stacksrc.test.integration.MavenTest.xml")
+                .resolve(
+                    "target/surefire-reports/TEST-nz.lae.stacksrc.test.integration.MavenTest.xml")
                 .toFile(),
             TestReport.class);
 
