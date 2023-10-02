@@ -99,8 +99,7 @@ public abstract class StackTraceDecorator {
       return Optional.empty();
     }
 
-    var clazz =
-        Class.forName(elem.getClassName(), false, StackTraceDecorator.class.getClassLoader());
+    var clazz = Class.forName(elem.getClassName(), false, getClass().getClassLoader());
     var source = clazz.getProtectionDomain().getCodeSource();
     if (source == null) {
       return Optional.empty();
