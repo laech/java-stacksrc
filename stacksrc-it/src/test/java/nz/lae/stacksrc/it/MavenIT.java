@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.it;
 
 import static java.lang.System.getProperty;
+import static java.lang.System.lineSeparator;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import jakarta.xml.bind.JAXB;
@@ -47,6 +48,6 @@ org.opentest4j.AssertionFailedError: example failure
     13  }
 
 """,
-        report.testCase.failure.message);
+        report.testCase.failure.message.replaceAll("\r?\n", lineSeparator()));
   }
 }
