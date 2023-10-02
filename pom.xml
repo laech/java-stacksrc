@@ -50,7 +50,7 @@
     <module>stacksrc-core</module>
     <module>stacksrc-junit4</module>
     <module>stacksrc-junit5</module>
-    <module>stacksrc-it</module>
+    <module>stacksrc-test-integration</module>
     <module>stacksrc-test-lib</module>
   </modules>
 
