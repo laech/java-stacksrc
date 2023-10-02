@@ -86,6 +86,21 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.1.2</version>
+          <configuration>
+            <systemPropertyVariables>
+              <junit.jupiter.execution.parallel.enabled>
+                true
+              </junit.jupiter.execution.parallel.enabled>
+              <junit.jupiter.execution.parallel.mode.default>
+                concurrent
+              </junit.jupiter.execution.parallel.mode.default>
+            </systemPropertyVariables>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-dependency-plugin</artifactId>
           <version>3.6.0</version>
         </plugin>
@@ -126,6 +141,16 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <systemPropertyVariables>
+            <junit.jupiter.execution.parallel.enabled>
+              true
+            </junit.jupiter.execution.parallel.enabled>
+            <junit.jupiter.execution.parallel.mode.default>
+              concurrent
+            </junit.jupiter.execution.parallel.mode.default>
+          </systemPropertyVariables>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
