@@ -22,7 +22,7 @@ java.lang.AssertionError: no package
 	   13        var expected =
 
 """;
-      assertStackTrace(expected, new StackTraceDecorator().decorateStackTrace(e));
+      assertStackTrace(expected, new StackTraceDecorator().decorate(e));
     }
   }
 }

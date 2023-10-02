@@ -56,6 +56,6 @@ java.lang.AssertionError: what?
 	   16          .fail("more?")
 
 """;
-    assertStackTrace(expected, new StackTraceDecorator().decorateStackTrace(exception));
+    assertStackTrace(expected, new StackTraceDecorator().decorate(exception));
   }
 }

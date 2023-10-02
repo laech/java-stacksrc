@@ -17,51 +17,60 @@ import java.util.HashSet;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 public final class StackTraceDecorator {
 
   private final Path searchPath;
   private final int contextLineCount;
+  private final Predicate<StackTraceElement> filter;
 
   /**
    * Creates a decorator with default config, where search path is set to the current working
-   * directory, and context line count is 2.
+   * directory, context line count set to 2, and no extra filtering.
    */
   public StackTraceDecorator() {
-    this(Paths.get(""), 2);
+    this(Paths.get(""), 2, __ -> true);
   }
 
   /**
    * @param searchPath where to search for source code
    * @param contextLineCount number of context lines to show for a given stack trace element
+   * @param filter additional filter on stack trace elements, if returned value is false for a given
+   *     element, no attempt will be performed to decorate that element.
    */
-  public StackTraceDecorator(Path searchPath, int contextLineCount) {
+  public StackTraceDecorator(
+      Path searchPath, int contextLineCount, Predicate<StackTraceElement> filter) {
     if (contextLineCount < 1) {
       throw new IllegalArgumentException("Invalid contextLineCount: " + contextLineCount);
     }
+    this.filter = requireNonNull(filter, "filter");
     this.searchPath = requireNonNull(searchPath, "searchPath");
     this.contextLineCount = contextLineCount;
   }
 
   /** Returns the stack trace of the throwable with code snippets applied. */
-  public String decorateStackTrace(Throwable e) {
+  public String decorate(Throwable e) {
     requireNonNull(e);
 
     var output = getStackTraceAsString(e);
     try {
 
       var snippets = new HashSet<String>();
-      for (var elem : e.getStackTrace()) {
+      for (var element : e.getStackTrace()) {
+        if (!filter.test(element)) {
+          continue;
+        }
 
-        var snippet = decorate(elem);
+        var snippet = decorate(element);
         if (snippet.isEmpty() || !snippets.add(snippet.get())) {
           // Don't print the same snippet multiple times,
           // multiple lambda on one line can create this situation
           continue;
         }
 
-        var line = elem.toString();
+        var line = element.toString();
         var replacement = String.format("%s%n%n%s%n%n", line, snippet.get());
         output = output.replace(line, replacement);
       }

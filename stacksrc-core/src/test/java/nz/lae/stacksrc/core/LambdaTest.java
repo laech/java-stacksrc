@@ -43,6 +43,6 @@ java.lang.AssertionError: hi
 	   22    }
 
 """;
-    assertStackTrace(expected, new StackTraceDecorator().decorateStackTrace(exception));
+    assertStackTrace(expected, new StackTraceDecorator().decorate(exception));
   }
 }

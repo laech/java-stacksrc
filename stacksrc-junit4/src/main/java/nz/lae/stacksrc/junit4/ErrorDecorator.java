@@ -72,7 +72,7 @@ public final class ErrorDecorator implements TestRule {
     } catch (AssumptionViolatedException e) {
       throw e;
     } catch (Throwable e) {
-      throw new DecoratedAssertionError(decorator.decorateStackTrace(e));
+      throw new DecoratedAssertionError(decorator.decorate(e));
     }
   }
 }

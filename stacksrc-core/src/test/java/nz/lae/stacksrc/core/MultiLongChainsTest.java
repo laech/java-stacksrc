@@ -88,6 +88,6 @@ java.lang.AssertionError: bob
 	   60          ""\"
 
 """;
-    assertStackTrace(expected, new StackTraceDecorator().decorateStackTrace(exception));
+    assertStackTrace(expected, new StackTraceDecorator().decorate(exception));
   }
 }
