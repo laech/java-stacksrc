@@ -53,6 +53,6 @@ java.lang.AssertionError: test
 	   40    }
 
 """;
-    assertStackTrace(expected, new StackTraceDecorator().decorate(exception));
+    assertStackTrace(expected, StackTraceDecorator.create().decorate(exception));
   }
 }

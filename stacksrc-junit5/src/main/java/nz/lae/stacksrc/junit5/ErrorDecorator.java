@@ -52,7 +52,7 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
   private final StackTraceDecorator decorator;
 
   public ErrorDecorator() {
-    this(new StackTraceDecorator());
+    this(StackTraceDecorator.create());
   }
 
   public ErrorDecorator(StackTraceDecorator decorator) {

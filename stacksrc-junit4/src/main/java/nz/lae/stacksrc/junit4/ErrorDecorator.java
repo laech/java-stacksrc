@@ -49,7 +49,7 @@ public final class ErrorDecorator implements TestRule {
   private final StackTraceDecorator decorator;
 
   public ErrorDecorator() {
-    this(new StackTraceDecorator());
+    this(StackTraceDecorator.create());
   }
 
   public ErrorDecorator(StackTraceDecorator decorator) {

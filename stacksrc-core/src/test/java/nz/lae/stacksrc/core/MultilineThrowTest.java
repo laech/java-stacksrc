@@ -27,6 +27,6 @@ java.lang.AssertionError: hello world
 	   13          );
 
 """;
-    assertStackTrace(expected, new StackTraceDecorator().decorate(exception));
+    assertStackTrace(expected, StackTraceDecorator.create().decorate(exception));
   }
 }
