@@ -47,11 +47,11 @@
   </developers>
 
   <modules>
-    <module>stacksrc-core</module>
-    <module>stacksrc-junit4</module>
-    <module>stacksrc-junit5</module>
-    <module>stacksrc-test-integration</module>
-    <module>stacksrc-test-lib</module>
+    <module>core</module>
+    <module>junit4</module>
+    <module>junit5</module>
+    <module>test-integration</module>
+    <module>test-lib</module>
   </modules>
 
   <properties>
