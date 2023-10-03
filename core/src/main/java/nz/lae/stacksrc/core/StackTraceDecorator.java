@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
@@ -77,33 +78,61 @@ public abstract class StackTraceDecorator {
   public String decorate(Throwable e) {
     requireNonNull(e);
 
-    var output = getStackTraceAsString(e);
+    var stackTrace = getStackTraceAsString(e);
     try {
 
-      var snippets = new HashSet<String>();
-      for (var element : e.getStackTrace()) {
-        if (!filter().test(element)) {
-          continue;
-        }
+      var alreadySeenElements = new HashSet<StackTraceElement>();
+      var alreadySeenSnippets = new HashSet<List<String>>();
+      stackTrace = decorate(e, stackTrace, 1, alreadySeenElements, alreadySeenSnippets);
 
-        var snippet = decorate(element);
-        if (snippet.isEmpty() || !snippets.add(snippet.get())) {
-          // Don't print the same snippet multiple times,
-          // multiple lambda on one line can create this situation
-          continue;
-        }
+      var cause = e.getCause();
+      if (cause != null) {
+        stackTrace = decorate(cause, stackTrace, 2, alreadySeenElements, alreadySeenSnippets);
+      }
 
-        var line = element.toString();
-        var replacement = String.format("%s%n%n%s%n%n", line, snippet.get());
-        output = output.replace(line, replacement);
+      for (var suppressed : e.getSuppressed()) {
+        stackTrace = decorate(suppressed, stackTrace, 2, alreadySeenElements, alreadySeenSnippets);
       }
 
     } catch (Exception ignored) {
     }
-    return output;
+    return stackTrace;
   }
 
-  private Optional<String> decorate(StackTraceElement element) {
+  private String decorate(
+      Throwable e,
+      String stackTrace,
+      int indentLevel,
+      Set<StackTraceElement> alreadySeenElements,
+      Set<List<String>> alreadySeenSnippets) {
+
+    for (var element : e.getStackTrace()) {
+      if (!alreadySeenElements.add(element)) {
+        continue;
+      }
+      if (!filter().test(element)) {
+        continue;
+      }
+
+      var snippet = decorate(element);
+      if (snippet.isEmpty() || !alreadySeenSnippets.add(snippet.get())) {
+        // Don't print the same snippet multiple times,
+        // multiple lambda on one line can create this situation
+        continue;
+      }
+
+      var line = element.toString();
+      var indent = "\t".repeat(indentLevel);
+      var replacement =
+          String.format(
+              "%s%n%n%s%n%n",
+              line, snippet.get().stream().collect(joining(lineSeparator() + indent, indent, "")));
+      stackTrace = stackTrace.replace(line, replacement);
+    }
+    return stackTrace;
+  }
+
+  private Optional<List<String>> decorate(StackTraceElement element) {
     return findFile(element)
         .map(
             path -> {
@@ -209,20 +238,20 @@ public abstract class StackTraceDecorator {
     return lines;
   }
 
-  private static String buildSnippet(NavigableMap<Integer, String> lines, StackTraceElement elem) {
+  private static List<String> buildSnippet(
+      NavigableMap<Integer, String> lines, StackTraceElement elem) {
     var maxLineNumWidth = String.valueOf(lines.lastKey()).length();
     return lines.entrySet().stream()
         .map(
             entry -> {
               var lineNum = entry.getKey();
-              var isTargetLine = lineNum == elem.getLineNumber();
+              var isTarget = lineNum == elem.getLineNumber();
               var line = entry.getValue();
               var lineNumStr = format("%" + maxLineNumWidth + "d", lineNum);
               return format(
-                  "\t%s %s%s",
-                  isTargetLine ? "->" : "  ", lineNumStr, line.isEmpty() ? "" : "  " + line);
+                  "%s %s%s", isTarget ? "->" : "  ", lineNumStr, line.isEmpty() ? "" : "  " + line);
             })
-        .collect(joining(lineSeparator()));
+        .collect(toList());
   }
 
   private static String getStackTraceAsString(Throwable e) {
