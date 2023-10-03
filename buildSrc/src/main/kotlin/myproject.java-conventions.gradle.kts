@@ -57,6 +57,10 @@ val testIntegration = tasks.register<Test>("testIntegration") {
 
   shouldRunAfter(tasks.test)
   useJUnitPlatform()
+  testLogging {
+    showExceptions = true
+    exceptionFormat = TestExceptionFormat.FULL
+  }
 }
 
 tasks.check {
