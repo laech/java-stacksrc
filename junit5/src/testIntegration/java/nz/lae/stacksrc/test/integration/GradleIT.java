@@ -23,7 +23,7 @@ class GradleIT {
                                 : "/gradle/gradlew"))
                 .toURI());
 
-    Processes.run(gradlew.getParent(), gradlew.toString(), "clean", "test");
+    Processes.run(gradlew.getParent(), gradlew.toString(), "-q", "clean", "test");
 
     var report =
         JAXB.unmarshal(

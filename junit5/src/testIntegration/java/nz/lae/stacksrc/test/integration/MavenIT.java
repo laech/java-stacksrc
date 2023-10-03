@@ -24,7 +24,7 @@ class MavenIT {
                                 : "/maven/mvnw"))
                 .toURI());
 
-    Processes.run(mvnw.getParent(), mvnw.toString(), "clean", "test");
+    Processes.run(mvnw.getParent(), mvnw.toString(), "-q", "-B", "clean", "test");
 
     var report =
         JAXB.unmarshal(
