@@ -2,8 +2,10 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.integration.Assertions.assertOpenTestReport;
 
 import jakarta.xml.bind.JAXB;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
@@ -20,15 +22,7 @@ class GradleIT {
 
     Processes.run(gradlew.getParent(), gradlew.toString(), "-q", "clean", "test");
 
-    var report =
-        JAXB.unmarshal(
-            gradlew
-                .resolveSibling(
-                    "build/test-results/test/TEST-nz.lae.stacksrc.test.integration.GradleTest.xml")
-                .toFile(),
-            TestReport.class);
-
-    var stackTrace =
+    var expectedStackTrace =
         """
 nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: example failure
@@ -43,9 +37,21 @@ org.opentest4j.AssertionFailedError: example failure
 	   13  }
 
 """;
-    assertStackTrace(stackTrace, report.testCase.failure.stackTrace);
+
+    var reportDir = gradlew.resolveSibling("build/test-results/test");
+    assertJunitReport(reportDir, expectedStackTrace);
+    assertOpenTestReport(reportDir, expectedStackTrace);
+  }
+
+  private static void assertJunitReport(Path testReportDir, String stackTrace) {
+    var report =
+        JAXB.unmarshal(
+            testReportDir.resolve("TEST-nz.lae.stacksrc.test.integration.GradleTest.xml").toFile(),
+            JUnitTestReport.class);
+
+    assertStackTrace(stackTrace, report.testcase.failure.stackTrace);
 
     // Unlike maven, gradle populates the message field differently
-    assertStackTrace(stackTrace, report.testCase.failure.message);
+    assertStackTrace(stackTrace, report.testcase.failure.message);
   }
 }

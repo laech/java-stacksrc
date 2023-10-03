@@ -6,21 +6,15 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlValue;
 
 @XmlRootElement
-class TestReport {
-
-  @XmlElement(name = "testcase")
-  TestCase testCase;
+class JUnitTestReport {
+  @XmlElement TestCase testcase;
 
   static class TestCase {
-    @XmlElement(name = "failure")
-    Failure failure;
+    @XmlElement Failure failure;
   }
 
   static class Failure {
-
-    @XmlAttribute(name = "message")
-    String message;
-
+    @XmlAttribute String message;
     @XmlValue String stackTrace;
   }
 }
