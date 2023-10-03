@@ -17,4 +17,4 @@ jobs:
         with:
           java-version: 17
           distribution: temurin
-      - run: ./mvnw -B spotless:check verify
+      - run: ./gradlew check
