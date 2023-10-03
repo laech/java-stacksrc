@@ -14,7 +14,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -60,6 +64,15 @@ public abstract class StackTraceDecorator {
         .filter(__ -> true);
   }
 
+  private volatile Map<String, List<Path>> cachedFiles;
+
+  private Map<String, List<Path>> cachedFiles() throws IOException {
+    if (cachedFiles == null) {
+      cachedFiles = FileCollector.collect(searchPath());
+    }
+    return cachedFiles;
+  }
+
   /** Returns the stack trace of the throwable with code snippets applied. */
   public String decorate(Throwable e) {
     requireNonNull(e);
@@ -85,59 +98,75 @@ public abstract class StackTraceDecorator {
         output = output.replace(line, replacement);
       }
 
-    } catch (IOException | URISyntaxException | ClassNotFoundException ignored) {
+    } catch (Exception ignored) {
     }
     return output;
   }
 
-  private Optional<String> decorate(StackTraceElement elem)
-      throws ClassNotFoundException, URISyntaxException, IOException {
-
-    if (elem.getLineNumber() < 1
-        || elem.getFileName() == null
-        || elem.getMethodName().startsWith("access$")) { // Ignore class entry
-      return Optional.empty();
-    }
-
-    var clazz = Class.forName(elem.getClassName(), false, getClass().getClassLoader());
-    var source = clazz.getProtectionDomain().getCodeSource();
-    if (source == null) {
-      return Optional.empty();
-    }
-
-    var location = source.getLocation();
-    if (location == null || !"file".equalsIgnoreCase(location.getProtocol())) {
-      return Optional.empty();
-    }
-
-    var dir = Paths.get(location.toURI());
-    if (!Files.isDirectory(dir)) {
-      return Optional.empty();
-    }
-
-    var path = findFile(elem.getFileName());
-    if (path.isEmpty()) {
-      return Optional.empty();
-    }
-
-    var contextLines = readContextLines(elem, path.get());
-    removeBlankLinesFromStart(contextLines);
-    removeBlankLinesFromEnd(contextLines);
-    return Optional.of(buildSnippet(contextLines, elem));
+  private Optional<String> decorate(StackTraceElement element) {
+    return findFile(element)
+        .map(
+            path -> {
+              try {
+                return readContextLines(element, path);
+              } catch (IOException e) {
+                return null;
+              }
+            })
+        .filter(it -> !it.isEmpty())
+        .map(this::removeBlankLinesFromStart)
+        .map(this::removeBlankLinesFromEnd)
+        .map(it -> buildSnippet(it, element));
   }
 
-  private Optional<Path> findFile(String fileName) throws IOException {
-    // TODO add some caching
-    try (var stream =
-        Files.find(
-            searchPath(),
-            Integer.MAX_VALUE,
-            (path, attrs) ->
-                attrs.isRegularFile() && path.getFileName().toString().equals(fileName))) {
+  private Optional<Path> findFile(StackTraceElement element) {
+    return Optional.of(element)
+        .filter(it -> it.getLineNumber() > 0)
+        .filter(it -> it.getFileName() != null)
+        .filter(it -> !it.getMethodName().startsWith("access$"))
+        .map(
+            it -> {
+              try {
+                return Class.forName(it.getClassName(), false, getClass().getClassLoader());
+              } catch (ClassNotFoundException e) {
+                return null;
+              }
+            })
+        .map(Class::getProtectionDomain)
+        .map(ProtectionDomain::getCodeSource)
+        .map(CodeSource::getLocation)
+        .filter(url -> "file".equalsIgnoreCase(url.getProtocol()))
+        .map(
+            url -> {
+              try {
+                return Paths.get(url.toURI());
+              } catch (URISyntaxException e) {
+                return null;
+              }
+            })
+        .filter(Files::isDirectory)
+        .flatMap(
+            __ -> {
+              try {
+                var candidates = cachedFiles().getOrDefault(element.getFileName(), List.of());
+                if (element.getFileName().endsWith(".java")) {
+                  var suffix = withPackagePath(element);
+                  candidates =
+                      candidates.stream().filter(path -> path.endsWith(suffix)).collect(toList());
+                }
+                return Optional.ofNullable(candidates.size() == 1 ? candidates.get(0) : null);
+              } catch (IOException ignored) {
+                return Optional.empty();
+              }
+            });
+  }
 
-      var paths = stream.limit(2).collect(toList());
-      return Optional.ofNullable(paths.size() == 1 ? paths.get(0) : null);
-    }
+  private Path withPackagePath(StackTraceElement element) {
+    var fileName = requireNonNull(element.getFileName());
+    var className = element.getClassName();
+    var i = className.lastIndexOf(".");
+    var parent = i < 0 ? "" : className.substring(0, i).replace('.', '/');
+    return Paths.get(parent).resolve(fileName);
   }
 
   private NavigableMap<Integer, String> readContextLines(StackTraceElement elem, Path path)
@@ -164,16 +193,20 @@ public abstract class StackTraceDecorator {
     }
   }
 
-  private static void removeBlankLinesFromStart(NavigableMap<Integer, String> lines) {
+  private NavigableMap<Integer, String> removeBlankLinesFromStart(
+      NavigableMap<Integer, String> lines) {
     IntStream.rangeClosed(lines.firstKey(), lines.lastKey())
         .takeWhile(i -> lines.get(i).isBlank())
         .forEach(lines::remove);
+    return lines;
   }
 
-  private static void removeBlankLinesFromEnd(NavigableMap<Integer, String> lines) {
+  private NavigableMap<Integer, String> removeBlankLinesFromEnd(
+      NavigableMap<Integer, String> lines) {
     IntStream.iterate(lines.lastKey(), i -> i >= lines.firstKey(), i -> i - 1)
         .takeWhile(i -> lines.get(i).isBlank())
         .forEach(lines::remove);
+    return lines;
   }
 
   private static String buildSnippet(NavigableMap<Integer, String> lines, StackTraceElement elem) {
