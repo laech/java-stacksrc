@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
   java
   `java-test-fixtures`
@@ -25,6 +27,10 @@ tasks.compileTestJava {
 
 tasks.test {
   useJUnitPlatform()
+  testLogging {
+    showExceptions = true
+    exceptionFormat = TestExceptionFormat.FULL
+  }
 }
 
 val testIntegrationSourceSet: NamedDomainObjectProvider<SourceSet> =
