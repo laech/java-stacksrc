@@ -16,6 +16,7 @@ public class Assertions {
 
   public static void assertStackTrace(String expected, String actual) {
     expected = expected.replaceAll("\r?\n", lineSeparator());
+    actual = actual.replaceAll("\r?\n", lineSeparator());
     actual = actual.substring(0, min(expected.length(), actual.length()));
     assertEquals(expected, actual);
   }
