@@ -5,6 +5,8 @@ import java.io.PrintWriter;
 
 final class DecoratedAssertionError extends AssertionError {
 
+  // TODO do the same as the junit5 one
+
   DecoratedAssertionError(String stackTrace) {
     super(stackTrace);
     setStackTrace(new StackTraceElement[0]);

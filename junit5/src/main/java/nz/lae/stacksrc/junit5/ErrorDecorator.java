@@ -64,6 +64,6 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
     if (e instanceof IncompleteExecutionException) {
       throw e;
     }
-    throw new DecoratedAssertionError(decorator.decorate(e));
+    throw DecoratedAssertionError.create(e, decorator);
   }
 }

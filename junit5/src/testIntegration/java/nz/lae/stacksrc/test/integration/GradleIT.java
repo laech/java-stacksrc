@@ -28,7 +28,7 @@ class GradleIT {
                 .toFile(),
             TestReport.class);
 
-    assertStackTrace(
+    var stackTrace =
         """
 nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: example failure
@@ -42,7 +42,10 @@ org.opentest4j.AssertionFailedError: example failure
 	   12    }
 	   13  }
 
-""",
-        report.testCase.failure.message);
+""";
+    assertStackTrace(stackTrace, report.testCase.failure.stackTrace);
+
+    // Unlike maven, gradle populates the message field differently
+    assertStackTrace(stackTrace, report.testCase.failure.message);
   }
 }
