@@ -2,9 +2,11 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.integration.Assertions.assertOpenTestReport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import jakarta.xml.bind.JAXB;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
@@ -21,15 +23,7 @@ class MavenIT {
 
     Processes.run(mvnw.getParent(), mvnw.toString(), "-q", "-B", "clean", "test");
 
-    var report =
-        JAXB.unmarshal(
-            mvnw.resolveSibling(
-                    "target/surefire-reports/TEST-nz.lae.stacksrc.test.integration.MavenTest.xml")
-                .toFile(),
-            TestReport.class);
-
-    assertEquals("example failure", report.testCase.failure.message);
-    assertStackTrace(
+    var expectedStackTrace =
         """
 nz.lae.stacksrc.junit5.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: example failure
@@ -43,7 +37,20 @@ org.opentest4j.AssertionFailedError: example failure
 	   12    }
 	   13  }
 
-""",
-        report.testCase.failure.stackTrace);
+""";
+
+    var reportDir = mvnw.resolveSibling("target/surefire-reports");
+    assertJUnitReport(reportDir, expectedStackTrace);
+    assertOpenTestReport(reportDir, expectedStackTrace);
+  }
+
+  private static void assertJUnitReport(Path reportDir, String expectedStackTrace) {
+    var report =
+        JAXB.unmarshal(
+            reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenTest.xml").toFile(),
+            JUnitTestReport.class);
+
+    assertEquals("example failure", report.testcase.failure.message);
+    assertStackTrace(expectedStackTrace, report.testcase.failure.stackTrace);
   }
 }

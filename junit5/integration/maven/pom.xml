@@ -20,18 +20,28 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.junit.platform</groupId>
+      <artifactId>junit-platform-reporting</artifactId>
+      <version>1.10.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>nz.lae.stacksrc</groupId>
       <artifactId>stacksrc-core</artifactId>
       <version>0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../../build/testIntegrationLibs/core.jar</systemPath>
+      <systemPath>
+        ${project.basedir}/../../build/testIntegrationLibs/core.jar
+      </systemPath>
     </dependency>
     <dependency>
       <groupId>nz.lae.stacksrc</groupId>
       <artifactId>stacksrc-junit5</artifactId>
       <version>0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../../build/testIntegrationLibs/junit5.jar</systemPath>
+      <systemPath>
+        ${project.basedir}/../../build/testIntegrationLibs/junit5.jar
+      </systemPath>
     </dependency>
   </dependencies>
 
@@ -48,6 +58,12 @@
               true
             </junit.jupiter.extensions.autodetection.enabled>
           </systemPropertyVariables>
+          <properties>
+            <configurationParameters>
+              junit.platform.reporting.open.xml.enabled = true
+              junit.platform.reporting.output.dir = target/surefire-reports
+            </configurationParameters>
+          </properties>
         </configuration>
       </plugin>
     </plugins>

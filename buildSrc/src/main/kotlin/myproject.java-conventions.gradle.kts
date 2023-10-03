@@ -25,14 +25,6 @@ tasks.compileTestJava {
   options.release.set(17)
 }
 
-tasks.test {
-  useJUnitPlatform()
-  testLogging {
-    showExceptions = true
-    exceptionFormat = TestExceptionFormat.FULL
-  }
-}
-
 val testIntegrationSourceSet: NamedDomainObjectProvider<SourceSet> =
   sourceSets.register("testIntegration") {
     val main = sourceSets.main.get()
@@ -41,11 +33,11 @@ val testIntegrationSourceSet: NamedDomainObjectProvider<SourceSet> =
   }
 
 val testIntegrationImplementation: Configuration by configurations.getting {
-  extendsFrom(configurations.implementation.get())
+  extendsFrom(configurations.testImplementation.get())
 }
 
 val testIntegrationRuntimeOnly: Configuration by configurations.getting {
-  extendsFrom(configurations.runtimeOnly.get())
+  extendsFrom(configurations.testRuntimeOnly.get())
 }
 
 val testIntegration = tasks.register<Test>("testIntegration") {
@@ -56,15 +48,18 @@ val testIntegration = tasks.register<Test>("testIntegration") {
   classpath = testIntegrationSourceSet.get().runtimeClasspath
 
   shouldRunAfter(tasks.test)
+}
+
+tasks.check {
+  dependsOn(testIntegration)
+}
+
+tasks.withType<Test> {
   useJUnitPlatform()
   testLogging {
     showExceptions = true
     exceptionFormat = TestExceptionFormat.FULL
   }
-}
-
-tasks.check {
-  dependsOn(testIntegration)
 }
 
 dependencies {
