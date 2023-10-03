@@ -1,7 +1,6 @@
 package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
-import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import jakarta.xml.bind.JAXB;
@@ -14,14 +13,10 @@ class GradleIT {
   void checkGradleTestReportContainsCodeSnippet() throws Exception {
 
     var gradlew =
-        Paths.get(
-            requireNonNull(
-                    getClass()
-                        .getResource(
-                            getProperty("os.name").startsWith("Windows")
-                                ? "/gradle/gradlew.bat"
-                                : "/gradle/gradlew"))
-                .toURI());
+        Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
+            .resolve("../../../../integration/gradle")
+            .resolve(getProperty("os.name").startsWith("Windows") ? "gradlew.bat" : "gradlew")
+            .normalize();
 
     Processes.run(gradlew.getParent(), gradlew.toString(), "-q", "clean", "test");
 

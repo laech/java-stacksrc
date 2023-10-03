@@ -2,7 +2,6 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static java.lang.System.lineSeparator;
-import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import jakarta.xml.bind.JAXB;
@@ -15,14 +14,10 @@ class MavenIT {
   void checkMavenTestReportContainsCodeSnippet() throws Exception {
 
     var mvnw =
-        Paths.get(
-            requireNonNull(
-                    getClass()
-                        .getResource(
-                            getProperty("os.name").startsWith("Windows")
-                                ? "/maven/mvnw.cmd"
-                                : "/maven/mvnw"))
-                .toURI());
+        Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
+            .resolve("../../../../integration/maven")
+            .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
+            .normalize();
 
     Processes.run(mvnw.getParent(), mvnw.toString(), "-q", "-B", "clean", "test");
 

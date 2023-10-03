@@ -24,14 +24,14 @@
       <artifactId>stacksrc-core</artifactId>
       <version>0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../libs/core.jar</systemPath>
+      <systemPath>${project.basedir}/../../build/testIntegrationLibs/core.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>nz.lae.stacksrc</groupId>
       <artifactId>stacksrc-junit5</artifactId>
       <version>0</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/../libs/junit5.jar</systemPath>
+      <systemPath>${project.basedir}/../../build/testIntegrationLibs/junit5.jar</systemPath>
     </dependency>
   </dependencies>
 
