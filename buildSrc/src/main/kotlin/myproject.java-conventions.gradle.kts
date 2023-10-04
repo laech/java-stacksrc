@@ -56,6 +56,8 @@ tasks.check {
 
 tasks.withType<Test> {
   useJUnitPlatform()
+  systemProperty("junit.jupiter.execution.parallel.enabled", true)
+  systemProperty("junit.jupiter.execution.parallel.mode.default", "concurrent")
   testLogging {
     showExceptions = true
     exceptionFormat = TestExceptionFormat.FULL
