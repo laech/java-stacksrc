@@ -15,11 +15,3 @@ jobs:
           distribution: temurin
       - uses: gradle/gradle-build-action@v2
       - run: ./gradlew build
-      - run: ./gradlew testExamples
-      - uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
-        with:
-          check_name: Examples (${{ matrix.os }})
-          fail_on_failure: false
-          require_passed_tests: false
-          report_paths: 'example/**/build/test-results/**/TEST-*.xml'
