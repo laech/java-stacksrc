@@ -6,6 +6,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
     runs-on: ${{ matrix.os }}
+    name: Build
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v3
@@ -14,17 +15,19 @@ jobs:
           distribution: temurin
       - uses: gradle/gradle-build-action@v2
 
-      - run: ./gradlew build
-      - uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
-        with:
-          check_name: Tests
-          report_paths: '**/build/test-results/**/TEST-*.xml'
-
       - run: ./gradlew build -PincludeExamples
       - uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
-          check_name: Example Failures (${{ matrix.os }})
+          check_name: Tests (${{ matrix.os }})
+          report_paths: |
+            **/build/test-results/**/TEST-*.xml
+            !example/**
+            !junit5/integration/**
+
+      - uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          check_name: Examples (${{ matrix.os }})
           fail_on_failure: false
           report_paths: 'example/**/build/test-results/**/TEST-*.xml'
