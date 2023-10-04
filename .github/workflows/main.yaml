@@ -21,4 +21,5 @@ jobs:
         with:
           check_name: Examples (${{ matrix.os }})
           fail_on_failure: false
+          require_passed_tests: false
           report_paths: 'example/**/build/test-results/**/TEST-*.xml'
