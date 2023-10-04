@@ -3,14 +3,19 @@ package nz.lae.stacksrc.junit4;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import nz.lae.stacksrc.core.StackTraceDecorator;
+import org.junit.ComparisonFailure;
 
-public final class DecoratedAssertionError extends AssertionError {
+public final class DecoratedComparisonFailure extends ComparisonFailure {
 
-  private final Throwable original;
+  // This extends from ComparisonFailure and keeps its structure, it also has the benefit that
+  // IntelliJ will recognise this and show its '<Click to see difference>' feature in its test
+  // failure window for any equality failures.
+
+  private final ComparisonFailure original;
   private final String decoratedStackTrace;
 
-  public DecoratedAssertionError(Throwable original, StackTraceDecorator decorator) {
-    super(original.getMessage());
+  public DecoratedComparisonFailure(ComparisonFailure original, StackTraceDecorator decorator) {
+    super(null, original.getExpected(), original.getActual());
     this.original = original;
     this.decoratedStackTrace = decorator.decorate(original);
     setStackTrace(new StackTraceElement[0]);
@@ -19,6 +24,11 @@ public final class DecoratedAssertionError extends AssertionError {
   /** Gets the original throwable being wrapped. */
   public Throwable getOriginal() {
     return original;
+  }
+
+  @Override
+  public String getMessage() {
+    return original.getMessage();
   }
 
   @Override

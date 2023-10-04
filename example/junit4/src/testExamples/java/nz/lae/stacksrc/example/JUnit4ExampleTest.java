@@ -9,7 +9,7 @@ import nz.lae.stacksrc.junit4.ErrorDecorator;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class JUnit4Test {
+public class JUnit4ExampleTest {
 
   @Rule public final ErrorDecorator errorDecorator = new ErrorDecorator();
 

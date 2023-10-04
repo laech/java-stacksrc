@@ -1,1 +1,1 @@
-rootProject.name = "gradle"
+rootProject.name = "stacksrc-test-integration-gradle-junit5"

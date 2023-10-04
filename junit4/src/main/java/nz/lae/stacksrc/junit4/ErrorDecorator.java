@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import nz.lae.stacksrc.core.StackTraceDecorator;
 import org.junit.AssumptionViolatedException;
+import org.junit.ComparisonFailure;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -71,8 +72,10 @@ public final class ErrorDecorator implements TestRule {
       base.evaluate();
     } catch (AssumptionViolatedException e) {
       throw e;
+    } catch (ComparisonFailure e) {
+      throw new DecoratedComparisonFailure(e, decorator);
     } catch (Throwable e) {
-      throw new DecoratedAssertionError(decorator.decorate(e));
+      throw new DecoratedAssertionError(e, decorator);
     }
   }
 }

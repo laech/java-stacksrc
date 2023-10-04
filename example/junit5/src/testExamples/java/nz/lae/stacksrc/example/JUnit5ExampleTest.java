@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
 @ExtendWith(ErrorDecorator.class)
-class JUnit5Test {
+class JUnit5ExampleTest {
 
   @Test
   void compareInts() {

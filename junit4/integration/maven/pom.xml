@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>nz.lae.stacksrc</groupId>
-  <artifactId>stacksrc-test-integration-maven-junit5</artifactId>
+  <artifactId>stacksrc-test-integration-maven-junit4</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
@@ -14,15 +14,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>5.10.0</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.platform</groupId>
-      <artifactId>junit-platform-reporting</artifactId>
-      <version>1.10.0</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -36,11 +30,11 @@
     </dependency>
     <dependency>
       <groupId>nz.lae.stacksrc</groupId>
-      <artifactId>stacksrc-junit5</artifactId>
+      <artifactId>stacksrc-junit4</artifactId>
       <version>0</version>
       <scope>system</scope>
       <systemPath>
-        ${project.basedir}/../../build/testIntegrationLibs/junit5.jar
+        ${project.basedir}/../../build/testIntegrationLibs/junit4.jar
       </systemPath>
     </dependency>
   </dependencies>
@@ -53,17 +47,6 @@
         <version>3.1.2</version>
         <configuration>
           <testFailureIgnore>true</testFailureIgnore>
-          <systemPropertyVariables>
-            <junit.jupiter.extensions.autodetection.enabled>
-              true
-            </junit.jupiter.extensions.autodetection.enabled>
-          </systemPropertyVariables>
-          <properties>
-            <configurationParameters>
-              junit.platform.reporting.open.xml.enabled = true
-              junit.platform.reporting.output.dir = target/surefire-reports
-            </configurationParameters>
-          </properties>
         </configuration>
       </plugin>
     </plugins>

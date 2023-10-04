@@ -2,14 +2,13 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
-import static nz.lae.stacksrc.test.integration.Assertions.assertOpenTestReport;
 
 import jakarta.xml.bind.JAXB;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 
-class GradleIT {
+class GradleJUnit4IT {
 
   @Test
   void checkGradleTestReportContainsCodeSnippet() throws Exception {
@@ -24,29 +23,29 @@ class GradleIT {
 
     var expectedStackTrace =
         """
-nz.lae.stacksrc.junit5.DecoratedAssertionError:
-org.opentest4j.AssertionFailedError: example failure
-	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
-	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
-	at nz.lae.stacksrc.test.integration.GradleTest.run(GradleTest.java:11)
+nz.lae.stacksrc.junit4.DecoratedAssertionError:
+java.lang.AssertionError: example failure
+	at org.junit.Assert.fail(Assert.java:89)
+	at nz.lae.stacksrc.test.integration.GradleJUnit4Test.run(GradleJUnit4Test.java:16)
 
-	    9    @Test
-	   10    void run() {
-	-> 11      fail("example failure");
-	   12    }
-	   13  }
+	   14    @Test
+	   15    public void run() {
+	-> 16      fail("example failure");
+	   17    }
+	   18  }
 
 """;
 
     var reportDir = gradlew.resolveSibling("build/test-results/test");
     assertJunitReport(reportDir, expectedStackTrace);
-    assertOpenTestReport(reportDir, expectedStackTrace);
   }
 
   private static void assertJunitReport(Path testReportDir, String stackTrace) {
     var report =
         JAXB.unmarshal(
-            testReportDir.resolve("TEST-nz.lae.stacksrc.test.integration.GradleTest.xml").toFile(),
+            testReportDir
+                .resolve("TEST-nz.lae.stacksrc.test.integration.GradleJUnit4Test.xml")
+                .toFile(),
             JUnitTestReport.class);
 
     assertStackTrace(stackTrace, report.testcase.failure.stackTrace);
