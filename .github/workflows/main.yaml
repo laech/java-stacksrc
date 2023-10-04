@@ -25,5 +25,6 @@ jobs:
       - uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
-          check_name: Example Test Failures
+          check_name: Example Failures (${{ matrix.os }})
+          fail_on_failure: false
           report_paths: 'example/**/build/test-results/**/TEST-*.xml'
