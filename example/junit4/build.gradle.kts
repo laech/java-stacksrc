@@ -1,16 +1,8 @@
 plugins {
-  java
-}
-
-repositories {
-  mavenCentral()
+  myproject.`example-conventions`
 }
 
 dependencies {
   testImplementation(project(":junit4"))
   testImplementation("junit:junit:4.13.2")
-}
-
-tasks.test {
-  ignoreFailures = true
 }

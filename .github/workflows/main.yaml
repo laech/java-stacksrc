@@ -13,8 +13,17 @@ jobs:
           java-version: 17
           distribution: temurin
       - uses: gradle/gradle-build-action@v2
+
       - run: ./gradlew build
       - uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:
+          check_name: Tests
           report_paths: '**/build/test-results/**/TEST-*.xml'
+
+      - run: ./gradlew build -PincludeExamples
+      - uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          check_name: Example Test Failures
+          report_paths: 'example/**/build/test-results/**/TEST-*.xml'

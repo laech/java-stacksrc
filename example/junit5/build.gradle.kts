@@ -1,9 +1,5 @@
 plugins {
-  java
-}
-
-repositories {
-  mavenCentral()
+  myproject.`example-conventions`
 }
 
 dependencies {
@@ -14,5 +10,4 @@ dependencies {
 
 tasks.test {
   useJUnitPlatform()
-  ignoreFailures = true
 }
