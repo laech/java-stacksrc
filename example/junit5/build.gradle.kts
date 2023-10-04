@@ -3,11 +3,11 @@ plugins {
 }
 
 dependencies {
-  testImplementation(project(":junit5"))
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testExamplesImplementation(project(":junit5"))
+  testExamplesImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+  testExamplesRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.test {
+tasks.testExamples {
   useJUnitPlatform()
 }

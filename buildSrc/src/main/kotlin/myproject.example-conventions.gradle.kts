@@ -1,5 +1,6 @@
 plugins {
   java
+  idea
   id("com.diffplug.spotless")
 }
 
@@ -15,15 +16,33 @@ java {
   targetCompatibility = JavaVersion.VERSION_17
 }
 
+val testExamplesSourceSet: NamedDomainObjectProvider<SourceSet> =
+  sourceSets.register("testExamples")
+
+val testExamplesImplementation: Configuration by configurations.getting {
+  extendsFrom(configurations.testImplementation.get())
+}
+
+val testExamplesRuntimeOnly: Configuration by configurations.getting {
+  extendsFrom(configurations.testRuntimeOnly.get())
+}
+
+val testExamples = tasks.register<Test>("testExamples") {
+  description = "Runs example tests."
+  group = "example"
+  testClassesDirs = testExamplesSourceSet.get().output.classesDirs
+  classpath = testExamplesSourceSet.get().runtimeClasspath
+  ignoreFailures = true
+}
+
+idea {
+  module {
+    testSources.from(testExamplesSourceSet.get().java.srcDirs)
+  }
+}
+
 spotless {
   java {
     googleJavaFormat()
   }
-}
-
-tasks.test {
-  onlyIf {
-    project.hasProperty("includeExamples")
-  }
-  ignoreFailures = true
 }

@@ -14,17 +14,8 @@ jobs:
           java-version: 17
           distribution: temurin
       - uses: gradle/gradle-build-action@v2
-
-      - run: ./gradlew build -PincludeExamples
-      - uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
-        with:
-          check_name: Tests (${{ matrix.os }})
-          report_paths: |
-            **/build/test-results/**/TEST-*.xml
-            !example/**
-            !junit5/integration/**
-
+      - run: ./gradlew build
+      - run: ./gradlew testExamples
       - uses: mikepenz/action-junit-report@v4
         if: success() || failure()
         with:

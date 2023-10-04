@@ -3,6 +3,6 @@ plugins {
 }
 
 dependencies {
-  testImplementation(project(":junit4"))
-  testImplementation("junit:junit:4.13.2")
+  testExamplesImplementation(project(":junit4"))
+  testExamplesImplementation("junit:junit:4.13.2")
 }
