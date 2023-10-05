@@ -1,16 +1,14 @@
 package nz.lae.stacksrc.junit4;
 
-import static java.util.Objects.requireNonNull;
-
 import nz.lae.stacksrc.DecoratedAssertionError;
-import nz.lae.stacksrc.StackTraceDecorator;
 import org.junit.AssumptionViolatedException;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 /**
- * Decorates stack traces with source code snippets.
+ * A {@link TestRule} for catching test errors and wrapping them with {@link
+ * DecoratedAssertionError} for decorating stack traces with source code snippets.
  *
  * <p>Example output:
  *
@@ -28,7 +26,7 @@ import org.junit.runners.model.Statement;
  * ...
  * </pre>
  *
- * <p>Usage:
+ * <p>Example usage:
  *
  * <pre>
  *
@@ -47,16 +45,6 @@ import org.junit.runners.model.Statement;
  */
 public final class ErrorDecorator implements TestRule {
 
-  private final StackTraceDecorator decorator;
-
-  public ErrorDecorator() {
-    this(StackTraceDecorator.create());
-  }
-
-  public ErrorDecorator(StackTraceDecorator decorator) {
-    this.decorator = requireNonNull(decorator, "decorator");
-  }
-
   @Override
   public Statement apply(Statement base, Description description) {
     return new Statement() {
@@ -73,7 +61,7 @@ public final class ErrorDecorator implements TestRule {
     } catch (AssumptionViolatedException | DecoratedAssertionError e) {
       throw e;
     } catch (Throwable e) {
-      throw new DecoratedAssertionError(e, decorator);
+      throw new DecoratedAssertionError(e);
     }
   }
 }

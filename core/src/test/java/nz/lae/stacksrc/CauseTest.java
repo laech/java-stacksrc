@@ -55,7 +55,7 @@ Caused by: java.lang.IllegalArgumentException: test
     """;
 
     var actual =
-        StackTraceDecorator.create()
+        StackTraceDecorator.get()
             .decorate(exception)
             .lines()
             .filter(line -> !line.contains("java.base/"))

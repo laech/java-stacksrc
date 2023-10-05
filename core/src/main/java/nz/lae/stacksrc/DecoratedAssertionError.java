@@ -3,15 +3,20 @@ package nz.lae.stacksrc;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 
+/**
+ * Wraps an exception and prints stack trace with code snippets.
+ *
+ * <p>To obtain the original exception, use {@link #getOriginal()}.
+ */
 public final class DecoratedAssertionError extends AssertionError {
 
   private final Throwable original;
   private final String decoratedStackTrace;
 
-  public DecoratedAssertionError(Throwable original, StackTraceDecorator decorator) {
+  public DecoratedAssertionError(Throwable original) {
     super(original.getMessage());
     this.original = original;
-    this.decoratedStackTrace = decorator.decorate(original);
+    this.decoratedStackTrace = StackTraceDecorator.get().decorate(original);
     setStackTrace(new StackTraceElement[0]);
   }
 

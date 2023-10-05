@@ -33,7 +33,7 @@ public final class ErrorDecoratorTest {
     };
   }
 
-  private static void assertFailure(Throwable e) {
+  private static void assertFailure(DecoratedAssertionError e) {
     var expected =
         """
 nz.lae.stacksrc.DecoratedAssertionError:

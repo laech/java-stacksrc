@@ -6,7 +6,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-import com.google.auto.value.AutoValue;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -23,86 +22,28 @@ import java.util.NavigableMap;
 import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
-/**
- * Builds stack traces for {@link Throwable}s with code snippets applied.
- *
- * @see #decorate(Throwable)
- */
-@AutoValue
-public abstract class StackTraceDecorator {
+final class StackTraceDecorator {
+  private StackTraceDecorator() {}
 
-  abstract Path searchPath();
+  private static final StackTraceDecorator instance = new StackTraceDecorator();
 
-  abstract int contextLineCount();
-
-  abstract Predicate<StackTraceElement> filter();
-
-  /** Builder for customizing a {@link StackTraceDecorator} */
-  @AutoValue.Builder
-  public abstract static class Builder {
-
-    /** Sets the location to search for source code files, defaults to current working directory. */
-    public abstract Builder searchPath(Path searchPath);
-
-    /**
-     * Sets the number of context lines to show around a given stack trace element, defaults to 2.
-     *
-     * <p>The following is an example with this value set to 2:
-     *
-     * <pre>
-     *   	at example.HelloTest.hello(HelloTest.java:16)
-     *
-     * 	   14      @Test
-     * 	   15      public void hello() {
-     * 	-> 16          assertEquals("Hello!", greet());
-     * 	   17          // a comment
-     * 	   18      }
-     * </pre>
-     *
-     * with 2 lines above and below the line pointed to by the stack trace element.
-     */
-    public abstract Builder contextLineCount(int contextLineCount);
-
-    /**
-     * Sets the additional filter on stack trace elements, if the filter returns false for a given
-     * element, no attempt will be performed to decorate that element, defaults to no filtering.
-     */
-    public abstract Builder filter(Predicate<StackTraceElement> filter);
-
-    public abstract StackTraceDecorator build();
+  public static StackTraceDecorator get() {
+    return instance;
   }
 
-  /** Creates an instance with default configuration. */
-  public static StackTraceDecorator create() {
-    return builder().build();
-  }
-
-  /** Creates a builder with default configuration. */
-  public static Builder builder() {
-    return new AutoValue_StackTraceDecorator.Builder()
-        .searchPath(Paths.get(""))
-        .contextLineCount(2)
-        .filter(__ -> true);
-  }
+  private static final int CONTEXT_LINE_COUNT = 2;
 
   private volatile Map<String, List<Path>> cachedFiles;
 
   private Map<String, List<Path>> cachedFiles() throws IOException {
     if (cachedFiles == null) {
-      cachedFiles = FileCollector.collect(searchPath());
+      cachedFiles = FileCollector.collect(Paths.get(""));
     }
     return cachedFiles;
   }
 
-  /**
-   * Builds the stack trace for the given throwable with code snippets applied.
-   *
-   * @param e the throwable to decorate stack trace for
-   * @return the stack trace of the throwable with code snippets applied
-   */
   public String decorate(Throwable e) {
     requireNonNull(e);
 
@@ -136,9 +77,6 @@ public abstract class StackTraceDecorator {
 
     for (var element : e.getStackTrace()) {
       if (!alreadySeenElements.add(element)) {
-        continue;
-      }
-      if (!filter().test(element)) {
         continue;
       }
 
@@ -229,12 +167,12 @@ public abstract class StackTraceDecorator {
   private NavigableMap<Integer, String> readContextLines(StackTraceElement elem, Path path)
       throws IOException {
 
-    var startLineNum = Math.max(1, elem.getLineNumber() - contextLineCount());
+    var startLineNum = Math.max(1, elem.getLineNumber() - CONTEXT_LINE_COUNT);
     try (var stream = Files.lines(path)) {
 
       var lines =
           stream
-              .limit(elem.getLineNumber() + contextLineCount())
+              .limit(elem.getLineNumber() + CONTEXT_LINE_COUNT)
               .skip(startLineNum - 1)
               .collect(toList());
 

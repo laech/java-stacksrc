@@ -71,7 +71,7 @@ java.lang.AssertionError: rethrown
     """;
 
     var actual =
-        StackTraceDecorator.create()
+        StackTraceDecorator.get()
             .decorate(exception)
             .lines()
             .filter(line -> !line.contains("java.base/"))

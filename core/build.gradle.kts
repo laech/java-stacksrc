@@ -6,10 +6,6 @@ plugins {
 }
 
 dependencies {
-  compileOnly(libs.auto.value.annotations)
-  annotationProcessor(libs.auto.value.processor)
-
   testImplementation(libs.kotlin.stdlib)
-
   testFixturesImplementation(libs.jaxb.runtime)
 }

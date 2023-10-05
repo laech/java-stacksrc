@@ -1,24 +1,21 @@
 package nz.lae.stacksrc.junit5;
 
-import static java.util.Objects.requireNonNull;
-
-import com.google.auto.service.AutoService;
 import nz.lae.stacksrc.DecoratedAssertionError;
-import nz.lae.stacksrc.StackTraceDecorator;
-import org.junit.jupiter.api.extension.Extension;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
 import org.opentest4j.IncompleteExecutionException;
 
 /**
- * Decorates stack traces with source code snippets.
+ * An extension for catching test errors and wrapping them with {@link DecoratedAssertionError} for
+ * decorating stack traces with source code snippets.
  *
  * <p>Example output:
  *
  * <pre>
  *
- * org.junit.ComparisonFailure: expected:&lt;H[ello]!&gt; but was:&lt;H[i]!&gt;
- *     at org.junit.Assert.assertEquals(Assert.java:115)
+ * org.opentest4j.AssertionFailedError: expected: &lt;Hello!&gt; but was: &lt;Hi!&gt;
+ *     ...
  *     at example.HelloTest.hello(HelloTest.java:16)
  *
  *        14      @Test
@@ -26,10 +23,9 @@ import org.opentest4j.IncompleteExecutionException;
  *     -&gt; 16          assertEquals("Hello!", greet());
  *        17      }
  *
- * ...
  * </pre>
  *
- * <p>Usage:
+ * <p>Example usage:
  *
  * <pre>
  *
@@ -44,27 +40,23 @@ import org.opentest4j.IncompleteExecutionException;
  * }
  * </pre>
  *
- * <p>Alternatively, run your tests with {@code
- * -Djunit.jupiter.extensions.autodetection.enabled=true} instead of using annotations.
+ * Alternatively, instead of using {@link ExtendWith}, you can enable JUnit's <a
+ * href="https://junit.org/junit5/docs/current/user-guide/#extensions-registration-automatic-enabling">automatic
+ * extension detection</a> by setting the system property {@code
+ * junit.jupiter.extensions.autodetection.enabled=true}, then this extension will be automatically
+ * applied.
+ *
+ * @see <a
+ *     href="https://junit.org/junit5/docs/current/user-guide/#extensions-registration">Registering
+ *     Extensions</a>
  */
-@AutoService(Extension.class)
 public final class ErrorDecorator implements TestExecutionExceptionHandler {
-
-  private final StackTraceDecorator decorator;
-
-  public ErrorDecorator() {
-    this(StackTraceDecorator.create());
-  }
-
-  public ErrorDecorator(StackTraceDecorator decorator) {
-    this.decorator = requireNonNull(decorator, "decorator");
-  }
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable e) throws Throwable {
     if (e instanceof IncompleteExecutionException || e instanceof DecoratedAssertionError) {
       throw e;
     }
-    throw new DecoratedAssertionError(e, decorator);
+    throw new DecoratedAssertionError(e);
   }
 }

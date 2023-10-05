@@ -1,6 +1,6 @@
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
-import nz.lae.stacksrc.StackTraceDecorator;
+import nz.lae.stacksrc.DecoratedAssertionError;
 import org.junit.jupiter.api.Test;
 
 class NoPackageTest {
@@ -12,6 +12,7 @@ class NoPackageTest {
     } catch (AssertionError e) {
       var expected =
           """
+nz.lae.stacksrc.DecoratedAssertionError:
 java.lang.AssertionError: no package
 	at NoPackageTest.noPackage(NoPackageTest.java:11)
 
@@ -22,7 +23,7 @@ java.lang.AssertionError: no package
 	   13        var expected =
 
 """;
-      assertStackTrace(expected, StackTraceDecorator.create().decorate(e));
+      assertStackTrace(expected, new DecoratedAssertionError(e));
     }
   }
 }

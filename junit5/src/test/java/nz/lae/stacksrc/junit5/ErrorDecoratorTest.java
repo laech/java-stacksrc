@@ -37,7 +37,7 @@ org.opentest4j.AssertionFailedError: testing failure
 
 """;
       assertEquals(DecoratedAssertionError.class, e.getClass());
-      assertStackTrace(expected, e);
+      assertStackTrace(expected, (DecoratedAssertionError) e);
     }
   }
 }

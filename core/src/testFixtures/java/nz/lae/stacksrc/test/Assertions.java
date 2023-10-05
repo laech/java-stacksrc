@@ -11,11 +11,12 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Optional;
+import nz.lae.stacksrc.DecoratedAssertionError;
 
 public class Assertions {
   private Assertions() {}
 
-  public static void assertStackTrace(String expected, Throwable e) {
+  public static void assertStackTrace(String expected, DecoratedAssertionError e) {
     assertStackTrace(expected, getStackTraceAsString(e));
   }
 
