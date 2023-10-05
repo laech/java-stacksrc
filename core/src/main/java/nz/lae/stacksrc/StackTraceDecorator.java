@@ -71,7 +71,8 @@ final class StackTraceDecorator {
       String stackTrace,
       int indentLevel,
       Set<StackTraceElement> alreadySeenElements,
-      Set<List<String>> alreadySeenSnippets) {
+      Set<List<String>> alreadySeenSnippets)
+      throws IOException {
 
     for (var element : e.getStackTrace()) {
       if (!alreadySeenElements.add(element)) {
@@ -96,50 +97,36 @@ final class StackTraceDecorator {
     return stackTrace;
   }
 
-  private Optional<List<String>> decorate(StackTraceElement element) {
-    return findFile(element)
-        .map(
-            path -> {
-              try {
-                return readContextLines(element, path);
-              } catch (IOException e) {
-                return null;
-              }
-            })
-        .filter(it -> !it.isEmpty())
-        .map(this::removeBlankLinesFromStart)
-        .map(this::removeBlankLinesFromEnd)
-        .map(it -> buildSnippet(it, element));
+  private Optional<List<String>> decorate(StackTraceElement element) throws IOException {
+    var file = findFile(element);
+    if (file.isEmpty()) {
+      return Optional.empty();
+    }
+
+    var lines = readContextLines(element, file.get());
+    if (lines.isEmpty()) {
+      return Optional.empty();
+    }
+
+    removeBlankLinesFromStart(lines);
+    removeBlankLinesFromEnd(lines);
+    return Optional.of(buildSnippet(lines, element));
   }
 
-  private Optional<Path> findFile(StackTraceElement element) {
-    return Optional.of(element)
-        .filter(it -> it.getLineNumber() > 0)
-        .filter(it -> it.getFileName() != null)
-        .filter(it -> !it.getMethodName().startsWith("access$"))
-        .flatMap(
-            __ -> {
-              try {
-                var suffix = withPackagePath(element);
-                var potentialMatches = cachedFiles().getOrDefault(element.getFileName(), List.of());
-                var exactMatch =
-                    potentialMatches.stream()
-                        .filter(path -> path.endsWith(suffix))
-                        .collect(toList())
-                        .stream()
-                        .findAny();
+  private Optional<Path> findFile(StackTraceElement element) throws IOException {
+    if (element.getLineNumber() < 1
+        || element.getFileName() == null
+        || element.getMethodName().startsWith("access$")) { // Ignore class entry lines
+      return Optional.empty();
+    }
 
-                if (exactMatch.isPresent() || element.getFileName().endsWith(".java")) {
-                  return exactMatch;
-                }
-
-                return Optional.ofNullable(
-                    potentialMatches.size() == 1 ? potentialMatches.get(0) : null);
-
-              } catch (IOException ignored) {
-                return Optional.empty();
-              }
-            });
+    var tail = withPackagePath(element);
+    var paths = cachedFiles().getOrDefault(element.getFileName(), List.of());
+    var exact = paths.stream().filter(it -> it.endsWith(tail)).findAny();
+    if (exact.isPresent() || element.getFileName().endsWith(".java")) {
+      return exact;
+    }
+    return Optional.ofNullable(paths.size() == 1 ? paths.get(0) : null);
   }
 
   private Path withPackagePath(StackTraceElement element) {
@@ -174,20 +161,16 @@ final class StackTraceDecorator {
     }
   }
 
-  private NavigableMap<Integer, String> removeBlankLinesFromStart(
-      NavigableMap<Integer, String> lines) {
+  private void removeBlankLinesFromStart(NavigableMap<Integer, String> lines) {
     IntStream.rangeClosed(lines.firstKey(), lines.lastKey())
         .takeWhile(i -> lines.get(i).isBlank())
         .forEach(lines::remove);
-    return lines;
   }
 
-  private NavigableMap<Integer, String> removeBlankLinesFromEnd(
-      NavigableMap<Integer, String> lines) {
+  private void removeBlankLinesFromEnd(NavigableMap<Integer, String> lines) {
     IntStream.iterate(lines.lastKey(), i -> i >= lines.firstKey(), i -> i - 1)
         .takeWhile(i -> lines.get(i).isBlank())
         .forEach(lines::remove);
-    return lines;
   }
 
   private static List<String> buildSnippet(
