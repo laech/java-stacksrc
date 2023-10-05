@@ -1,3 +1,6 @@
+// https://central.sonatype.org/publish/publish-guide/
+// https://central.sonatype.org/publish/publish-gradle/
+
 plugins {
   `java-library`
   `maven-publish`
@@ -35,12 +38,14 @@ publishing {
             url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
           }
         }
-        distributionManagement {
-          repositories {
-
-          }
-        }
       }
+    }
+  }
+  repositories {
+    maven {
+      val snapshot = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+      val release = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+      url = if (version.toString().endsWith("SNAPSHOT")) snapshot else release
     }
   }
 }
