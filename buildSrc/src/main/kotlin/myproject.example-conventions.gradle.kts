@@ -1,4 +1,5 @@
 plugins {
+  idea
   id("myproject.java-conventions")
 }
 

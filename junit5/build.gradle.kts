@@ -1,5 +1,6 @@
 plugins {
   myproject.`java-conventions`
+  myproject.`test-integration-conventions`
   `java-library`
 }
 
