@@ -25,7 +25,7 @@
       <version>0</version>
       <scope>system</scope>
       <systemPath>
-        ${project.basedir}/../../build/testIntegrationLibs/core.jar
+        ${project.basedir}/../../build/testIntegrationLibs/stacksrc-core.jar
       </systemPath>
     </dependency>
     <dependency>
@@ -34,7 +34,7 @@
       <version>0</version>
       <scope>system</scope>
       <systemPath>
-        ${project.basedir}/../../build/testIntegrationLibs/junit4.jar
+        ${project.basedir}/../../build/testIntegrationLibs/stacksrc-junit4.jar
       </systemPath>
     </dependency>
   </dependencies>

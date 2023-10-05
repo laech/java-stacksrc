@@ -12,6 +12,10 @@ plugins {
 group = "nz.lae.stacksrc"
 version = "0.5.0-SNAPSHOT"
 
+tasks.jar {
+  archiveBaseName.set("stacksrc-${project.name}")
+}
+
 java {
   withSourcesJar()
   withJavadocJar()
@@ -42,7 +46,7 @@ publishing {
       }
 
       pom {
-        artifactId = "stacksrc-${project.name}"
+        artifactId = tasks.jar.get().archiveBaseName.get()
         url.set("https://github.com/laech/java-stacksrc")
         scm {
           url.set("https://github.com/laech/java-stacksrc")
