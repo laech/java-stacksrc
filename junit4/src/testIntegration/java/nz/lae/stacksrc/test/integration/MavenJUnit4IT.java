@@ -18,7 +18,7 @@ class MavenJUnit4IT {
             .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
             .normalize();
 
-    Processes.run(mvnw.getParent(), mvnw.toString(), "-q", "-B", "clean", "test");
+    Processes.run(mvnw.getParent(), mvnw.toString(), "-U", "-q", "-B", "clean", "test");
 
     var expectedStackTrace =
         """

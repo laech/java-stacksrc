@@ -22,6 +22,7 @@ val testIntegrationRuntimeOnly: Configuration by configurations.getting {
 
 val testIntegrationCopyLibs by tasks.registering(Copy::class) {
   destinationDir = buildDir.resolve("testIntegrationLibs")
+  rename { it.replace("-${version}", "") }
   from(tasks.jar)
   from(project(":core").tasks.jar)
   dependsOn(project(":core").tasks.jar)
@@ -37,13 +38,11 @@ val testIntegration = tasks.register<Test>("testIntegration") {
 
   // Register the test projects as inputs for incremental build, but ignoring their build
   // directories, i.e. only rerun integration test if their source files are changed.
-  inputs.files(
-    fileTree(projectDir.resolve("integration")) {
-      exclude("*/.gradle")
-      exclude("*/build")
-      exclude("*/target")
-    })
-    .withPropertyName("testProjectFiles")
+  inputs.files(fileTree(projectDir.resolve("integration")) {
+    exclude("*/.gradle")
+    exclude("*/build")
+    exclude("*/target")
+  }).withPropertyName("testProjectFiles")
 
   shouldRunAfter(tasks.test)
   dependsOn(testIntegrationCopyLibs)

@@ -35,7 +35,15 @@ public class Processes {
       process.destroyForcibly();
     }
     if (process.exitValue() != 0) {
-      throw new AssertionFailedError("Process failed:%n%s".formatted(stderr.get()));
+      throw new AssertionFailedError(
+          """
+        Process failed¡`:
+        stdout:
+        %s
+        stderr:
+        %s
+        """
+              .formatted(stdout.get(), stderr.get()));
     }
   }
 }

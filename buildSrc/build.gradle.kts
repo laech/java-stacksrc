@@ -11,3 +11,9 @@ dependencies {
   implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
   implementation(libs.spotless)
 }
+
+java {
+  toolchain {
+    languageVersion.set(JavaLanguageVersion.of(17))
+  }
+}
