@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static java.util.stream.Collectors.joining;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
@@ -22,7 +22,7 @@ class CauseTest {
     var expected =
         """
 java.lang.AssertionError: rethrown
-	at nz.lae.stacksrc.core.CauseTest.doThrow(CauseTest.java:15)
+	at nz.lae.stacksrc.CauseTest.doThrow(CauseTest.java:15)
 
 	   13        throw new IllegalArgumentException("test");
 	   14      } catch (IllegalArgumentException e) {
@@ -34,7 +34,7 @@ java.lang.AssertionError: rethrown
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.core.CauseTest.run(CauseTest.java:21)
+	at nz.lae.stacksrc.CauseTest.run(CauseTest.java:21)
 
 	   19    @Test
 	   20    void run() {
@@ -44,7 +44,7 @@ java.lang.AssertionError: rethrown
 
 
 Caused by: java.lang.IllegalArgumentException: test
-	at nz.lae.stacksrc.core.CauseTest.doThrow(CauseTest.java:13)
+	at nz.lae.stacksrc.CauseTest.doThrow(CauseTest.java:13)
 
 	   11    private void doThrow() {
 	   12      try {

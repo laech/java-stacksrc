@@ -20,6 +20,7 @@ val testExamples = tasks.register<Test>("testExamples") {
   testClassesDirs = testExamplesSourceSet.get().output.classesDirs
   classpath = testExamplesSourceSet.get().runtimeClasspath
   ignoreFailures = true
+  outputs.upToDateWhen { false }
 }
 
 idea {

@@ -1,8 +1,7 @@
-package nz.lae.stacksrc.junit4;
+package nz.lae.stacksrc;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import nz.lae.stacksrc.core.StackTraceDecorator;
 
 public final class DecoratedAssertionError extends AssertionError {
 
@@ -16,9 +15,7 @@ public final class DecoratedAssertionError extends AssertionError {
     setStackTrace(new StackTraceElement[0]);
   }
 
-  /**
-   * @return the original throwable being wrapped.
-   */
+  /** Gets the original throwable being wrapped. */
   public Throwable getOriginal() {
     return original;
   }

@@ -22,7 +22,7 @@ class GradleJUnit4IT {
 
     var expectedStackTrace =
         """
-nz.lae.stacksrc.junit4.DecoratedAssertionError:
+nz.lae.stacksrc.DecoratedAssertionError:
 java.lang.AssertionError: example failure
 	at org.junit.Assert.fail(Assert.java:89)
 	at nz.lae.stacksrc.test.integration.GradleJUnit4Test.run(GradleJUnit4Test.java:16)

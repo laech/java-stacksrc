@@ -2,9 +2,9 @@ package nz.lae.stacksrc.junit4;
 
 import static java.util.Objects.requireNonNull;
 
-import nz.lae.stacksrc.core.StackTraceDecorator;
+import nz.lae.stacksrc.DecoratedAssertionError;
+import nz.lae.stacksrc.StackTraceDecorator;
 import org.junit.AssumptionViolatedException;
-import org.junit.ComparisonFailure;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
@@ -70,10 +70,8 @@ public final class ErrorDecorator implements TestRule {
   private void evaluate(Statement base) {
     try {
       base.evaluate();
-    } catch (AssumptionViolatedException e) {
+    } catch (AssumptionViolatedException | DecoratedAssertionError e) {
       throw e;
-    } catch (ComparisonFailure e) {
-      throw new DecoratedComparisonFailure(e, decorator);
     } catch (Throwable e) {
       throw new DecoratedAssertionError(e, decorator);
     }

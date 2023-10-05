@@ -23,7 +23,7 @@ class GradleJUnit5IT {
 
     var expectedStackTrace =
         """
-nz.lae.stacksrc.junit5.DecoratedAssertionError:
+nz.lae.stacksrc.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: example failure
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)

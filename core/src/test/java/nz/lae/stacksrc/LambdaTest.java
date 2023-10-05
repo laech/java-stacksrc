@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -27,7 +27,7 @@ class LambdaTest {
     var expected =
         """
 java.lang.AssertionError: hi
-	at nz.lae.stacksrc.core.LambdaTest.lambda$doThrow$0(LambdaTest.java:16)
+	at nz.lae.stacksrc.LambdaTest.lambda$doThrow$0(LambdaTest.java:16)
 
 	   14          () -> {
 	   15            assertTrue(true);
@@ -36,7 +36,7 @@ java.lang.AssertionError: hi
 	   18    }
 
 
-	at nz.lae.stacksrc.core.LambdaTest.lambda(LambdaTest.java:21)
+	at nz.lae.stacksrc.LambdaTest.lambda(LambdaTest.java:21)
 
 	   20    private void lambda(Runnable code) {
 	-> 21      code.run();

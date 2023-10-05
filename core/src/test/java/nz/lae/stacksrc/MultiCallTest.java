@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static java.util.Arrays.asList;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
@@ -40,7 +40,7 @@ class MultiCallTest {
     var expected =
         """
 java.lang.AssertionError: bob
-	at nz.lae.stacksrc.core.MultiCallTest.assertString(MultiCallTest.java:20)
+	at nz.lae.stacksrc.MultiCallTest.assertString(MultiCallTest.java:20)
 
 	   18    private void assertString(String s) {
 	   19      if (s.equals("bob")) {
@@ -49,7 +49,7 @@ java.lang.AssertionError: bob
 	   22    }
 
 
-	at nz.lae.stacksrc.core.MultiCallTest.lambda$assertList$0(MultiCallTest.java:33)
+	at nz.lae.stacksrc.MultiCallTest.lambda$assertList$0(MultiCallTest.java:33)
 
 	   31                          throw new AssertionError("no");
 	   32                        }
@@ -59,7 +59,7 @@ java.lang.AssertionError: bob
 
 
 	at java.base/java.util.Optional.ifPresent(Optional.java:178)
-	at nz.lae.stacksrc.core.MultiCallTest.lambda$assertList$1(MultiCallTest.java:28)
+	at nz.lae.stacksrc.MultiCallTest.lambda$assertList$1(MultiCallTest.java:28)
 
 	   26          s ->
 	   27              Optional.of(s.toLowerCase())
@@ -69,7 +69,7 @@ java.lang.AssertionError: bob
 
 
 	at java.base/java.util.Arrays$ArrayList.forEach(Arrays.java:4204)
-	at nz.lae.stacksrc.core.MultiCallTest.assertList(MultiCallTest.java:25)
+	at nz.lae.stacksrc.MultiCallTest.assertList(MultiCallTest.java:25)
 
 	   24    private void assertList(List<String> list) {
 	-> 25      list.forEach(
@@ -77,7 +77,7 @@ java.lang.AssertionError: bob
 	   27              Optional.of(s.toLowerCase())
 
 
-	at nz.lae.stacksrc.core.MultiCallTest.doThrow(MultiCallTest.java:14)
+	at nz.lae.stacksrc.MultiCallTest.doThrow(MultiCallTest.java:14)
 
 	   13    private void doThrow() {
 	-> 14      assertList(asList("bob", "bob"));
@@ -88,7 +88,7 @@ java.lang.AssertionError: bob
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.core.MultiCallTest.run(MultiCallTest.java:39)
+	at nz.lae.stacksrc.MultiCallTest.run(MultiCallTest.java:39)
 
 	   37    @Test
 	   38    void run() {

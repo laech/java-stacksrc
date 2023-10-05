@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -59,7 +59,7 @@ class MultiLongChainsTest {
     var expected =
         """
 java.lang.AssertionError: bob
-	at nz.lae.stacksrc.core.MultiLongChainsTest$Helper.test(MultiLongChainsTest.java:52)
+	at nz.lae.stacksrc.MultiLongChainsTest$Helper.test(MultiLongChainsTest.java:52)
 
 	   50    private static class Helper {
 	   51      private Helper test(@SuppressWarnings({"SameParameterValue", "unused"}) String msg) {
@@ -68,7 +68,7 @@ java.lang.AssertionError: bob
 	   54    }
 
 
-	at nz.lae.stacksrc.core.MultiLongChainsTest.doThrow(MultiLongChainsTest.java:13)
+	at nz.lae.stacksrc.MultiLongChainsTest.doThrow(MultiLongChainsTest.java:13)
 
 	   12      var helper1 = new Helper();
 	-> 13      helper1.test("x").test("x").test("x");
@@ -79,7 +79,7 @@ java.lang.AssertionError: bob
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.core.MultiLongChainsTest.run(MultiLongChainsTest.java:58)
+	at nz.lae.stacksrc.MultiLongChainsTest.run(MultiLongChainsTest.java:58)
 
 	   56    @Test
 	   57    void run() {

@@ -3,7 +3,8 @@ package nz.lae.stacksrc.junit5;
 import static java.util.Objects.requireNonNull;
 
 import com.google.auto.service.AutoService;
-import nz.lae.stacksrc.core.StackTraceDecorator;
+import nz.lae.stacksrc.DecoratedAssertionError;
+import nz.lae.stacksrc.StackTraceDecorator;
 import org.junit.jupiter.api.extension.Extension;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.TestExecutionExceptionHandler;
@@ -61,9 +62,9 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
 
   @Override
   public void handleTestExecutionException(ExtensionContext context, Throwable e) throws Throwable {
-    if (e instanceof IncompleteExecutionException) {
+    if (e instanceof IncompleteExecutionException || e instanceof DecoratedAssertionError) {
       throw e;
     }
-    throw DecoratedAssertionError.create(e, decorator);
+    throw new DecoratedAssertionError(e, decorator);
   }
 }

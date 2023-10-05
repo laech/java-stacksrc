@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static java.util.stream.Collectors.joining;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
@@ -29,7 +29,7 @@ class SupressTest {
     var expected =
         """
 java.lang.AssertionError: rethrown
-	at nz.lae.stacksrc.core.SupressTest.doThrow(SupressTest.java:12)
+	at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:12)
 
 	   11    private void doThrow() {
 	-> 12      var root = new AssertionError("rethrown");
@@ -40,7 +40,7 @@ java.lang.AssertionError: rethrown
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.core.SupressTest.run(SupressTest.java:28)
+	at nz.lae.stacksrc.SupressTest.run(SupressTest.java:28)
 
 	   26    @Test
 	   27    void run() {
@@ -50,7 +50,7 @@ java.lang.AssertionError: rethrown
 
 
 	Suppressed: java.lang.IllegalArgumentException: test1
-		at nz.lae.stacksrc.core.SupressTest.doThrow(SupressTest.java:14)
+		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:14)
 
 		   12      var root = new AssertionError("rethrown");
 		   13      try {
@@ -60,7 +60,7 @@ java.lang.AssertionError: rethrown
 
 
 	Suppressed: java.lang.IllegalArgumentException: test2
-		at nz.lae.stacksrc.core.SupressTest.doThrow(SupressTest.java:19)
+		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:19)
 
 		   17      }
 		   18      try {

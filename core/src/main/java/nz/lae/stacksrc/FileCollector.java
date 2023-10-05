@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import java.io.IOException;
 import java.nio.file.FileVisitOption;

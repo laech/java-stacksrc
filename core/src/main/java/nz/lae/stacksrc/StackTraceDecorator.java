@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static java.lang.String.format;
 import static java.lang.System.lineSeparator;

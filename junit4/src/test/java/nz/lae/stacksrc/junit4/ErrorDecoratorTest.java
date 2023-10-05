@@ -3,6 +3,7 @@ package nz.lae.stacksrc.junit4;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.Assert.fail;
 
+import nz.lae.stacksrc.DecoratedAssertionError;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
@@ -35,15 +36,15 @@ public final class ErrorDecoratorTest {
   private static void assertFailure(Throwable e) {
     var expected =
         """
-nz.lae.stacksrc.junit4.DecoratedAssertionError:
+nz.lae.stacksrc.DecoratedAssertionError:
 java.lang.AssertionError: testing failure
 	at org.junit.Assert.fail(Assert.java:89)
-	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:15)
+	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:16)
 
-	   13    @Test
-	   14    public void decoratesFailure() {
-	-> 15      fail("testing failure");
-	   16    }
+	   14    @Test
+	   15    public void decoratesFailure() {
+	-> 16      fail("testing failure");
+	   17    }
 
 """;
     assertStackTrace(expected, e);

@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -19,7 +19,7 @@ class MultilineThrowTest {
     var expected =
         """
 java.lang.AssertionError: hello world
-	at nz.lae.stacksrc.core.MultilineThrowTest.doThrow(MultilineThrowTest.java:11)
+	at nz.lae.stacksrc.MultilineThrowTest.doThrow(MultilineThrowTest.java:11)
 
 	   10    private void doThrow() {
 	-> 11      throw new AssertionError( //

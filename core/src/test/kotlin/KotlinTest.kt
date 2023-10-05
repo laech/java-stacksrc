@@ -1,5 +1,6 @@
 package nz.lae.stacksrc.core
 
+import nz.lae.stacksrc.StackTraceDecorator
 import nz.lae.stacksrc.test.Assertions.assertStackTrace
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -14,16 +15,16 @@ class KotlinTest {
   fun run() {
     val exception = assertThrows(AssertionError::class.java, ::doThrow)
     val expected =
-        """
+      """
 java.lang.AssertionError: testing failure
-	at nz.lae.stacksrc.core.KotlinTest.doThrow(KotlinTest.kt:10)
+	at nz.lae.stacksrc.core.KotlinTest.doThrow(KotlinTest.kt:11)
 
-	    9    private fun doThrow() {
-	-> 10      throw AssertionError("testing failure")
-	   11    }
+	   10    private fun doThrow() {
+	-> 11      throw AssertionError("testing failure")
+	   12    }
 
 """
-            .trimIndent()
+        .trimIndent()
     assertStackTrace(expected, StackTraceDecorator.create().decorate(exception))
   }
 }

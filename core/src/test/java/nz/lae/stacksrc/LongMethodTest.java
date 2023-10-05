@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,7 +45,7 @@ class LongMethodTest {
     var expected =
         """
 java.lang.AssertionError: test
-	at nz.lae.stacksrc.core.LongMethodTest.doThrow(LongMethodTest.java:39)
+	at nz.lae.stacksrc.LongMethodTest.doThrow(LongMethodTest.java:39)
 
 	   37      assertEquals(1, 1);
 	   38      assertEquals(1, 1);

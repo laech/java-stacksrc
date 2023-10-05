@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.core;
+package nz.lae.stacksrc;
 
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -40,14 +40,14 @@ class ChainTest {
     var expected =
         """
 java.lang.AssertionError: what?
-	at nz.lae.stacksrc.core.ChainTest.fail(ChainTest.java:22)
+	at nz.lae.stacksrc.ChainTest.fail(ChainTest.java:22)
 
 	   21    private ChainTest fail(String message) {
 	-> 22      throw new AssertionError(message);
 	   23    }
 
 
-	at nz.lae.stacksrc.core.ChainTest.doThrow(ChainTest.java:14)
+	at nz.lae.stacksrc.ChainTest.doThrow(ChainTest.java:14)
 
 	   12          .nothing1()
 	   13          .nothing2()

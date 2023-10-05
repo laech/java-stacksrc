@@ -1,6 +1,6 @@
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
-import nz.lae.stacksrc.core.StackTraceDecorator;
+import nz.lae.stacksrc.StackTraceDecorator;
 import org.junit.jupiter.api.Test;
 
 class NoPackageTest {
