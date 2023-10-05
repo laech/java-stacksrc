@@ -9,12 +9,9 @@ import static java.util.stream.Collectors.toList;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -63,7 +60,8 @@ final class StackTraceDecorator {
         stackTrace = decorate(suppressed, stackTrace, 2, alreadySeenElements, alreadySeenSnippets);
       }
 
-    } catch (Exception ignored) {
+    } catch (Exception sup) {
+      e.addSuppressed(sup);
     }
     return stackTrace;
   }
@@ -119,37 +117,25 @@ final class StackTraceDecorator {
         .filter(it -> it.getLineNumber() > 0)
         .filter(it -> it.getFileName() != null)
         .filter(it -> !it.getMethodName().startsWith("access$"))
-        .map(
-            it -> {
-              try {
-                return Class.forName(it.getClassName(), false, getClass().getClassLoader());
-              } catch (ClassNotFoundException e) {
-                return null;
-              }
-            })
-        .map(Class::getProtectionDomain)
-        .map(ProtectionDomain::getCodeSource)
-        .map(CodeSource::getLocation)
-        .filter(url -> "file".equalsIgnoreCase(url.getProtocol()))
-        .map(
-            url -> {
-              try {
-                return Paths.get(url.toURI());
-              } catch (URISyntaxException e) {
-                return null;
-              }
-            })
-        .filter(Files::isDirectory)
         .flatMap(
             __ -> {
               try {
-                var candidates = cachedFiles().getOrDefault(element.getFileName(), List.of());
-                if (element.getFileName().endsWith(".java")) {
-                  var suffix = withPackagePath(element);
-                  candidates =
-                      candidates.stream().filter(path -> path.endsWith(suffix)).collect(toList());
+                var suffix = withPackagePath(element);
+                var potentialMatches = cachedFiles().getOrDefault(element.getFileName(), List.of());
+                var exactMatch =
+                    potentialMatches.stream()
+                        .filter(path -> path.endsWith(suffix))
+                        .collect(toList())
+                        .stream()
+                        .findAny();
+
+                if (exactMatch.isPresent() || element.getFileName().endsWith(".java")) {
+                  return exactMatch;
                 }
-                return Optional.ofNullable(candidates.size() == 1 ? candidates.get(0) : null);
+
+                return Optional.ofNullable(
+                    potentialMatches.size() == 1 ? potentialMatches.get(0) : null);
+
               } catch (IOException ignored) {
                 return Optional.empty();
               }
