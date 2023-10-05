@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.test.integration;
+package nz.lae.stacksrc.test;
 
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlElement;

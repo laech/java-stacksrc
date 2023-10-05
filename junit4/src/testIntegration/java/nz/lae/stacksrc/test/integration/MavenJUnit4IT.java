@@ -1,12 +1,10 @@
 package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
 
-import jakarta.xml.bind.JAXB;
-import java.nio.file.Path;
 import java.nio.file.Paths;
+import nz.lae.stacksrc.test.Processes;
 import org.junit.jupiter.api.Test;
 
 class MavenJUnit4IT {
@@ -38,16 +36,8 @@ java.lang.AssertionError: example failure
 """;
 
     var reportDir = mvnw.resolveSibling("target/surefire-reports");
-    assertJUnitReport(reportDir, expectedStackTrace);
-  }
-
-  private static void assertJUnitReport(Path reportDir, String expectedStackTrace) {
-    var report =
-        JAXB.unmarshal(
-            reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenJUnit4Test.xml").toFile(),
-            JUnitTestReport.class);
-
-    assertEquals("example failure", report.testcase.failure.message);
-    assertStackTrace(expectedStackTrace, report.testcase.failure.stackTrace);
+    assertSingleFailureJUnitReport(
+        reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenJUnit4Test.xml"),
+        expectedStackTrace);
   }
 }

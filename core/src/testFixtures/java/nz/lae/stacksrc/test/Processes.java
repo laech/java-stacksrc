@@ -1,4 +1,4 @@
-package nz.lae.stacksrc.test.integration;
+package nz.lae.stacksrc.test;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.TimeUnit.MINUTES;
@@ -9,10 +9,10 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import org.opentest4j.AssertionFailedError;
 
-class Processes {
+public class Processes {
   private Processes() {}
 
-  static void run(Path directory, String... command)
+  public static void run(Path directory, String... command)
       throws IOException, InterruptedException, ExecutionException {
     var builder = new ProcessBuilder(command).directory(directory.toFile());
     var process = builder.start();

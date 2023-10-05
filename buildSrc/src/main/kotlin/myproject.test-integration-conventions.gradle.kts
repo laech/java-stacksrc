@@ -7,9 +7,9 @@ plugins {
 
 val testIntegrationSourceSet: NamedDomainObjectProvider<SourceSet> =
   sourceSets.register("testIntegration") {
-    val main = sourceSets.main.get()
-    compileClasspath += main.compileClasspath
-    runtimeClasspath += main.runtimeClasspath
+    val test = sourceSets.test.get()
+    compileClasspath += test.compileClasspath
+    runtimeClasspath += test.runtimeClasspath
   }
 
 val testIntegrationImplementation: Configuration by configurations.getting {
@@ -20,6 +20,14 @@ val testIntegrationRuntimeOnly: Configuration by configurations.getting {
   extendsFrom(configurations.testRuntimeOnly.get())
 }
 
+val testIntegrationCopyLibs by tasks.registering(Copy::class) {
+  destinationDir = buildDir.resolve("testIntegrationLibs")
+  from(tasks.jar)
+  from(project(":core").tasks.jar)
+  dependsOn(project(":core").tasks.jar)
+  dependsOn(tasks.jar)
+}
+
 val testIntegration = tasks.register<Test>("testIntegration") {
   description = "Runs integration tests."
   group = "verification"
@@ -27,7 +35,18 @@ val testIntegration = tasks.register<Test>("testIntegration") {
   testClassesDirs = testIntegrationSourceSet.get().output.classesDirs
   classpath = testIntegrationSourceSet.get().runtimeClasspath
 
+  // Register the test projects as inputs for incremental build, but ignoring their build
+  // directories, i.e. only rerun integration test if their source files are changed.
+  inputs.files(
+    fileTree(projectDir.resolve("integration")) {
+      exclude("*/.gradle")
+      exclude("*/build")
+      exclude("*/target")
+    })
+    .withPropertyName("testProjectFiles")
+
   shouldRunAfter(tasks.test)
+  dependsOn(testIntegrationCopyLibs)
 }
 
 tasks.check {
@@ -45,5 +64,11 @@ dependencies {
 idea {
   module {
     testSources.from(testIntegrationSourceSet.get().java.srcDirs)
+
+    project.projectDir.resolve("integration").listFiles()?.forEach {
+      excludeDirs.add(it.resolve(".gradle"))
+      excludeDirs.add(it.resolve("build"))
+      excludeDirs.add(it.resolve("target"))
+    }
   }
 }
