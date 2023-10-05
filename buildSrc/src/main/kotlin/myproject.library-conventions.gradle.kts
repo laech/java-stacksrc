@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "nz.lae.stacksrc"
-version = "0.5.0-SNAPSHOT"
+version = "0.5.0"
 
 tasks.jar {
   archiveBaseName.set("stacksrc-${project.name}")
@@ -47,15 +47,26 @@ publishing {
 
       pom {
         artifactId = tasks.jar.get().archiveBaseName.get()
+        name.set(artifactId)
+        description.set("Decorates stack traces with source code snippets.")
         url.set("https://github.com/laech/java-stacksrc")
+
         scm {
           url.set("https://github.com/laech/java-stacksrc")
           developerConnection.set("scm:git:https://github.com/laech/java-stacksrc.git")
         }
+
         licenses {
           license {
             name.set("The Apache License, Version 2.0")
             url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+          }
+        }
+
+        developers {
+          developer {
+            name.set("Lae Chen")
+            email.set("laec@proton.me")
           }
         }
       }
