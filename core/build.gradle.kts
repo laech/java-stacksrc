@@ -1,6 +1,7 @@
 plugins {
   myproject.`java-conventions`
   myproject.`test-fixtures-conventions`
+  myproject.`library-conventions`
   alias(libs.plugins.kotlin.jvm)
 }
 

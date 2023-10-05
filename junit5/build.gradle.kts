@@ -1,12 +1,12 @@
 plugins {
   myproject.`java-conventions`
   myproject.`test-integration-conventions`
-  `java-library`
+  myproject.`library-conventions`
 }
 
 dependencies {
   api(project(":core"))
-  implementation("org.junit.jupiter:junit-jupiter-api:[5.0.0,)")
+  api(libs.junit.jupiter.api)
 
   compileOnly(libs.auto.service.annotations)
   annotationProcessor(libs.auto.service.processor)

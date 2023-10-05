@@ -14,6 +14,7 @@ auto-value-annotations = { module = "com.google.auto.value:auto-value-annotation
 auto-value-processor = { module = "com.google.auto.value:auto-value", version.ref = "auto-value" }
 jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime", version = "4.0.3" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.10.0" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }

@@ -26,38 +26,106 @@ import java.util.TreeMap;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
+/**
+ * Builds the stack traces for {@link Throwable}s with code snippets applied.
+ *
+ * <p>Create an instance with default configuration via {@link #create()}, or use the {@link
+ * Builder} for customization.
+ *
+ * @see #decorate(Throwable)
+ */
 @AutoValue
 public abstract class StackTraceDecorator {
 
+  /**
+   * Location to search for source code files, defaults to the current working directory.
+   *
+   * @return location to search for source code files
+   */
   abstract Path searchPath();
 
+  /**
+   * The number of context lines to show around a given stack trace element.
+   *
+   * <p>The following is an example with this value set to 2:
+   *
+   * <pre>
+   *   	at example.HelloTest.hello(HelloTest.java:16)
+   *
+   * 	   14      @Test
+   * 	   15      public void hello() {
+   * 	-> 16          assertEquals("Hello!", greet());
+   * 	   17          // a comment
+   * 	   18      }
+   * </pre>
+   *
+   * @return number of context lines to show around a given stack trace element
+   */
   abstract int contextLineCount();
 
   abstract Predicate<StackTraceElement> filter();
 
+  /** Builder for customizing a {@link StackTraceDecorator} */
   @AutoValue.Builder
   public abstract static class Builder {
 
-    /** Location to search for source code. Defaults to current working directory. */
+    /**
+     * Sets the location to search for source code files, defaults to current working directory.
+     *
+     * @param searchPath location to search for source code
+     * @return this
+     * @throws NullPointerException if argument is null
+     */
     public abstract Builder searchPath(Path searchPath);
 
-    /** Number of context lines to show for a given stack trace element. Defaults to 2. */
+    /**
+     * Sets the number of context lines to show around a given stack trace element, defaults to 2.
+     *
+     * <p>The following is an example with this value set to 2:
+     *
+     * <pre>
+     *   	at example.HelloTest.hello(HelloTest.java:16)
+     *
+     * 	   14      @Test
+     * 	   15      public void hello() {
+     * 	-> 16          assertEquals("Hello!", greet());
+     * 	   17          // a comment
+     * 	   18      }
+     * </pre>
+     *
+     * with 2 lines above and below the line pointed to by the stack trace element.
+     *
+     * @param contextLineCount number of context lines to show for a given stack trace element
+     * @return this
+     */
     public abstract Builder contextLineCount(int contextLineCount);
 
     /**
-     * Additional filter on stack trace elements, if returned value is false for a given element, no
-     * attempt will be performed to decorate that element. Defaults to no filtering.
+     * Sets the additional filter on stack trace elements, if the filter returns false for a given
+     * element, no attempt will be performed to decorate that element, defaults to no filtering.
+     *
+     * @param filter the additional filter on stack trace elements
+     * @return this
+     * @throws NullPointerException if argument is null
      */
     public abstract Builder filter(Predicate<StackTraceElement> filter);
 
+    /**
+     * @return an instance built with the specified configuration
+     */
     public abstract StackTraceDecorator build();
   }
 
-  /** Creates an instance with default configuration. */
+  /**
+   * @return an instance with default configuration
+   */
   public static StackTraceDecorator create() {
     return builder().build();
   }
 
+  /**
+   * @return a builder with default configuration
+   */
   public static Builder builder() {
     return new AutoValue_StackTraceDecorator.Builder()
         .searchPath(Paths.get(""))
@@ -74,7 +142,12 @@ public abstract class StackTraceDecorator {
     return cachedFiles;
   }
 
-  /** Returns the stack trace of the throwable with code snippets applied. */
+  /**
+   * Builds the stack trace for the given throwable with code snippets applied.
+   *
+   * @param e the throwable to decorate stack trace for
+   * @return the stack trace of the throwable with code snippets applied
+   */
   public String decorate(Throwable e) {
     requireNonNull(e);
 

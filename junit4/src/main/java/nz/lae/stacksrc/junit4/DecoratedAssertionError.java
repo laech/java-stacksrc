@@ -16,7 +16,9 @@ public final class DecoratedAssertionError extends AssertionError {
     setStackTrace(new StackTraceElement[0]);
   }
 
-  /** Gets the original throwable being wrapped. */
+  /**
+   * @return the original throwable being wrapped.
+   */
   public Throwable getOriginal() {
     return original;
   }

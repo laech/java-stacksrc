@@ -1,12 +1,12 @@
 plugins {
   myproject.`java-conventions`
   myproject.`test-integration-conventions`
-  `java-library`
+  myproject.`library-conventions`
 }
 
 dependencies {
   api(project(":core"))
-  implementation(libs.junit4)
+  api(libs.junit4)
   testImplementation(testFixtures(project(":core")))
 }
 
