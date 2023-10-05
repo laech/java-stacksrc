@@ -1,0 +1,20 @@
+[versions]
+auto-service = "1.1.1"
+auto-value = "1.10.4"
+junit = "5.10.0"
+kotlin = "1.9.10"
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+
+[libraries]
+auto-service-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "auto-service" }
+auto-service-processor = { module = "com.google.auto.service:auto-service", version.ref = "auto-service" }
+auto-value-annotations = { module = "com.google.auto.value:auto-value-annotations", version.ref = "auto-value" }
+auto-value-processor = { module = "com.google.auto.value:auto-value", version.ref = "auto-value" }
+jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime", version = "4.0.3" }
+junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.10.0" }
+junit4 = { module = "junit:junit", version = "4.13.2" }
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0" }

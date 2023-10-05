@@ -1,19 +1,5 @@
 plugins {
-  java
-  idea
-  id("com.diffplug.spotless")
-}
-
-repositories {
-  mavenCentral()
-}
-
-java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-  }
-  sourceCompatibility = JavaVersion.VERSION_17
-  targetCompatibility = JavaVersion.VERSION_17
+  id("myproject.java-conventions")
 }
 
 val testExamplesSourceSet: NamedDomainObjectProvider<SourceSet> =
@@ -38,11 +24,5 @@ val testExamples = tasks.register<Test>("testExamples") {
 idea {
   module {
     testSources.from(testExamplesSourceSet.get().java.srcDirs)
-  }
-}
-
-spotless {
-  java {
-    googleJavaFormat()
   }
 }

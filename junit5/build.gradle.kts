@@ -13,7 +13,7 @@ dependencies {
   testImplementation(testFixtures(project(":core")))
 
   testIntegrationImplementation(testFixtures(project(":core")))
-  testIntegrationImplementation("org.glassfish.jaxb:jaxb-runtime:4.0.3")
+  testIntegrationImplementation(libs.jaxb.runtime)
 }
 
 val copyTestIntegrationLibs by

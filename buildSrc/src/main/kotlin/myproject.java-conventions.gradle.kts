@@ -1,3 +1,4 @@
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
@@ -64,19 +65,18 @@ tasks.withType<Test> {
   }
 }
 
+// https://github.com/gradle/gradle/issues/15383#issuecomment-779893192
+val libs = the<LibrariesForLibs>()
+
 dependencies {
-  val junitVersion = "5.10.0"
 
-  testFixturesImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-  testFixturesImplementation("org.junit.jupiter:junit-jupiter")
+  testFixturesImplementation(libs.junit.jupiter)
 
-  testImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-  testImplementation("org.junit.jupiter:junit-jupiter")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testImplementation(libs.junit.jupiter)
+  testRuntimeOnly(libs.junit.platform.launcher)
 
-  testIntegrationImplementation(platform("org.junit:junit-bom:${junitVersion}"))
-  testIntegrationImplementation("org.junit.jupiter:junit-jupiter")
-  testIntegrationRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testIntegrationImplementation(libs.junit.jupiter)
+  testIntegrationRuntimeOnly(libs.junit.platform.launcher)
 }
 
 idea {

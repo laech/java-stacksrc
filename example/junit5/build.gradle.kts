@@ -4,8 +4,8 @@ plugins {
 
 dependencies {
   testExamplesImplementation(project(":junit5"))
-  testExamplesImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-  testExamplesRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  testExamplesImplementation(libs.junit.jupiter)
+  testExamplesRuntimeOnly(libs.junit.platform.launcher)
 }
 
 tasks.testExamples {
