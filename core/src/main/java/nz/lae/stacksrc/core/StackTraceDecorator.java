@@ -27,40 +27,15 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 /**
- * Builds the stack traces for {@link Throwable}s with code snippets applied.
- *
- * <p>Create an instance with default configuration via {@link #create()}, or use the {@link
- * Builder} for customization.
+ * Builds stack traces for {@link Throwable}s with code snippets applied.
  *
  * @see #decorate(Throwable)
  */
 @AutoValue
 public abstract class StackTraceDecorator {
 
-  /**
-   * Location to search for source code files, defaults to the current working directory.
-   *
-   * @return location to search for source code files
-   */
   abstract Path searchPath();
 
-  /**
-   * The number of context lines to show around a given stack trace element.
-   *
-   * <p>The following is an example with this value set to 2:
-   *
-   * <pre>
-   *   	at example.HelloTest.hello(HelloTest.java:16)
-   *
-   * 	   14      @Test
-   * 	   15      public void hello() {
-   * 	-> 16          assertEquals("Hello!", greet());
-   * 	   17          // a comment
-   * 	   18      }
-   * </pre>
-   *
-   * @return number of context lines to show around a given stack trace element
-   */
   abstract int contextLineCount();
 
   abstract Predicate<StackTraceElement> filter();
@@ -69,13 +44,7 @@ public abstract class StackTraceDecorator {
   @AutoValue.Builder
   public abstract static class Builder {
 
-    /**
-     * Sets the location to search for source code files, defaults to current working directory.
-     *
-     * @param searchPath location to search for source code
-     * @return this
-     * @throws NullPointerException if argument is null
-     */
+    /** Sets the location to search for source code files, defaults to current working directory. */
     public abstract Builder searchPath(Path searchPath);
 
     /**
@@ -94,38 +63,24 @@ public abstract class StackTraceDecorator {
      * </pre>
      *
      * with 2 lines above and below the line pointed to by the stack trace element.
-     *
-     * @param contextLineCount number of context lines to show for a given stack trace element
-     * @return this
      */
     public abstract Builder contextLineCount(int contextLineCount);
 
     /**
      * Sets the additional filter on stack trace elements, if the filter returns false for a given
      * element, no attempt will be performed to decorate that element, defaults to no filtering.
-     *
-     * @param filter the additional filter on stack trace elements
-     * @return this
-     * @throws NullPointerException if argument is null
      */
     public abstract Builder filter(Predicate<StackTraceElement> filter);
 
-    /**
-     * @return an instance built with the specified configuration
-     */
     public abstract StackTraceDecorator build();
   }
 
-  /**
-   * @return an instance with default configuration
-   */
+  /** Creates an instance with default configuration. */
   public static StackTraceDecorator create() {
     return builder().build();
   }
 
-  /**
-   * @return a builder with default configuration
-   */
+  /** Creates a builder with default configuration. */
   public static Builder builder() {
     return new AutoValue_StackTraceDecorator.Builder()
         .searchPath(Paths.get(""))
@@ -160,7 +115,7 @@ public abstract class StackTraceDecorator {
 
       var cause = e.getCause();
       if (cause != null) {
-        stackTrace = decorate(cause, stackTrace, 2, alreadySeenElements, alreadySeenSnippets);
+        stackTrace = decorate(cause, stackTrace, 1, alreadySeenElements, alreadySeenSnippets);
       }
 
       for (var suppressed : e.getSuppressed()) {

@@ -1,5 +1,6 @@
 package nz.lae.stacksrc.core;
 
+import static java.util.stream.Collectors.joining;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -21,27 +22,50 @@ class CauseTest {
     var expected =
         """
 java.lang.AssertionError: rethrown
-	at nz.lae.stacksrc.core.CauseTest.doThrow(CauseTest.java:14)
+	at nz.lae.stacksrc.core.CauseTest.doThrow(CauseTest.java:15)
 
-	   12        throw new IllegalArgumentException("test");
-	   13      } catch (IllegalArgumentException e) {
-	-> 14        throw new AssertionError("rethrown", e);
-	   15      }
-	   16    }
+	   13        throw new IllegalArgumentException("test");
+	   14      } catch (IllegalArgumentException e) {
+	-> 15        throw new AssertionError("rethrown", e);
+	   16      }
+	   17    }
 
 
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.core.CauseTest.run(CauseTest.java:20)
+	at nz.lae.stacksrc.core.CauseTest.run(CauseTest.java:21)
 
-	   18    @Test
-	   19    void run() {
-	-> 20      var exception = assertThrows(AssertionError.class, this::doThrow);
-	   21      var expected =
-	   22          \"""
+	   19    @Test
+	   20    void run() {
+	-> 21      var exception = assertThrows(AssertionError.class, this::doThrow);
+	   22      var expected =
+	   23          ""\"
+
+
+Caused by: java.lang.IllegalArgumentException: test
+	at nz.lae.stacksrc.core.CauseTest.doThrow(CauseTest.java:13)
+
+	   11    private void doThrow() {
+	   12      try {
+	-> 13        throw new IllegalArgumentException("test");
+	   14      } catch (IllegalArgumentException e) {
+	   15        throw new AssertionError("rethrown", e);
 
     """;
-    assertStackTrace(expected, StackTraceDecorator.create().decorate(exception));
+
+    var actual =
+        StackTraceDecorator.create()
+            .decorate(exception)
+            .lines()
+            .filter(line -> !line.contains("java.base/"))
+            .filter(line -> !line.contains("jdk.proxy1/"))
+            .filter(line -> !line.contains("org.junit.platform"))
+            .filter(line -> !line.contains("org.junit.jupiter.engine"))
+            .filter(line -> !line.contains("org.gradle"))
+            .filter(line -> !line.contains("\t..."))
+            .collect(joining("\n"));
+
+    assertStackTrace(expected, actual);
   }
 }
