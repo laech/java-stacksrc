@@ -3,10 +3,12 @@
 // https://www.jetbrains.com/help/space/publish-artifacts-to-maven-central.html
 // https://docs.gradle.org/current/userguide/publishing_maven.html
 // https://docs.gradle.org/current/samples/sample_publishing_credentials.html
+// https://docs.gradle.org/current/userguide/signing_plugin.html
 
 plugins {
   `java-library`
   `maven-publish`
+  signing
 }
 
 group = "nz.lae.stacksrc"
@@ -90,4 +92,9 @@ tasks.javadoc {
   val opts = options as StandardJavadocDocletOptions
   opts.addBooleanOption("html5", true)
   opts.addStringOption("Xdoclint:none", "-quiet")
+}
+
+signing {
+  useGpgCmd()
+  sign(publishing.publications)
 }
