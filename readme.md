@@ -43,7 +43,7 @@ dependencies {
   // For JUnit 5
   testImplementation("nz.lae.stacksrc:stacksrc-junit5:${stacksrc.version}")
   // For JUnit 4
-  testImplementation("nz.lae.stacksrc:stacksrc-junit5:${stacksrc.version}")
+  testImplementation("nz.lae.stacksrc:stacksrc-junit4:${stacksrc.version}")
 }
 ```
 
