@@ -1,6 +1,10 @@
 # Overview
 
-![Maven Central](https://img.shields.io/maven-central/v/nz.lae.stacksrc/stacksrc-core?color=blue)
+<p>
+<picture>
+  <img alt="Maven Central" src="https://img.shields.io/maven-central/v/nz.lae.stacksrc/stacksrc-core?color=blue">
+</picture>
+</p>
 
 The goal of this project is to decorate stack traces of test failures to make
 them more useful.
