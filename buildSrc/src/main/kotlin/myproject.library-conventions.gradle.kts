@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "nz.lae.stacksrc"
-version = "0.5.1-SNAPSHOT"
+version = "0.5.1"
 
 tasks.jar {
   archiveBaseName.set("stacksrc-${project.name}")
