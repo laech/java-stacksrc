@@ -12,7 +12,6 @@ class NoPackageTest {
     } catch (AssertionError e) {
       var expected =
           """
-nz.lae.stacksrc.DecoratedAssertionError:
 java.lang.AssertionError: no package
 	at NoPackageTest.noPackage(NoPackageTest.java:11)
 

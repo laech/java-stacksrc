@@ -46,6 +46,6 @@ public final class DecoratedAssertionError extends AssertionError {
 
   @Override
   public String toString() {
-    return String.format("%s:%n%s", getClass().getName(), decoratedStackTrace);
+    return decoratedStackTrace;
   }
 }
