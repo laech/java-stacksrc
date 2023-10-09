@@ -1,6 +1,5 @@
 package nz.lae.stacksrc;
 
-import static java.util.stream.Collectors.joining;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -29,59 +28,49 @@ class SupressTest {
     var expected =
         """
 java.lang.AssertionError: rethrown
-	at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:12)
+	at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:11)
 
-	   11    private void doThrow() {
-	-> 12      var root = new AssertionError("rethrown");
-	   13      try {
-	   14        throw new IllegalArgumentException("test1");
+	   10    private void doThrow() {
+	-> 11      var root = new AssertionError("rethrown");
+	   12      try {
+	   13        throw new IllegalArgumentException("test1");
 
 
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:53)
 	at org.junit.jupiter.api.AssertThrows.assertThrows(AssertThrows.java:35)
 	at org.junit.jupiter.api.Assertions.assertThrows(Assertions.java:3111)
-	at nz.lae.stacksrc.SupressTest.run(SupressTest.java:28)
+	at nz.lae.stacksrc.SupressTest.run(SupressTest.java:27)
 
-	   26    @Test
-	   27    void run() {
-	-> 28      var exception = assertThrows(AssertionError.class, this::doThrow);
-	   29      var expected =
-	   30          ""\"
+	   25    @Test
+	   26    void run() {
+	-> 27      var exception = assertThrows(AssertionError.class, this::doThrow);
+	   28      var expected =
+	   29          ""\"
 
 
 	Suppressed: java.lang.IllegalArgumentException: test1
-		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:14)
+		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:13)
 
-		   12      var root = new AssertionError("rethrown");
-		   13      try {
-		-> 14        throw new IllegalArgumentException("test1");
-		   15      } catch (IllegalArgumentException e) {
-		   16        root.addSuppressed(e);
+		   11      var root = new AssertionError("rethrown");
+		   12      try {
+		-> 13        throw new IllegalArgumentException("test1");
+		   14      } catch (IllegalArgumentException e) {
+		   15        root.addSuppressed(e);
 
 
+		... 4 more
 	Suppressed: java.lang.IllegalArgumentException: test2
-		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:19)
+		at nz.lae.stacksrc.SupressTest.doThrow(SupressTest.java:18)
 
-		   17      }
-		   18      try {
-		-> 19        throw new IllegalArgumentException("test2");
-		   20      } catch (IllegalArgumentException e) {
-		   21        root.addSuppressed(e);
+		   16      }
+		   17      try {
+		-> 18        throw new IllegalArgumentException("test2");
+		   19      } catch (IllegalArgumentException e) {
+		   20        root.addSuppressed(e);
 
-    """;
 
-    var actual =
-        StackTraceDecorator.get()
-            .decorate(exception)
-            .lines()
-            .filter(line -> !line.contains("java.base/"))
-            .filter(line -> !line.contains("jdk.proxy1/"))
-            .filter(line -> !line.contains("org.junit.platform"))
-            .filter(line -> !line.contains("org.junit.jupiter.engine"))
-            .filter(line -> !line.contains("org.gradle"))
-            .filter(line -> !line.contains("\t..."))
-            .collect(joining("\n"));
+		... 4 more""";
 
-    assertStackTrace(expected, actual);
+    assertStackTrace(expected, StackTraceDecorator.get().decorate(exception, getClass()));
   }
 }
