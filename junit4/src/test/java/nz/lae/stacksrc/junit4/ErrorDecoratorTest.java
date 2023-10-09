@@ -36,7 +36,6 @@ public final class ErrorDecoratorTest {
   private static void assertFailure(DecoratedAssertionError e) {
     var expected =
         """
-nz.lae.stacksrc.DecoratedAssertionError:
 java.lang.AssertionError: testing failure
 	at org.junit.Assert.fail(Assert.java:89)
 	at nz.lae.stacksrc.junit4.ErrorDecoratorTest.decoratesFailure(ErrorDecoratorTest.java:16)

@@ -28,7 +28,6 @@ class ErrorDecoratorNestedTest {
     public void handleTestExecutionException(ExtensionContext context, Throwable e) {
       var expected =
           """
-nz.lae.stacksrc.DecoratedAssertionError:
 org.opentest4j.AssertionFailedError: testing failure
 	at org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:38)
 	at org.junit.jupiter.api.Assertions.fail(Assertions.java:134)
