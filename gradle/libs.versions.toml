@@ -13,3 +13,4 @@ junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher
 junit4 = { module = "junit:junit", version = "4.13.2" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0" }
+testng = { module = "org.testng:testng", version = "7.8.0" }
