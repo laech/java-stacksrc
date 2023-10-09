@@ -57,6 +57,15 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
     if (e instanceof IncompleteExecutionException || e instanceof DecoratedAssertionError) {
       throw e;
     }
-    throw new DecoratedAssertionError(e);
+
+    // https://junit.org/junit5/docs/current/user-guide/#stacktrace-pruning
+    var pruneStackTrace =
+        context
+            .getConfigurationParameter("junit.platform.stacktrace.pruning.enabled")
+            .map(Boolean::parseBoolean)
+            .orElse(true);
+
+    throw new DecoratedAssertionError(
+        e, pruneStackTrace ? context.getTestClass().orElse(null) : null);
   }
 }

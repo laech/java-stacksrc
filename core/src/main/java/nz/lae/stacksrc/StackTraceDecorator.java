@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,13 @@ final class StackTraceDecorator {
   }
 
   public String decorate(Throwable e) {
-    requireNonNull(e);
+    return decorate(e, null);
+  }
+
+  public String decorate(Throwable e, Class<?> keepFromClass) {
+    if (keepFromClass != null) {
+      pruneStackTrace(e, keepFromClass, new HashSet<>());
+    }
 
     var stackTrace = getStackTraceAsString(e);
     try {
@@ -195,5 +202,29 @@ final class StackTraceDecorator {
     e.printStackTrace(printWriter);
     printWriter.flush();
     return stringWriter.toString();
+  }
+
+  private static void pruneStackTrace(
+      Throwable throwable, Class<?> keepFromClass, Set<Throwable> alreadySeen) {
+    if (!alreadySeen.add(throwable)) {
+      return;
+    }
+
+    var stackTrace = throwable.getStackTrace();
+    for (var i = stackTrace.length - 1; i >= 0; i--) {
+      if (stackTrace[i].getClassName().equals(keepFromClass.getName())) {
+        throwable.setStackTrace(Arrays.copyOfRange(stackTrace, 0, i + 1));
+        break;
+      }
+    }
+
+    var cause = throwable.getCause();
+    if (cause != null) {
+      pruneStackTrace(cause, keepFromClass, alreadySeen);
+    }
+
+    for (var suppressed : throwable.getSuppressed()) {
+      pruneStackTrace(suppressed, keepFromClass, alreadySeen);
+    }
   }
 }
