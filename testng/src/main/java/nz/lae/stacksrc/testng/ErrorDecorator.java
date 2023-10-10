@@ -1,14 +1,13 @@
 package nz.lae.stacksrc.testng;
 
 import nz.lae.stacksrc.DecoratedAssertionError;
-import org.testng.IInvokedMethod;
-import org.testng.IInvokedMethodListener;
+import org.testng.ITestListener;
 import org.testng.ITestResult;
 
-public final class ErrorDecorator implements IInvokedMethodListener {
+public final class ErrorDecorator implements ITestListener {
 
   @Override
-  public void afterInvocation(IInvokedMethod method, ITestResult result) {
+  public void onTestFailure(ITestResult result) {
     var throwable = result.getThrowable();
     if (throwable == null || throwable instanceof DecoratedAssertionError) {
       return;

@@ -10,6 +10,7 @@ dependencies {
   testImplementation(testFixtures(project(":core")))
 }
 
-tasks.test {
+tasks.withType<Test> {
   useJUnit()
+  maxParallelForks = 2
 }

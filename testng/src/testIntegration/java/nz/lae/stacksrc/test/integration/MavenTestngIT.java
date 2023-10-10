@@ -5,12 +5,12 @@ import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
 
 import java.nio.file.Paths;
 import nz.lae.stacksrc.test.Processes;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-public class MavenJUnit4IT {
+class MavenTestngIT {
 
   @Test
-  public void checkMavenTestReportContainsCodeSnippet() throws Exception {
+  void checkMavenTestReportContainsCodeSnippet() throws Exception {
 
     var mvnw =
         Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
@@ -23,20 +23,19 @@ public class MavenJUnit4IT {
     var expectedStackTrace =
         """
 java.lang.AssertionError: example failure
-	at org.junit.Assert.fail(Assert.java:89)
-	at nz.lae.stacksrc.test.integration.MavenJUnit4Test.run(MavenJUnit4Test.java:16)
+	at nz.lae.stacksrc.test.integration.MavenTestngTest.run(MavenTestngTest.java:9)
 
-	   14    @Test
-	   15    public void run() {
-	-> 16      fail("example failure");
-	   17    }
-	   18  }
+	    7    @Test
+	    8    public void run() {
+	->  9      assert false : "example failure";
+	   10    }
+	   11  }
 
 """;
 
     var reportDir = mvnw.resolveSibling("target/surefire-reports");
     assertSingleFailureJUnitReport(
-        reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenJUnit4Test.xml"),
+        reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenTestngTest.xml"),
         expectedStackTrace);
   }
 }

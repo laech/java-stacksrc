@@ -5,12 +5,12 @@ import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
 
 import java.nio.file.Paths;
 import nz.lae.stacksrc.test.Processes;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
-public class GradleJUnit4IT {
+class GradleTestngIT {
 
   @Test
-  public void checkGradleTestReportContainsCodeSnippet() throws Exception {
+  void checkGradleTestReportContainsCodeSnippet() throws Exception {
 
     var gradlew =
         Paths.get(getClass().getProtectionDomain().getCodeSource().getLocation().toURI())
@@ -23,20 +23,19 @@ public class GradleJUnit4IT {
     var expectedStackTrace =
         """
 java.lang.AssertionError: example failure
-	at org.junit.Assert.fail(Assert.java:89)
-	at nz.lae.stacksrc.test.integration.GradleJUnit4Test.run(GradleJUnit4Test.java:16)
+	at nz.lae.stacksrc.test.integration.GradleTestngTest.run(GradleTestngTest.java:9)
 
-	   14    @Test
-	   15    public void run() {
-	-> 16      fail("example failure");
-	   17    }
-	   18  }
+	    7    @Test
+	    8    public void run() {
+	->  9      assert false : "example failure";
+	   10    }
+	   11  }
 
 """;
 
     var reportDir = gradlew.resolveSibling("build/test-results/test");
     assertSingleFailureJUnitReport(
-        reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.GradleJUnit4Test.xml"),
+        reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.GradleTestngTest.xml"),
         expectedStackTrace);
   }
 }

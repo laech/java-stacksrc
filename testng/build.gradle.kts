@@ -9,8 +9,10 @@ dependencies {
   implementation(libs.testng)
 
   testImplementation(testFixtures(project(":core")))
+  testIntegrationImplementation(libs.testng)
 }
 
-tasks.test {
+tasks.withType<Test> {
   useTestNG()
+  (options as TestNGOptions).parallel = "classes"
 }
