@@ -27,16 +27,18 @@ publishing {
   publications {
     create<MavenPublication>("maven") {
 
-      // Don't publish test fixtures
-      val comp = components["java"] as AdhocComponentWithVariants
-      if (plugins.hasPlugin("java-test-fixtures")) {
-        listOf(
-          "testFixturesApiElements", "testFixturesRuntimeElements"
-        ).forEach {
-          comp.withVariantsFromConfiguration(configurations[it]) { skip() }
+      afterEvaluate {
+        // Don't publish test fixtures
+        val comp = components["java"] as AdhocComponentWithVariants
+        if (plugins.hasPlugin("java-test-fixtures")) {
+          listOf(
+            "testFixturesApiElements", "testFixturesRuntimeElements"
+          ).forEach {
+            comp.withVariantsFromConfiguration(configurations[it]) { skip() }
+          }
         }
+        from(comp)
       }
-      from(comp)
 
       versionMapping {
         usage("java-api") {
