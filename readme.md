@@ -44,10 +44,12 @@ Requires Java 11.
 
 ```groovy
 dependencies {
-  // For JUnit 5
+  // For JUnit 5:
   testImplementation("nz.lae.stacksrc:stacksrc-junit5:${stacksrc.version}")
-  // For JUnit 4
+  // For JUnit 4:
   testImplementation("nz.lae.stacksrc:stacksrc-junit4:${stacksrc.version}")
+  // For TestNG:
+  testImplementation("nz.lae.stacksrc:stacksrc-testng:${stacksrc.version}")
 }
 ```
 
@@ -59,6 +61,7 @@ dependencies {
   <groupId>nz.lae.stacksrc</groupId>
   <artifactId>stacksrc-junit5</artifactId> <!-- For JUnit 5 -->
   <artifactId>stacksrc-junit4</artifactId> <!-- For JUnit 4 -->
+  <artifactId>stacksrc-testng</artifactId> <!-- For TestNG -->
   <version>${stacksrc.version}</version>
   <scope>test</scope>
 </dependency>
@@ -110,3 +113,7 @@ public final class MyTest extends BaseTest {
   }
 }
 ```
+
+### TestNG
+
+No extra work is needed apart from adding the dependency.
