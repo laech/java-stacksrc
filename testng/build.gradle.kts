@@ -6,11 +6,13 @@ plugins {
 
 dependencies {
   api(project(":core"))
-  api(libs.junit4)
+  implementation(libs.testng)
+
   testImplementation(testFixtures(project(":core")))
+  testIntegrationImplementation(libs.testng)
 }
 
 tasks.withType<Test> {
-  useJUnit()
-  maxParallelForks = 2
+  useTestNG()
+  (options as TestNGOptions).parallel = "classes"
 }

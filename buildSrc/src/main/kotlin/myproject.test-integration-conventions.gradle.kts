@@ -1,5 +1,3 @@
-import org.gradle.accessors.dm.LibrariesForLibs
-
 plugins {
   idea
   id("myproject.java-conventions")
@@ -50,14 +48,6 @@ val testIntegration = tasks.register<Test>("testIntegration") {
 
 tasks.check {
   dependsOn(testIntegration)
-}
-
-// https://github.com/gradle/gradle/issues/15383#issuecomment-779893192
-val libs = the<LibrariesForLibs>()
-
-dependencies {
-  testIntegrationImplementation(libs.junit.jupiter)
-  testIntegrationRuntimeOnly(libs.junit.platform.launcher)
 }
 
 idea {

@@ -22,11 +22,17 @@ public final class DecoratedAssertionError extends AssertionError {
    *     elements that are called directly or indirectly by this class
    */
   public DecoratedAssertionError(Throwable original, Class<?> pruneStackTraceKeepFromClass) {
-    super(original.getMessage());
     this.original = original;
     this.decoratedStackTrace =
         StackTraceDecorator.get().decorate(original, pruneStackTraceKeepFromClass);
     setStackTrace(new StackTraceElement[0]);
+  }
+
+  @Override
+  public String getMessage() {
+    // Override this instead of calling the super(message) constructor, as super(null) will create
+    // the "null" string instead of actually being null
+    return getOriginal().getMessage();
   }
 
   /** Gets the original throwable being wrapped. */

@@ -2,3 +2,7 @@
 
 * [Respect JUnit 5 `junit.platform.stacktrace.pruning.enabled` flag for stack trace pruning](https://github.com/laech/java-stacksrc/pull/4)
 * [Remove the prefix `nz.lae.stacksrc.DecoratedAssertionError:` from output](https://github.com/laech/java-stacksrc/pull/5)
+
+# 0.6.0
+
+* [Support TestNG](https://github.com/laech/java-stacksrc/pull/6)
