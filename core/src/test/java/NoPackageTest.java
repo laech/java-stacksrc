@@ -3,6 +3,7 @@ import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 import nz.lae.stacksrc.DecoratedAssertionError;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("DefaultPackage")
 class NoPackageTest {
 
   @Test
@@ -13,13 +14,13 @@ class NoPackageTest {
       var expected =
           """
 java.lang.AssertionError: no package
-	at NoPackageTest.noPackage(NoPackageTest.java:11)
+	at NoPackageTest.noPackage(NoPackageTest.java:12)
 
-	    9    void noPackage() {
-	   10      try {
-	-> 11        throw new AssertionError("no package");
-	   12      } catch (AssertionError e) {
-	   13        var expected =
+	   10    void noPackage() {
+	   11      try {
+	-> 12        throw new AssertionError("no package");
+	   13      } catch (AssertionError e) {
+	   14        var expected =
 
 """;
       assertStackTrace(expected, new DecoratedAssertionError(e));
