@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.logback.integration;
 
 import static java.lang.System.getProperty;
+import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import java.nio.file.Files;
@@ -19,7 +20,8 @@ class MavenLogbackIT {
             .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
             .normalize();
 
-    Processes.run(mvnw.getParent(), mvnw.toString(), "-U", "-q", "-B", "clean", "test");
+    Processes.run(
+        requireNonNull(mvnw.getParent()), mvnw.toString(), "-U", "-q", "-B", "clean", "test");
 
     var expectedStackTrace =
         """

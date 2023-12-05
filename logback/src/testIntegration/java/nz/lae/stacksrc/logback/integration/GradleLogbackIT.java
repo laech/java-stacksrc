@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.logback.integration;
 
 import static java.lang.System.getProperty;
+import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
 
 import java.nio.file.Files;
@@ -19,7 +20,7 @@ class GradleLogbackIT {
             .resolve(getProperty("os.name").startsWith("Windows") ? "gradlew.bat" : "gradlew")
             .normalize();
 
-    Processes.run(gradlew.getParent(), gradlew.toString(), "-q", "clean", "run");
+    Processes.run(requireNonNull(gradlew.getParent()), gradlew.toString(), "-q", "clean", "run");
 
     var expectedStackTrace =
         """
