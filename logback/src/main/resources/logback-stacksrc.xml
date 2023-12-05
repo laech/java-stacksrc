@@ -1,0 +1,5 @@
+<included>
+  <conversionRule
+    conversionWord="ex"
+    converterClass="nz.lae.stacksrc.logback.DecoratedThrowableProxyConverter"/>
+</included>

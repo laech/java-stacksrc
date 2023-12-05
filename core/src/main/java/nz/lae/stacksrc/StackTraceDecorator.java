@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
 
-final class StackTraceDecorator {
+public final class StackTraceDecorator {
   private StackTraceDecorator() {}
 
   private static final StackTraceDecorator instance = new StackTraceDecorator();
@@ -46,7 +46,7 @@ final class StackTraceDecorator {
     return decorate(e, null);
   }
 
-  public String decorate(Throwable e, Class<?> keepFromClass) {
+  String decorate(Throwable e, Class<?> keepFromClass) {
     if (keepFromClass != null) {
       pruneStackTrace(e, keepFromClass, new HashSet<>());
     }

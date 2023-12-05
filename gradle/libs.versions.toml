@@ -12,5 +12,6 @@ junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.re
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.10.0" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.9" }
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0" }
 testng = { module = "org.testng:testng", version = "7.8.0" }
