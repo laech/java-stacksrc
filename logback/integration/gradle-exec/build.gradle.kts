@@ -17,7 +17,7 @@ dependencies {
 }
 
 application {
-  mainClass = "nz.lae.stacksrc.test.integration.GradleLogbackExample"
+  mainClass = "nz.lae.stacksrc.test.integration.GradleLogbackExec"
 }
 
 tasks.withType<JavaExec> {

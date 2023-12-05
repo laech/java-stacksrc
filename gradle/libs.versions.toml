@@ -6,6 +6,7 @@ kotlin = "1.9.10"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
+assertj-core = { module = "org.assertj:assertj-core", version = "3.24.2" }
 error-prune-core = { module = "com.google.errorprone:error_prone_core", version = "2.23.0" }
 jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime", version = "4.0.3" }
 jsr305 = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }

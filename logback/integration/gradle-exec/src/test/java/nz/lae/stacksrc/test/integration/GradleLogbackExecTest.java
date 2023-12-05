@@ -1,12 +1,12 @@
-package nz.lae.stafcksrc.test.integration;
+package nz.lae.stacksrc.test.integration;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-class GradleLogbackTest {
+class GradleLogbackExecTest {
 
-  private static final Logger logger = LoggerFactory.getLogger(GradleLogbackTest.class);
+  private static final Logger logger = LoggerFactory.getLogger(GradleLogbackExecTest.class);
 
   @Test
   void run() {

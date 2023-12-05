@@ -3,9 +3,9 @@ package nz.lae.stacksrc.test.integration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GradleLogbackExample {
+public class GradleLogbackExec {
 
-  private static final Logger logger = LoggerFactory.getLogger(GradleLogbackExample.class);
+  private static final Logger logger = LoggerFactory.getLogger(GradleLogbackExec.class);
 
   public static void main(String[] args) {
     try {
