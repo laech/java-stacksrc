@@ -6,12 +6,15 @@ kotlin = "1.9.10"
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 
 [libraries]
+error-prune-core = { module = "com.google.errorprone:error_prone_core", version = "2.23.0" }
 jaxb-runtime = { module = "org.glassfish.jaxb:jaxb-runtime", version = "4.0.3" }
+jsr305 = { module = "com.google.code.findbugs:jsr305", version = "3.0.2" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version = "1.10.0" }
 junit4 = { module = "junit:junit", version = "4.13.2" }
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version = "1.4.9" }
+nullaway = { module = "com.uber.nullaway:nullaway", version = "0.10.15" }
 spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version = "6.22.0" }
 testng = { module = "org.testng:testng", version = "7.8.0" }

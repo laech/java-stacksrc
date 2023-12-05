@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
+import javax.annotation.Nullable;
 
 public final class StackTraceDecorator {
   private StackTraceDecorator() {}
@@ -33,7 +34,7 @@ public final class StackTraceDecorator {
 
   private static final int CONTEXT_LINE_COUNT = 2;
 
-  private volatile Map<String, List<Path>> cachedFiles;
+  @Nullable private volatile Map<String, List<Path>> cachedFiles;
 
   private Map<String, List<Path>> cachedFiles() throws IOException {
     if (cachedFiles == null) {
@@ -46,7 +47,7 @@ public final class StackTraceDecorator {
     return decorate(e, null);
   }
 
-  String decorate(Throwable e, Class<?> keepFromClass) {
+  String decorate(Throwable e, @Nullable Class<?> keepFromClass) {
     if (keepFromClass != null) {
       pruneStackTrace(e, keepFromClass, new HashSet<>());
     }
@@ -168,12 +169,14 @@ public final class StackTraceDecorator {
     }
   }
 
+  @SuppressWarnings("NullAway")
   private void removeBlankLinesFromStart(NavigableMap<Integer, String> lines) {
     IntStream.rangeClosed(lines.firstKey(), lines.lastKey())
         .takeWhile(i -> lines.get(i).isBlank())
         .forEach(lines::remove);
   }
 
+  @SuppressWarnings("NullAway")
   private void removeBlankLinesFromEnd(NavigableMap<Integer, String> lines) {
     IntStream.iterate(lines.lastKey(), i -> i >= lines.firstKey(), i -> i - 1)
         .takeWhile(i -> lines.get(i).isBlank())

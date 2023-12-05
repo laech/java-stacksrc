@@ -24,7 +24,7 @@ class MultiCallTest {
   private void assertList(List<String> list) {
     list.forEach(
         s ->
-            Optional.of(s.toLowerCase())
+            Optional.ofNullable(s)
                 .ifPresent(
                     ss -> {
                       if (ss.length() > 1000) {
@@ -62,7 +62,7 @@ java.lang.AssertionError: bob
 	at nz.lae.stacksrc.MultiCallTest.lambda$assertList$1(MultiCallTest.java:28)
 
 	   26          s ->
-	   27              Optional.of(s.toLowerCase())
+	   27              Optional.ofNullable(s)
 	-> 28                  .ifPresent(
 	   29                      ss -> {
 	   30                        if (ss.length() > 1000) {
@@ -74,7 +74,7 @@ java.lang.AssertionError: bob
 	   24    private void assertList(List<String> list) {
 	-> 25      list.forEach(
 	   26          s ->
-	   27              Optional.of(s.toLowerCase())
+	   27              Optional.ofNullable(s)
 
 
 	at nz.lae.stacksrc.MultiCallTest.doThrow(MultiCallTest.java:14)

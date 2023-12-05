@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
+import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
 
 import java.nio.file.Paths;
@@ -18,7 +19,7 @@ public class GradleJUnit4IT {
             .resolve(getProperty("os.name").startsWith("Windows") ? "gradlew.bat" : "gradlew")
             .normalize();
 
-    Processes.run(gradlew.getParent(), gradlew.toString(), "-q", "clean", "test");
+    Processes.run(requireNonNull(gradlew.getParent()), gradlew.toString(), "-q", "clean", "test");
 
     var expectedStackTrace =
         """

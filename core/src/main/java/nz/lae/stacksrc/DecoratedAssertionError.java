@@ -2,6 +2,7 @@ package nz.lae.stacksrc;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import javax.annotation.Nullable;
 
 /**
  * Wraps an exception and prints stack trace with code snippets.
@@ -21,13 +22,15 @@ public final class DecoratedAssertionError extends AssertionError {
    * @param pruneStackTraceKeepFromClass if not null, will prune the stack traces, keeping only
    *     elements that are called directly or indirectly by this class
    */
-  public DecoratedAssertionError(Throwable original, Class<?> pruneStackTraceKeepFromClass) {
+  public DecoratedAssertionError(
+      Throwable original, @Nullable Class<?> pruneStackTraceKeepFromClass) {
     this.original = original;
     this.decoratedStackTrace =
         StackTraceDecorator.get().decorate(original, pruneStackTraceKeepFromClass);
     setStackTrace(new StackTraceElement[0]);
   }
 
+  @Nullable
   @Override
   public String getMessage() {
     // Override this instead of calling the super(message) constructor, as super(null) will create

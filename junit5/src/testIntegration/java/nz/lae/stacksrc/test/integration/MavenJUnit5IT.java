@@ -1,6 +1,7 @@
 package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
+import static java.util.Objects.requireNonNull;
 import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
 import static nz.lae.stacksrc.test.Assertions.assertSingleFailureOpenTestReport;
 
@@ -19,7 +20,8 @@ class MavenJUnit5IT {
             .resolve(getProperty("os.name").startsWith("Windows") ? "mvnw.cmd" : "mvnw")
             .normalize();
 
-    Processes.run(mvnw.getParent(), mvnw.toString(), "-U", "-q", "-B", "clean", "test");
+    Processes.run(
+        requireNonNull(mvnw.getParent()), mvnw.toString(), "-U", "-q", "-B", "clean", "test");
 
     var expectedStackTrace =
         """
