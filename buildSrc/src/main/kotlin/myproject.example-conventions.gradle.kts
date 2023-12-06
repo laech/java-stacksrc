@@ -3,28 +3,28 @@ plugins {
   id("myproject.java-conventions")
 }
 
-val testExamplesSourceSet: NamedDomainObjectProvider<SourceSet> =
-  sourceSets.register("testExamples")
+val examplesSourceSet: NamedDomainObjectProvider<SourceSet> =
+  sourceSets.register("examples")
 
-val testExamplesImplementation: Configuration by configurations.getting {
+val examplesImplementation: Configuration by configurations.getting {
   extendsFrom(configurations.testImplementation.get())
 }
 
-val testExamplesRuntimeOnly: Configuration by configurations.getting {
+val examplesRuntimeOnly: Configuration by configurations.getting {
   extendsFrom(configurations.testRuntimeOnly.get())
 }
 
-val testExamples = tasks.register<Test>("testExamples") {
-  description = "Runs example tests."
+val examples = tasks.register<Test>("examples") {
+  description = "Runs examples."
   group = "example"
-  testClassesDirs = testExamplesSourceSet.get().output.classesDirs
-  classpath = testExamplesSourceSet.get().runtimeClasspath
+  testClassesDirs = examplesSourceSet.get().output.classesDirs
+  classpath = examplesSourceSet.get().runtimeClasspath
   ignoreFailures = true
   outputs.upToDateWhen { false }
 }
 
 idea {
   module {
-    testSources.from(testExamplesSourceSet.get().java.srcDirs)
+    testSources.from(examplesSourceSet.get().java.srcDirs)
   }
 }

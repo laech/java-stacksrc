@@ -1,0 +1,16 @@
+<configuration>
+
+  <include optional="true" resource="logback-stacksrc.xml"/>
+
+  <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+    <file>target/output.log</file>
+    <encoder>
+      <pattern>%msg%n%ex</pattern>
+    </encoder>
+  </appender>
+
+  <root level="warn">
+    <appender-ref ref="FILE"/>
+  </root>
+
+</configuration>

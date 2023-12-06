@@ -12,7 +12,7 @@ import org.opentest4j.AssertionFailedError;
 public class Processes {
   private Processes() {}
 
-  public static void run(Path directory, String... command)
+  public static String run(Path directory, String... command)
       throws IOException, InterruptedException, ExecutionException {
     var builder = new ProcessBuilder(command).directory(directory.toFile());
     var process = builder.start();
@@ -45,5 +45,6 @@ public class Processes {
         """
               .formatted(stdout.get(), stderr.get()));
     }
+    return stdout.get();
   }
 }

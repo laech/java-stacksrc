@@ -5,13 +5,15 @@ plugins {
 }
 
 dependencies {
-  api(project(":core"))
-  api(libs.junit.jupiter.api)
+  implementation(project(":core"))
+  implementation(libs.logback.classic)
 
   testImplementation(testFixtures(project(":core")))
   testImplementation(libs.junit.jupiter)
+  testImplementation(libs.assertj.core)
 
   testIntegrationImplementation(libs.junit.jupiter)
+  testImplementation(libs.assertj.core)
 }
 
 tasks.withType<Test> {
