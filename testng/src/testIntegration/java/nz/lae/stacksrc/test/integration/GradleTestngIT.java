@@ -2,7 +2,7 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static java.util.Objects.requireNonNull;
-import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
+import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReportHasExpectedStackTracePrefix;
 
 import java.nio.file.Paths;
 import nz.lae.stacksrc.test.Processes;
@@ -35,7 +35,7 @@ java.lang.AssertionError: example failure
 """;
 
     var reportDir = gradlew.resolveSibling("build/test-results/test");
-    assertSingleFailureJUnitReport(
+    assertSingleFailureJUnitReportHasExpectedStackTracePrefix(
         reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.GradleTestngTest.xml"),
         expectedStackTrace);
   }

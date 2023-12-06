@@ -1,6 +1,6 @@
 package nz.lae.stacksrc;
 
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.Test;
@@ -27,6 +27,6 @@ java.lang.AssertionError: hello world
 	   13          );
 
 """;
-    assertStackTrace(expected, StackTraceDecorator.get().decorate(exception));
+    assertStackTraceHasExpectedPrefix(expected, StackTraceDecorator.get().decorate(exception));
   }
 }

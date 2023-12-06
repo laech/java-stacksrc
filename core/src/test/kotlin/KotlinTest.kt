@@ -1,6 +1,6 @@
 package nz.lae.stacksrc
 
-import nz.lae.stacksrc.test.Assertions.assertStackTrace
+import nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 
@@ -22,6 +22,9 @@ java.lang.AssertionError: testing failure
 	   11    }
 
 """.trimIndent()
-    assertStackTrace(expected, StackTraceDecorator.get().decorate(exception))
+    assertStackTraceHasExpectedPrefix(
+      expected,
+      StackTraceDecorator.get().decorate(exception)
+    )
   }
 }

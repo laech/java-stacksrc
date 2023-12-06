@@ -1,5 +1,7 @@
 package nz.lae.stacksrc.junit5;
 
+import static nz.lae.stacksrc.Throwables.pruneStackTrace;
+
 import nz.lae.stacksrc.DecoratedAssertionError;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -53,9 +55,11 @@ import org.opentest4j.IncompleteExecutionException;
 public final class ErrorDecorator implements TestExecutionExceptionHandler {
 
   @Override
-  public void handleTestExecutionException(ExtensionContext context, Throwable e) throws Throwable {
-    if (e instanceof IncompleteExecutionException || e instanceof DecoratedAssertionError) {
-      throw e;
+  public void handleTestExecutionException(ExtensionContext context, Throwable throwable)
+      throws Throwable {
+    if (throwable instanceof IncompleteExecutionException
+        || throwable instanceof DecoratedAssertionError) {
+      throw throwable;
     }
 
     // https://junit.org/junit5/docs/current/user-guide/#stacktrace-pruning
@@ -65,7 +69,10 @@ public final class ErrorDecorator implements TestExecutionExceptionHandler {
             .map(Boolean::parseBoolean)
             .orElse(true);
 
-    throw new DecoratedAssertionError(
-        e, pruneStackTrace ? context.getTestClass().orElse(null) : null);
+    if (pruneStackTrace) {
+      context.getTestClass().ifPresent(testClass -> pruneStackTrace(throwable, testClass));
+    }
+
+    throw new DecoratedAssertionError(throwable);
   }
 }

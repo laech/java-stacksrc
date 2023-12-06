@@ -1,6 +1,6 @@
 package nz.lae.stacksrc.junit4;
 
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix;
 import static org.junit.Assert.fail;
 
 import nz.lae.stacksrc.DecoratedAssertionError;
@@ -46,6 +46,6 @@ java.lang.AssertionError: testing failure
 	   17    }
 
 """;
-    assertStackTrace(expected, e);
+    assertStackTraceHasExpectedPrefix(expected, e);
   }
 }

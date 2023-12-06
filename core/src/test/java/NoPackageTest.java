@@ -1,4 +1,4 @@
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix;
 
 import nz.lae.stacksrc.DecoratedAssertionError;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ java.lang.AssertionError: no package
 	   14        var expected =
 
 """;
-      assertStackTrace(expected, new DecoratedAssertionError(e));
+      assertStackTraceHasExpectedPrefix(expected, new DecoratedAssertionError(e));
     }
   }
 }

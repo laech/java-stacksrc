@@ -1,6 +1,6 @@
 package nz.lae.stacksrc;
 
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -53,6 +53,6 @@ java.lang.AssertionError: test
 	   40    }
 
 """;
-    assertStackTrace(expected, StackTraceDecorator.get().decorate(exception));
+    assertStackTraceHasExpectedPrefix(expected, StackTraceDecorator.get().decorate(exception));
   }
 }

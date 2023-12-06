@@ -16,14 +16,20 @@ import nz.lae.stacksrc.DecoratedAssertionError;
 public class Assertions {
   private Assertions() {}
 
-  public static void assertStackTrace(String expected, DecoratedAssertionError e) {
-    assertStackTrace(expected, getStackTraceAsString(e));
+  public static void assertStackTraceHasExpectedPrefix(String expected, DecoratedAssertionError e) {
+    assertStackTraceHasExpectedPrefix(expected, getStackTraceAsString(e));
   }
 
-  public static void assertStackTrace(String expected, String actual) {
+  public static void assertStackTraceHasExpectedPrefix(String expected, String actual) {
     expected = expected.replaceAll("\r?\n", lineSeparator());
     actual = actual.replaceAll("\r?\n", lineSeparator());
     actual = actual.substring(0, min(expected.length(), actual.length()));
+    assertEquals(expected, actual);
+  }
+
+  public static void assertStackTraceExactly(String expected, String actual) {
+    expected = expected.replaceAll("\r?\n", lineSeparator());
+    actual = actual.replaceAll("\r?\n", lineSeparator());
     assertEquals(expected, actual);
   }
 
@@ -35,7 +41,7 @@ public class Assertions {
     return stringWriter.toString();
   }
 
-  public static void assertSingleFailureOpenTestReport(
+  public static void assertSingleFailureOpenTestReportExactly(
       Path testReportDir, String expectedStackTrace) throws IOException {
     try (var stream = Files.list(testReportDir)) {
 
@@ -48,7 +54,7 @@ public class Assertions {
                   .toFile(),
               OpenTestReport.class);
 
-      assertStackTrace(
+      assertStackTraceExactly(
           expectedStackTrace,
           report.finished.stream()
               .flatMap(fin -> Optional.ofNullable(fin.result).map(res -> res.throwable).stream())
@@ -59,8 +65,15 @@ public class Assertions {
     }
   }
 
-  public static void assertSingleFailureJUnitReport(Path reportFile, String expectedStackTrace) {
+  public static void assertSingleFailureJUnitReportHasExpectedStackTracePrefix(
+      Path reportFile, String expectedStackTrace) {
     var report = JAXB.unmarshal(reportFile.toFile(), JUnitTestReport.class);
-    assertStackTrace(expectedStackTrace, report.testcase.failure.stackTrace);
+    assertStackTraceHasExpectedPrefix(expectedStackTrace, report.testcase.failure.stackTrace);
+  }
+
+  public static void assertSingleFailureJUnitReportExactly(
+      Path reportFile, String expectedStackTrace) {
+    var report = JAXB.unmarshal(reportFile.toFile(), JUnitTestReport.class);
+    assertStackTraceExactly(expectedStackTrace, report.testcase.failure.stackTrace);
   }
 }

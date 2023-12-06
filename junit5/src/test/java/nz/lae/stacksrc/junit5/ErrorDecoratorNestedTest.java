@@ -1,6 +1,6 @@
 package nz.lae.stacksrc.junit5;
 
-import static nz.lae.stacksrc.test.Assertions.assertStackTrace;
+import static nz.lae.stacksrc.test.Assertions.assertStackTraceHasExpectedPrefix;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -42,7 +42,7 @@ org.opentest4j.AssertionFailedError: testing failure
 
 """;
       assertEquals(DecoratedAssertionError.class, e.getClass());
-      assertStackTrace(expected, (DecoratedAssertionError) e);
+      assertStackTraceHasExpectedPrefix(expected, (DecoratedAssertionError) e);
     }
   }
 }

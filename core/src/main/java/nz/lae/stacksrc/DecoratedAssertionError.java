@@ -15,18 +15,8 @@ public final class DecoratedAssertionError extends AssertionError {
   private final String decoratedStackTrace;
 
   public DecoratedAssertionError(Throwable original) {
-    this(original, null);
-  }
-
-  /**
-   * @param pruneStackTraceKeepFromClass if not null, will prune the stack traces, keeping only
-   *     elements that are called directly or indirectly by this class
-   */
-  public DecoratedAssertionError(
-      Throwable original, @Nullable Class<?> pruneStackTraceKeepFromClass) {
     this.original = original;
-    this.decoratedStackTrace =
-        StackTraceDecorator.get().decorate(original, pruneStackTraceKeepFromClass);
+    this.decoratedStackTrace = StackTraceDecorator.get().decorate(original);
     setStackTrace(new StackTraceElement[0]);
   }
 

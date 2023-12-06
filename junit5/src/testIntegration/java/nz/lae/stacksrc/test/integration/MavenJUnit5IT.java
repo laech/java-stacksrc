@@ -2,8 +2,8 @@ package nz.lae.stacksrc.test.integration;
 
 import static java.lang.System.getProperty;
 import static java.util.Objects.requireNonNull;
-import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReport;
-import static nz.lae.stacksrc.test.Assertions.assertSingleFailureOpenTestReport;
+import static nz.lae.stacksrc.test.Assertions.assertSingleFailureJUnitReportExactly;
+import static nz.lae.stacksrc.test.Assertions.assertSingleFailureOpenTestReportExactly;
 
 import java.nio.file.Paths;
 import nz.lae.stacksrc.test.Processes;
@@ -36,11 +36,13 @@ org.opentest4j.AssertionFailedError: example failure
 	   12    }
 	   13  }
 
+
+
 """;
 
     var reportDir = mvnw.resolveSibling("target/surefire-reports");
-    assertSingleFailureOpenTestReport(reportDir, expectedStackTrace);
-    assertSingleFailureJUnitReport(
+    assertSingleFailureOpenTestReportExactly(reportDir, expectedStackTrace);
+    assertSingleFailureJUnitReportExactly(
         reportDir.resolve("TEST-nz.lae.stacksrc.test.integration.MavenTest.xml"),
         expectedStackTrace);
   }
