@@ -19,7 +19,8 @@ val testIntegrationRuntimeOnly: Configuration by configurations.getting {
 }
 
 val testIntegrationCopyLibs by tasks.registering(Copy::class) {
-  destinationDir = buildDir.resolve("testIntegrationLibs")
+  destinationDir =
+    layout.buildDirectory.asFile.get().resolve("testIntegrationLibs")
   rename { it.replace("-${version}", "") }
   from(tasks.jar)
   from(project(":core").tasks.jar)
