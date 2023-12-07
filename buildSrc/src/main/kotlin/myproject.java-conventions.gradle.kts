@@ -1,4 +1,5 @@
 import org.gradle.accessors.dm.LibrariesForLibs
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 
 plugins {
   java
@@ -29,5 +30,11 @@ val libs = the<LibrariesForLibs>()
 spotless {
   java {
     googleJavaFormat()
+  }
+}
+
+tasks.withType<Test> {
+  testLogging {
+    exceptionFormat = TestExceptionFormat.FULL
   }
 }
