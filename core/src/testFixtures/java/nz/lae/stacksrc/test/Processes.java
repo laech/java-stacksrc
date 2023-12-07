@@ -37,7 +37,7 @@ public class Processes {
     if (process.exitValue() != 0) {
       throw new AssertionFailedError(
           """
-        Process failed¡`:
+        Process failed:
         stdout:
         %s
         stderr:
