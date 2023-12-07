@@ -31,24 +31,3 @@ spotless {
     googleJavaFormat()
   }
 }
-
-afterEvaluate {
-  configurations
-    .filter { it.name.endsWith("AnnotationProcessor", true) }
-    .forEach {
-      it.dependencies.add(libs.error.prune.core.get())
-      it.dependencies.add(libs.nullaway.get())
-    }
-  configurations
-    .filter { it.name.endsWith("compileOnly", true) }
-    .forEach { it.dependencies.add(libs.jsr305.get()) }
-}
-
-tasks.withType<JavaCompile> {
-  options.compilerArgs.addAll(
-    listOf(
-      "-XDcompilePolicy=simple",
-      "-Xplugin:ErrorProne -Xep:NullAway:ERROR -XepOpt:NullAway:AnnotatedPackages=nz.lae.stacksrc"
-    )
-  )
-}

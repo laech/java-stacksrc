@@ -2,7 +2,6 @@ package nz.lae.stacksrc;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import javax.annotation.Nullable;
 
 /**
  * Wraps an exception and prints stack trace with code snippets.
@@ -20,7 +19,6 @@ public final class DecoratedAssertionError extends AssertionError {
     setStackTrace(new StackTraceElement[0]);
   }
 
-  @Nullable
   @Override
   public String getMessage() {
     // Override this instead of calling the super(message) constructor, as super(null) will create

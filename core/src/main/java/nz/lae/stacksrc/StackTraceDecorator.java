@@ -20,7 +20,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.stream.IntStream;
-import javax.annotation.Nullable;
 
 final class StackTraceDecorator {
   private StackTraceDecorator() {}
@@ -33,7 +32,7 @@ final class StackTraceDecorator {
 
   private static final int CONTEXT_LINE_COUNT = 2;
 
-  @Nullable private volatile Map<String, List<Path>> cachedFiles;
+  private volatile Map<String, List<Path>> cachedFiles;
 
   private Map<String, List<Path>> cachedFiles() throws IOException {
     if (cachedFiles == null) {
